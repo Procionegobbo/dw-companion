@@ -6,3 +6,6 @@
 - [002-ingestion-pipeline-002-sections-pipeline-and-cli-unknown-gate.md](COMPLETED/002-ingestion-pipeline-002-sections-pipeline-and-cli-unknown-gate.md)
 - [002-ingestion-pipeline-003-move-extraction-and-overrides.md](COMPLETED/002-ingestion-pipeline-003-move-extraction-and-overrides.md)
 - [002-ingestion-pipeline-004-classes-and-close-out.md](COMPLETED/002-ingestion-pipeline-004-classes-and-close-out.md)
+- [005-domain-and-dice-001-dice-resolution.md](COMPLETED/005-domain-and-dice-001-dice-resolution.md)
+- [005-domain-and-dice-002-rulebook-types-and-parsers.md](COMPLETED/005-domain-and-dice-002-rulebook-types-and-parsers.md)
+- [005-domain-and-dice-003-outcome-resolution-and-adr.md](COMPLETED/005-domain-and-dice-003-outcome-resolution-and-adr.md)

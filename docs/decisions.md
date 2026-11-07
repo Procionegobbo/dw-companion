@@ -267,3 +267,52 @@ abilities; any later spec that renders a move card or feeds `stat` into the move
 (specs 005/006) must accept this vocabulary rather than assuming three non-null bands and six
 possible stats. Spec 006's move-card explanation can cite `Playing_the_Game.xml`'s own general
 rule for why a 6- outcome is unstated.
+
+## ADR-009: Domain layer — stdlib types, mirrored ingestion shapes, injected dice randomness
+
+Date: 2026-11-07
+Status: Accepted
+
+### Context
+
+The backend needs a pure, innermost layer (handoff 4.1) for rulebook types and dice
+resolution, buildable in parallel with the ingestion pipeline (spec 002) rather than
+depending on it, and testable without any real randomness.
+
+### Decision
+
+**Stdlib only**: frozen, slotted `dataclasses` with `__post_init__` validation and
+`typing.Literal` vocabularies — no Pydantic, no new dependency; Pydantic arrives with
+FastAPI at the API boundary (spec 008), where it belongs. **The domain re-declares the
+spec 002 JSON shapes rather than importing `ingestion.models`**: the runtime container
+must not need the offline ingestion package, and compatibility is proven by tests
+(inline fixtures plus a test that parses the committed `data/normalized/*.json` when
+present) rather than by sharing code. The `Stat` vocabulary extends the six abilities
+with `BOND`, `VARIES` and `NONE` (mirroring spec 002 D9); `AbilityStat` is the narrower
+six-value vocabulary for the move classifier's output. Naming keeps `Outcomes` (plural,
+a move's three band texts) distinct from `Outcome` (singular, the resolved result of one
+roll on one move) — both already fixed names from the handoff and spec 002.
+
+**Dice resolution is deterministic and the band rule follows the source exactly**: a
+total **>= 10** is `strong_hit`, **7-9** is `weak_hit`, and **<= 6** is `miss`, with no
+natural-roll special cases. **Randomness is injected**: `roll(rng, modifier)` takes any
+object satisfying the `RandomSource` protocol (`randint(a, b, /) -> int`); the domain
+never imports `random` and holds no global RNG, so production supplies a `random.Random`
+and tests supply a seeded one or a scripted fake. **Only `backend.domain.dice.roll`
+produces dice values — the LLM never invents a roll**; the graph's `roll` tool (spec
+006) calls this primitive and nothing else generates dice. The **modifier is optional
+and bounded to -10...+10 inclusive** (`bool` rejected): `modifier=None` yields a `Roll`
+with dice but no total or band, letting a caller ask for the modifier before committing
+to one; `band_with(modifier)` reports the band for any modifier without needing a full
+`Roll`. Real stats run -3...+3, so a range of 10 in either direction comfortably covers
+forward/ongoing bonuses while rejecting nonsense the LLM might otherwise pass as a tool
+argument.
+
+### Consequences
+
+`backend/domain/` depends on nothing but the standard library and is importable and
+testable before spec 002's ingestion output exists, at the cost of ~20 duplicated lines
+of type declarations between `backend/domain/rulebook.py` and `ingestion/models.py`,
+kept honest by the compatibility tests rather than by sharing code. Any later caller of
+`roll` (spec 006's tool) must supply its own `RandomSource`; none is created implicitly,
+so a forgotten seed is a visible wiring bug rather than silent nondeterminism.
