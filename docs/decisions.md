@@ -186,3 +186,84 @@ Every PR and push to `main` gets fast, read-only, secret-free feedback; a compli
 ever missing or stops containing a workflow, so the no-secrets guarantee cannot regress
 silently. The trade-off is that any future job needing a real credential (e.g. a staging
 deploy) needs its own, explicitly-scoped workflow rather than extending this one.
+
+## ADR-007: Ingestion: stdlib parser, chapter manifest, IDs, committed output as snapshot
+
+Date: 2026-11-07
+Status: Accepted
+
+### Context
+
+The ingestion pipeline turns 37 InDesign-flavoured XML files into three JSON files that
+every later spec (site, domain types, retrieval, move classifier) treats as a fixed-shape
+contract. The source has no reliable chapter title or book order, no stable identifiers,
+and nothing to compare a rebuild against short of trusting the code.
+
+### Decision
+
+The parser uses **Python stdlib only** (`xml.etree.ElementTree`, `dataclasses`, `json`,
+`argparse`, `logging`, `re`, `unicodedata`) — no `defusedxml`, `lxml` or snapshot library;
+the input is pinned, trusted upstream text, so expat's built-in entity-expansion limits are
+enough. Chapters are defined by a **hand-written manifest** (`ingestion/manifest.py`,
+file + chapter id + title + book order); the build fails loudly if `text/` ever disagrees
+with it. **Section granularity is chapter → `h1` → `h2`**: deeper headings stay inside
+their section's `text_markdown`, giving citation-sized sections without one-line sections
+for every monster or list item, and with no text duplicated between parent and child.
+**IDs derive from the source once**: a chapter section's id is the chapter id; other
+section ids are `{chapter_id}/{slug(title)}`, de-duplicated with a numeric suffix on
+collision; move ids are `slugify(name)`; class ids are their chapter id — stable,
+citation-friendly, and mapping naturally to site paths. The **unknown-markup threshold is
+0** by default (`--max-unknown N` to raise it locally): every tag, attribute, `aid:pstyle`
+and `aid:cstyle` value at the pin was inventoried, so any unknown occurrence means upstream
+changed and a human must look — the text is still kept ("tolerant"), but the build fails
+("loud"). The **committed `data/normalized/*.json` files are themselves the snapshot**: a
+test rebuilds in memory and compares byte-for-byte against them, with no snapshot library
+needed; regenerating is `uv run python -m ingestion`. **Output format** is fixed: one JSON
+array per file, UTF-8, `ensure_ascii=False`, `indent=2`, keys in the *Data Model* field
+order, LF line endings, a trailing newline, and typographic characters (’ “ ” — – …) kept
+verbatim with only `✴` and zero-width spaces stripped.
+
+### Consequences
+
+Every later spec reads deterministic, diff-reviewable JSON with stable ids and no new
+runtime dependency. An upstream source change that adds markup outside the known inventory
+fails the build rather than silently dropping or mis-rendering text. Regenerating the
+snapshot after a parser change is a single command, and the diff is the review.
+
+## ADR-008: Outcome bands follow the source; extended stat vocabulary
+
+Date: 2026-11-07
+Status: Accepted
+
+### Context
+
+The project brief (handoff milestone 2) describes move cards with "three outcome bands" —
+strong hit, weak hit, and miss — implying every move states all three. Reading the actual
+source (`Moves.xml`, and `Playing_the_Game.xml`'s explicit statement of the rule) shows this
+isn't true: most moves never say what a 6- does, leaving it to the GM by the general rule, and
+a handful of moves don't roll at all. The brief also doesn't give `stat` a type, but the source
+needs more than the six ability scores to describe every move accurately.
+
+### Decision
+
+**This discrepancy is deliberate, and the source wins (handoff 12).** `outcomes.miss` is
+`null` whenever the move's text states no miss outcome — only Last Breath, Take Watch, Carouse
+and Recruit do. Inventing miss text for the other 11 rolled moves would put words in the
+authors' mouths and break the project's "quoted from structured data, not regenerated"
+principle; instead, milestone 2's acceptance is restated as every rolled move having `trigger`,
+`stat`, `strong_hit`, `weak_hit`, and an `outcomes` object with all three keys present
+(`miss` possibly `null`). Six moves (Encumbrance, Make Camp, Level Up, End of Session, Recover,
+Bolster) don't roll at all, so both `outcomes` and `stat` are `null` for them.
+
+`stat` is typed as `"STR" | "DEX" | "CON" | "INT" | "WIS" | "CHA" | "BOND" | "VARIES" | "NONE"`
+or `null`, instead of just the six abilities: `BOND` covers Aid or Interfere (`roll+Bond`),
+`VARIES` covers Defy Danger (the player picks the stat by approach, not a fixed `roll+Stat`),
+and `NONE` covers rolled moves with no stat at all (Last Breath, Carouse, Recruit).
+
+### Consequences
+
+`moves.json`'s `miss` field is genuinely nullable and `stat` has three values beyond the six
+abilities; any later spec that renders a move card or feeds `stat` into the move classifier
+(specs 005/006) must accept this vocabulary rather than assuming three non-null bands and six
+possible stats. Spec 006's move-card explanation can cite `Playing_the_Game.xml`'s own general
+rule for why a 6- outcome is unstated.

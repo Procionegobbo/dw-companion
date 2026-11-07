@@ -2,3 +2,7 @@
 - [001-bootstrap-and-tooling-002-source-submodule-licensing-and-docs.md](COMPLETED/001-bootstrap-and-tooling-002-source-submodule-licensing-and-docs.md)
 - [001-bootstrap-and-tooling-003-site-typescript-placeholder-tooling.md](COMPLETED/001-bootstrap-and-tooling-003-site-typescript-placeholder-tooling.md)
 - [001-bootstrap-and-tooling-004-ci-workflow.md](COMPLETED/001-bootstrap-and-tooling-004-ci-workflow.md)
+- [002-ingestion-pipeline-001-source-notes-manifest-and-markdown-renderer.md](COMPLETED/002-ingestion-pipeline-001-source-notes-manifest-and-markdown-renderer.md)
+- [002-ingestion-pipeline-002-sections-pipeline-and-cli-unknown-gate.md](COMPLETED/002-ingestion-pipeline-002-sections-pipeline-and-cli-unknown-gate.md)
+- [002-ingestion-pipeline-003-move-extraction-and-overrides.md](COMPLETED/002-ingestion-pipeline-003-move-extraction-and-overrides.md)
+- [002-ingestion-pipeline-004-classes-and-close-out.md](COMPLETED/002-ingestion-pipeline-004-classes-and-close-out.md)

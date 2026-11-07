@@ -17,6 +17,11 @@ extend-exclude = ["vendor", "site", "STORIES"]
 [tool.ruff.lint]
 select = ["E", "W", "F", "I", "B", "UP", "SIM", "RUF", "PT", "N"]
 
+[tool.ruff.lint.per-file-ignores]
+"ingestion/**" = ["RUF001"]
+"ingestion/overrides.py" = ["E501"]
+"ingestion/tests/**" = ["E501"]
+
 [tool.pyright]
 pythonVersion = "3.12"
 typeCheckingMode = "strict"

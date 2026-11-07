@@ -1,0 +1,74 @@
+[
+  {
+    "id": "bard",
+    "name": "Bard",
+    "section_id": "bard",
+    "order": 0,
+    "max_hp_base": 6,
+    "base_damage": "d6",
+    "load_base": 9
+  },
+  {
+    "id": "cleric",
+    "name": "Cleric",
+    "section_id": "cleric",
+    "order": 1,
+    "max_hp_base": 8,
+    "base_damage": "d6",
+    "load_base": 10
+  },
+  {
+    "id": "druid",
+    "name": "Druid",
+    "section_id": "druid",
+    "order": 2,
+    "max_hp_base": 6,
+    "base_damage": "d6",
+    "load_base": 6
+  },
+  {
+    "id": "fighter",
+    "name": "Fighter",
+    "section_id": "fighter",
+    "order": 3,
+    "max_hp_base": 10,
+    "base_damage": "d10",
+    "load_base": 12
+  },
+  {
+    "id": "paladin",
+    "name": "Paladin",
+    "section_id": "paladin",
+    "order": 4,
+    "max_hp_base": 10,
+    "base_damage": "d10",
+    "load_base": 12
+  },
+  {
+    "id": "ranger",
+    "name": "Ranger",
+    "section_id": "ranger",
+    "order": 5,
+    "max_hp_base": 8,
+    "base_damage": "d8",
+    "load_base": 11
+  },
+  {
+    "id": "thief",
+    "name": "Thief",
+    "section_id": "thief",
+    "order": 6,
+    "max_hp_base": 6,
+    "base_damage": "d8",
+    "load_base": 9
+  },
+  {
+    "id": "wizard",
+    "name": "Wizard",
+    "section_id": "wizard",
+    "order": 7,
+    "max_hp_base": 4,
+    "base_damage": "d4",
+    "load_base": 7
+  }
+]
