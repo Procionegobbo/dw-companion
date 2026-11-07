@@ -98,3 +98,42 @@ and appending `roll_text_with_modifier` to the reply text) or computes
 | `clarification` | Classifier confidence was below `clarify_threshold`, for any `move_id` including `no_move`. | — | — |
 | `out_of_scope` | The router decided the message isn't a Dungeon World rules question or action. | — | — |
 | `error` | A port raised `PortError`, or an LLM response failed structured-output validation. | — | — |
+
+## Adapters and composition root
+
+`backend/composition.py` is the composition root: the only module (besides `backend/chat.py`)
+that imports both `backend/adapters/**` and `backend/graph/**`. `Settings.from_env(environ)`
+reads every environment variable exactly once, collecting every problem into a single
+`ConfigError` rather than failing on the first one; adapters themselves never read `os.environ`.
+`build_runtime(settings, ...)` loads the index and rulebook, builds one real adapter per spec
+006 port, wires them into `build_assistant`, and returns a `Runtime` whose `aclose()` flushes
+traces and closes the HTTP clients exactly once.
+
+```
+OFFLINE (owner, needs OPENROUTER_API_KEY)                     RUNTIME (python -m backend.chat, later spec 008)
+data/normalized/{sections,moves}.json                         env ──▶ Settings.from_env ──▶ build_runtime
+   │ chunking.build_chunks (pure)                                          │
+   ▼                                                                       ├─ OpenRouterLLMClient(AsyncOpenAI) ── LLMClient
+IndexChunk[] ──index_text──▶ OpenRouterEmbedder ──▶ vectors                ├─ HybridRetriever(load_index(data/index),
+   │                                                  │                    │      OpenRouterEmbedder) ────────── Retriever
+   └──────────── write_index ◀────────────────────────┘                    │      ├ vector: E·q  (NumPy)
+                     ▼                                                     │      ├ BM25 (built at load)
+            data/index/{manifest.json, chunks.json, embeddings.npy}        │      └ RRF → dedup section_id → top k
+                     │ committed; spec 011 COPYs into image                ├─ LangfuseTracer | NullTracer ─────── Tracer
+                     └────────────────────────────────────────────────────▶├─ JsonRulebookRepository(moves.json) ─ RulebookRepository
+                                                                           └─ build_assistant(GraphDeps(...))  (spec 006)
+```
+
+| Port | Adapter | Library | Key behaviour |
+|------|---------|---------|----------------|
+| `LLMClient` | `OpenRouterLLMClient` (`backend/adapters/openrouter.py`) | `openai` (`AsyncOpenAI`, OpenRouter-compatible endpoint) | Structured requests force `response_format`/`provider.require_parameters`; every request asks for `usage.include` so `LLMResponse.cost_usd` is filled from the provider-reported cost. Failures become `PortError`, never leaking the key. |
+| `Retriever` | `HybridRetriever` (`backend/adapters/retrieval/hybrid.py`) | `numpy` (vectors) + in-house `bm25.py` | Fuses the top-30 cosine hits and top-30 BM25 hits by Reciprocal Rank Fusion, deduplicates by `section_id`, cuts to `k`. Reads a committed, offline-built index (`data/index/`); embeds the query through `OpenRouterEmbedder`. |
+| `Tracer` | `LangfuseTracer` (`backend/adapters/langfuse_tracer.py`) / `NullTracer` (`backend/adapters/null_tracer.py`) | `langfuse` (OpenTelemetry-based) | Records one observation per node/generation/event, grouped into one `chat_turn` Langfuse trace per `session_id`, carrying model, tokens, cost and latency. Every call is wrapped so it never raises or blocks; `NullTracer` is used locally when no Langfuse keys are configured. |
+| `RulebookRepository` | `JsonRulebookRepository` (`backend/adapters/json_rulebook.py`) | stdlib `json` | Loads only `moves.json` via spec 005's `move_from_dict`; sections are read by the retriever's own index, not by this repository. |
+
+The index build CLI (`python -m backend.adapters.retrieval.build`) is the only piece that needs
+`OPENROUTER_API_KEY` at offline time; it chunks the committed normalized data
+(`retrieval/chunking.py`), embeds each chunk's index text, and writes the three index files only
+after every embedding batch has succeeded. `python -m backend.chat` is the local verification
+path for milestone 6: it builds a `Runtime`, runs one turn, prints the reply, citations or move
+card and the trace/session ids, then flushes Langfuse traces before exiting.

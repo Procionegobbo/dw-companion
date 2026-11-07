@@ -31,6 +31,21 @@ Site (from `site/`):
 Copy `.env.example` to `.env` for local configuration. Design decisions are logged in
 [`docs/decisions.md`](docs/decisions.md).
 
+### Running the assistant locally
+
+Copy `.env.example` to `.env` and fill in `OPENROUTER_API_KEY`, the four `MODEL_*` values and,
+optionally, the Langfuse keys (tracing stays disabled locally if you leave them empty).
+
+Rebuild the retrieval index only after changing the rulebook data or the embedding model:
+
+    uv run --env-file .env python -m backend.adapters.retrieval.build
+
+Chat with the assistant from the command line:
+
+    uv run --env-file .env python -m backend.chat "How does Hack and Slash work?"
+
+Add `--roll --modifier 1` to roll the triggered move.
+
 ## Attribution
 
 This project uses the text of **Dungeon World** by Sage LaTorra and Adam Koebel, from

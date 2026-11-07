@@ -437,3 +437,186 @@ Swapping LangGraph's major version, or a future orchestration library entirely, 
 the backend tests' no-network guard (D24) would make such a call fail loudly rather than
 silently phoning home, but spec 007's composition root must keep both env vars unset in every
 deployed environment.
+
+## ADR-012: Tracing: Langfuse adapter
+
+Date: 2026-11-07
+Status: Accepted
+
+### Context
+
+Spec 006's `Tracer` port is sync and must never raise or block on network (D20): adapters
+batch and export off the critical path. Milestone 6 needs every graph node, LLM generation
+and anti-hallucination event to show up in Langfuse with session, intent, model, tokens, cost
+and latency, and tracing must stay optional for a developer running only with an OpenRouter
+key.
+
+### Decision
+
+**The official `langfuse` SDK (5.x, OpenTelemetry-based)** is the tracer adapter
+(`backend/adapters/langfuse_tracer.py`, new dependency `langfuse`): it batches and exports on
+a background thread, which is how the port's never-block contract is met, and its API names
+(`Langfuse.start_observation`, `create_event`, `create_trace_id(seed=…)`,
+`propagate_attributes`, `flush`, `shutdown`, the `span_exporter` constructor parameter,
+`LangfuseOtelSpanAttributes`) were checked against the installed `langfuse` source. Every
+`record_*` call runs inside `try/except Exception`; on failure it logs a WARNING on logger
+`backend.adapters.langfuse` naming only the exception class, never the payload, and returns
+`None`.
+
+**Langfuse trace id.** A caller-supplied `trace_id` that is already 32 lowercase hex
+characters is used as-is; any other value is mapped through `Langfuse.create_trace_id(seed=
+trace_id)`, which is deterministic for a given seed. `backend.chat` and spec 008's API pass
+`uuid4().hex`, so the id a developer sees printed or logged is the id shown in the Langfuse
+UI.
+
+**Session and intent propagation.** Every observation for a trace is opened inside
+`propagate_attributes(session_id=…, trace_name="chat_turn")`, so every span and generation for
+one turn is grouped under one Langfuse trace named `chat_turn` with the caller's
+`session_id`. The tracer remembers `trace_id → intent` from the router node's own attributes
+(the router node always runs first; the mapping is bounded at 1,024 traces, oldest evicted),
+and every later observation on that trace additionally carries `propagate_attributes(metadata=
+{"intent": …}, tags=[f"intent:{…}"])`, so the router's own span is the only one for that turn
+missing the tag (it is recorded before routing completes).
+
+**Never block, never raise.** `flush()`/`close()` wrap `client.flush()`/`client.shutdown()`
+the same way. Neither method is part of the `Tracer` port; the composition root's
+`Runtime.aclose()` and the chat CLI call them directly so a turn's traces are flushed before
+the process exits.
+
+**`NullTracer`** (`backend/adapters/null_tracer.py`) is used when both `LANGFUSE_PUBLIC_KEY`
+and `LANGFUSE_SECRET_KEY` are empty (spec 007 D18): every method is a no-op returning `None`,
+so a developer can smoke-test the assistant with only an OpenRouter key.
+
+**Privacy.** No IP address or other request metadata ever reaches the tracer; only the
+caller-supplied `trace_id`/`session_id` identify a turn. Generation inputs (the system prompt
+and the user's message) and outputs are sent to Langfuse by design, since that is what makes
+a trace useful for debugging prompts — this is a deliberate trade-off, not an oversight.
+
+**Open risk carried from spec 006.** Spec 006 open risk (b) still applies here: the
+transitively-added `langchain-core` (via LangGraph) would send LangSmith traces if
+`LANGSMITH_TRACING` or `LANGCHAIN_TRACING_V2` were set. Neither is in `.env.example` or CI, and
+this adapter does not set them; the composition root is responsible for keeping both unset in
+every deployed environment.
+
+### Consequences
+
+Tests exercise the real SDK against an injected OpenTelemetry `InMemorySpanExporter`
+(`backend/tests/adapter_helpers.py` `memory_tracer`, a fresh public key per test client, since
+Langfuse keeps one resource manager per public key), so the exported span attributes are
+checked against the real wire shape rather than a hand-rolled fake. If a minor `langfuse`
+upgrade changes attribute serialisation, only `test_adapters_langfuse.py` should break.
+
+## ADR-013: Model provider: OpenRouter for chat and embeddings
+
+Date: 2026-11-07
+Status: Accepted
+
+### Context
+
+Spec 006's `LLMClient` port needs a real provider, and milestone 6 also needs embeddings for
+the retrieval index. The project brief's original draft assumed embeddings would come from a
+separate provider or a local model; that premise needed re-checking against what OpenRouter
+actually offers.
+
+### Decision
+
+**Embeddings come from OpenRouter too, with the same key and SDK** (D1). Verified on
+2026-11-05: `GET https://openrouter.ai/api/v1/models?output_modalities=embeddings` lists 44
+embedding models, including `openai/text-embedding-3-small` at $0.02 per million input tokens,
+and `POST https://openrouter.ai/api/v1/embeddings` answers `401` (the route exists) while an
+unknown route answers `404`. `MODEL_EMBEDDINGS` is therefore an OpenRouter model id, not a
+separate provider's. **Rejected alternatives**: a direct OpenAI key (a second account, a second
+secret, a second billing alert) and a local `fastembed` + `onnxruntime` model (about 150 MB
+added to the image and extra Cloud Run cold-start load time, against `min-instances=0`). Both
+were rejected for zero marginal benefit over reusing the existing OpenRouter key and SDK. An
+override path is kept open without any adapter change: a direct OpenAI key could be added later
+as `EMBEDDINGS_API_KEY`/`EMBEDDINGS_BASE_URL` building a second `AsyncOpenAI` client in
+`backend/composition.py`, since the embedder takes an injected client. **Cost estimate**: a
+full index build is under $0.05; a query embedding (~30 tokens) costs about $0.0000006.
+
+**Committed index embedding model**: `openai/text-embedding-3-small` (D2) — cheapest
+well-known general embedding model with an 8,192-token context. It is never hardcoded: it is
+the value of `MODEL_EMBEDDINGS` at index-build time, recorded in the index manifest, and the
+composition root refuses to start if `MODEL_EMBEDDINGS` ever disagrees with the manifest.
+
+**OpenRouter chat adapter** (D12) uses the official `openai` SDK (`AsyncOpenAI`,
+`base_url="https://openrouter.ai/api/v1"`). Structured requests set
+`response_format={"type": "json_schema", ...}` with `provider.require_parameters = true`, so
+OpenRouter only routes to providers that honour the schema; every request sets
+`usage.include = true` so cost is reported. Timeout 30s, one SDK-level retry.
+
+**Model ids come only from env** (D13): `MODEL_ROUTER`, `MODEL_CLASSIFIER`, `MODEL_ANSWER`,
+`MODEL_EMBEDDINGS`, all required, kept empty in `.env.example`. Suggested starting values for
+local smoke runs — router/classifier `openai/gpt-4.1-nano`, answer `openai/gpt-4.1-mini`,
+embeddings `openai/text-embedding-3-small` — are recorded here only, **provisional until spec
+010's measured choice** replaces them with eval evidence.
+
+**`LLMResponse` gains one additive field** `cost_usd: float | None = None` (D11), filled from
+OpenRouter's reported `usage.cost`. **Port errors never leak secrets** (D22): every provider
+failure becomes `PortError` naming the operation, the exception class and, for HTTP errors, the
+status code — never the API key, headers or response body.
+
+### Consequences
+
+The runtime needs exactly one provider account and one SDK for both chat and embeddings. If
+OpenRouter ever omits `usage.cost` for a model, `cost_usd` is `None` and Langfuse shows no cost
+for that generation (open risk, mitigated by a Langfuse custom price as a UI-only fallback). The
+provisional model ids must be revisited once spec 010 has eval evidence; nothing in the code
+enforces that, so it is a manual follow-up.
+
+## ADR-014: Retrieval — section chunks, NumPy + in-house BM25 hybrid, committed index
+
+Date: 2026-11-07
+Status: Accepted
+
+### Context
+
+Milestone 6 needs a retriever over the Dungeon World rulebook that returns distinct,
+citation-sized sections for a rules question, built and queried without a managed service
+(handoff 4.3: no managed vector DB) and without opening a paid API call from CI.
+
+### Decision
+
+**Vector store: a NumPy matrix** (`embeddings.npy`, float32, L2-normalised rows) plus
+brute-force cosine similarity — no Chroma, LanceDB or FAISS (D3). The corpus is one book (a few
+hundred chunks × 1,536 dimensions, about 2-3 MB); a matrix-vector product costs well under a
+millisecond. Chroma pulls a SQLite stack and its own embedding runtime, LanceDB pulls
+`pyarrow`, and FAISS is built for millions of vectors — all unjustified for this size. The index
+artifact (`data/index/{manifest.json, chunks.json, embeddings.npy}`) is **committed to git**
+and rebuilt by `python -m backend.adapters.retrieval.build`, the same "built offline, baked into
+the image" pattern as spec 002's committed `data/normalized/` (D4); a freshness test fails when
+`chunks.json` no longer matches the chunks derived from the committed normalized data, and CI
+never calls a paid API.
+
+**BM25 is implemented in-house** (`bm25.py`: Okapi BM25, `k1=1.2`, `b=0.75`, non-negative IDF;
+D5), tokenized by NFKC-normalise, lower-case, `[a-z0-9]+` tokens, no stemming or stop-words
+(D6) — exact game terms ("hack and slash") matter, and IDF already down-weights common words.
+`rank-bm25` was rejected (untyped, last released 2022, needs our tokenizer anyway) and `bm25s`
+was rejected (adds `scipy`); the in-house formula is ~40 lines, fully unit-testable, and
+milliseconds to build for ~400 short documents.
+
+**Fusion: Reciprocal Rank Fusion** (D7) of the top `CANDIDATES = 30` vector hits and the top 30
+BM25 hits (score > 0), `score = Σ 1/(RRF_K=60 + rank)`, ties broken by chunk order, deduplicated
+by `section_id` (first wins), cut to `k`. RRF needs no score normalisation between the cosine
+and BM25 scales and is the standard simple hybrid.
+
+**Chunking** (D8-D10): one chunk per section with non-empty `text_markdown`, except a move's
+`section_id` is replaced by that move's own chunk (`type="move"`), chapter `thanks` is excluded,
+and a section longer than `MAX_CHUNK_CHARS = 6000` is split on blank-line block boundaries
+(never mid-block; move chunks are never split). Index text is
+`"{chapter title} > {title}\n\n{text}"`, truncated to `EMBED_MAX_CHARS = 24000` characters for
+embedding only; `anchor_url = section_url(section_id)` for every chunk (the spec 004 citation
+contract).
+
+**Rebuild command**: `uv run --env-file .env python -m backend.adapters.retrieval.build
+[--normalized DIR] [--out DIR]`, needs `OPENROUTER_API_KEY` and `MODEL_EMBEDDINGS`, writes
+nothing on any failure.
+
+### Consequences
+
+No managed vector service, no extra infrastructure, and the index is reviewable in diffs like
+any other committed data file — at the cost of a ~2-3 MB binary (`embeddings.npy`) in git,
+replaced wholesale on each rebuild (acceptable at this corpus size). The chunk-size constants
+are unmeasured against the real data pin and are tunable in spec 010 once the build CLI's
+printed statistics are reviewed. BM25's lack of stemming is a deliberate trade-off that spec
+010 may revisit if eval recall shows term-form misses.

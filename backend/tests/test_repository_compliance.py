@@ -96,6 +96,10 @@ def test_env_example_declares_keys_without_values() -> None:
         "MODEL_CLASSIFIER",
         "MODEL_ANSWER",
         "MODEL_EMBEDDINGS",
+        "OPENROUTER_API_KEY",
+        "LANGFUSE_PUBLIC_KEY",
+        "LANGFUSE_SECRET_KEY",
+        "LANGFUSE_BASE_URL",
     ]
     assert keys == expected_keys
     assert len(keys) == len(set(keys))

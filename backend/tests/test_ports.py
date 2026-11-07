@@ -104,6 +104,23 @@ def test_llm_response_validation() -> None:
     assert response.text == ""
 
 
+def test_llm_response_cost_validation() -> None:
+    response = LLMResponse(text="x", model="m", input_tokens=5, output_tokens=5)
+    assert response.cost_usd is None
+
+    for cost_usd in (None, 0.0, 0.002):
+        response = LLMResponse(
+            text="x", model="m", input_tokens=5, output_tokens=5, cost_usd=cost_usd
+        )
+        assert response.cost_usd == cost_usd
+
+    for bad_cost in (-0.01, math.nan, True):
+        with pytest.raises(ValueError, match="cost_usd"):
+            LLMResponse(
+                text="x", model="m", input_tokens=5, output_tokens=5, cost_usd=bad_cost
+            )
+
+
 def test_retrieved_chunk_validation() -> None:
     with pytest.raises(ValueError, match="section_id"):
         RetrievedChunk(

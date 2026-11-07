@@ -63,6 +63,7 @@ class LLMResponse:
     model: str
     input_tokens: int
     output_tokens: int
+    cost_usd: float | None = None  # provider-reported USD cost (spec 007 D11)
 
     def __post_init__(self) -> None:
         if not self.model.strip():
@@ -71,6 +72,13 @@ class LLMResponse:
             raise ValueError("invalid LLMResponse: input_tokens must be an int >= 0")
         if isinstance(self.output_tokens, bool) or self.output_tokens < 0:
             raise ValueError("invalid LLMResponse: output_tokens must be an int >= 0")
+        if self.cost_usd is not None:
+            if isinstance(self.cost_usd, bool):
+                raise ValueError("invalid LLMResponse: cost_usd must not be bool")
+            if not math.isfinite(self.cost_usd) or self.cost_usd < 0:
+                raise ValueError(
+                    "invalid LLMResponse: cost_usd must be finite and >= 0"
+                )
 
 
 class LLMClient(Protocol):
