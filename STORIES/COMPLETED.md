@@ -1,0 +1,4 @@
+- [001-bootstrap-and-tooling-001-python-skeleton-and-toolchain.md](COMPLETED/001-bootstrap-and-tooling-001-python-skeleton-and-toolchain.md)
+- [001-bootstrap-and-tooling-002-source-submodule-licensing-and-docs.md](COMPLETED/001-bootstrap-and-tooling-002-source-submodule-licensing-and-docs.md)
+- [001-bootstrap-and-tooling-003-site-typescript-placeholder-tooling.md](COMPLETED/001-bootstrap-and-tooling-003-site-typescript-placeholder-tooling.md)
+- [001-bootstrap-and-tooling-004-ci-workflow.md](COMPLETED/001-bootstrap-and-tooling-004-ci-workflow.md)

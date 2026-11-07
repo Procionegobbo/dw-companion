@@ -1,0 +1,3 @@
+[submodule "vendor/dungeon-world"]
+	path = vendor/dungeon-world
+	url = https://github.com/Sagelt/Dungeon-World
