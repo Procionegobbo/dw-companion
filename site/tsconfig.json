@@ -1,12 +1,8 @@
 {
+  "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
-    "noEmit": true,
-    "target": "ES2022",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "skipLibCheck": true
+    "noUncheckedIndexedAccess": true
   },
-  "include": ["src"]
+  "include": [".astro/types.d.ts", "src", "tests", "*.config.ts"],
+  "exclude": ["dist"]
 }

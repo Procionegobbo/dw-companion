@@ -1,0 +1,24 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { loadRulebook } from "../lib/rulebook";
+import { MOVES_INDEX_URL, sectionUrl } from "../lib/urls";
+
+const rb = loadRulebook();
+const chapters = rb.sections.filter((section) => section.parent_id === null);
+---
+
+<BaseLayout>
+  <h1>Dungeon World Companion</h1>
+  <p>
+    The complete Dungeon World rules, reformatted for the web. Unofficial — see the footer for
+    credits and licence.
+  </p>
+  <h2>Chapters</h2>
+  <ol>
+    {chapters.map((chapter) => (
+      <li><a href={sectionUrl(chapter.id)}>{chapter.title}</a></li>
+    ))}
+  </ol>
+  <h2>Moves</h2>
+  <p><a href={MOVES_INDEX_URL}>Basic and special moves</a></p>
+</BaseLayout>

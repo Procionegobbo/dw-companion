@@ -1,0 +1,74 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { categoryLabel, rollLabel } from "../../lib/format";
+import { renderMarkdown } from "../../lib/markdown";
+import { loadRulebook, type Move } from "../../lib/rulebook";
+import { HOME_URL, MOVES_INDEX_URL, sectionUrl } from "../../lib/urls";
+
+export function getStaticPaths() {
+  const rb = loadRulebook();
+  return rb.moves.map((move) => ({
+    params: { id: move.id },
+    props: { move },
+  }));
+}
+
+interface Props {
+  move: Move;
+}
+
+const { move } = Astro.props;
+const rb = loadRulebook();
+const section = rb.sectionById.get(move.section_id);
+if (!section) {
+  // Unreachable: parseRulebook rejects a move whose section_id does not exist.
+  throw new Error(`move "${move.id}" references unknown section "${move.section_id}"`);
+}
+const outcomes = move.outcomes;
+---
+
+<BaseLayout title={move.name}>
+  <nav aria-label="Breadcrumb">
+    <ol>
+      <li><a href={HOME_URL}>Contents</a></li>
+      <li><a href={MOVES_INDEX_URL}>Moves</a></li>
+      <li aria-current="page">{move.name}</li>
+    </ol>
+  </nav>
+  <article data-move-id={move.id}>
+    <h1>{move.name}</h1>
+    <p>{categoryLabel(move.category)}</p>
+    <dl class="move-facts">
+      <dt>Trigger</dt>
+      <dd>{move.trigger}</dd>
+      <dt>Roll</dt>
+      <dd>{rollLabel(move.stat)}</dd>
+    </dl>
+    {
+      outcomes && (
+        <>
+          <h2>Outcomes</h2>
+          <dl class="outcomes">
+            <dt>10+ (strong hit)</dt>
+            <dd><Fragment set:html={renderMarkdown(outcomes.strong_hit)} /></dd>
+            <dt>7–9 (weak hit)</dt>
+            <dd><Fragment set:html={renderMarkdown(outcomes.weak_hit)} /></dd>
+            <dt>6- (miss)</dt>
+            <dd>
+              {outcomes.miss !== null ? (
+                <Fragment set:html={renderMarkdown(outcomes.miss)} />
+              ) : (
+                "Not stated by this move."
+              )}
+            </dd>
+          </dl>
+        </>
+      )
+    }
+    <h2>Full text</h2>
+    <Fragment set:html={renderMarkdown(move.body_markdown)} />
+    <p>
+      Read it in the rules: <a href={sectionUrl(move.section_id)}>{section.title}</a>
+    </p>
+  </article>
+</BaseLayout>

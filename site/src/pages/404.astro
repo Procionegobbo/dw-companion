@@ -1,0 +1,10 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { HOME_URL } from "../lib/urls";
+---
+
+<BaseLayout title="Page not found">
+  <h1>Page not found</h1>
+  <p>There is no page at this address.</p>
+  <p><a href={HOME_URL}>Go to the contents</a></p>
+</BaseLayout>

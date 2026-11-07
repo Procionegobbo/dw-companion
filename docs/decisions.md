@@ -316,3 +316,124 @@ of type declarations between `backend/domain/rulebook.py` and `ingestion/models.
 kept honest by the compatibility tests rather than by sharing code. Any later caller of
 `roll` (spec 006's tool) must supply its own `RandomSource`; none is created implicitly,
 so a forgotten seed is a visible wiring bug rather than silent nondeterminism.
+
+## ADR-010: Static site: Astro, URL contract, data loading and link check
+
+Date: 2026-11-07
+Status: Accepted
+
+### Context
+
+The static rules site (spec 004) needs a build-time-only Astro application reading spec
+002's committed `data/normalized/*.json`, a URL scheme stable enough to be the assistant's
+citation target (specs 007, 008), and a tooling migration from spec 001's placeholder that
+keeps CI working across the swap.
+
+### Decision
+
+**URL scheme (the citation contract):** section pages are served at **`/rules/<section_id>/`**
+and move pages at **`/moves/<move_id>/`**, trailing slash always, with the id inserted
+verbatim — no encoding, no lowercasing, no title or slug ever contributing to a URL. Separate
+`/rules/` and `/moves/` prefixes avoid the collision between the `moves` chapter id
+(`/rules/moves/`) and the moves index (`/moves/`); slash-containing section ids
+(`moves/hack-and-slash`) map directly onto nested paths. **Specs 007 (`anchor_url`) and 008
+(citation links, move card) must build their links with exactly these formulas.**
+
+**Astro** (current stable major, static output, `trailingSlash: "always"`,
+`build.format: "directory"`, no `site`/`base` set) renders one page per section (including
+chapter roots) and one page per move, plus a moves index, home and 404 page. **Data is loaded
+with a Vite `?raw` import + `JSON.parse` + Zod `.strict()` validation** in a plain module
+(`site/src/lib/rulebook.ts`), not Astro content collections, because content-collection and
+Zod import paths have moved across Astro majors while `?raw` imports are stable Vite behaviour,
+avoid TypeScript inferring a type from a megabyte-scale JSON literal, and stay importable from
+Vitest. Every validation problem is collected before one `RulebookError` is thrown, so a spec
+002 shape change fails the build loudly and completely rather than one error at a time. Tests
+run under **Vitest**, in two suites: unit tests needing no build, and a built-output link check
+that fails (never skips) if `dist/` is missing.
+
+**Tooling migration keeps spec 001's script-name contract** (ADR-005): `lint` stays
+`"eslint ."`; `typecheck` becomes `"astro check"` (covers `.astro` and `.ts` files); `dev`,
+`build`, `preview` and `test` are added. `site/tsconfig.json` extends Astro's strict preset and
+keeps `noUncheckedIndexedAccess: true`, so strictness is not lowered. `engines.node` tightens
+to `>=22.23.4` (Astro's own requirement); `site/.nvmrc` stays `22`. CI's Astro commands set
+`ASTRO_TELEMETRY_DISABLED: "1"` as a step-level `env` — not a credential, so ADR-006's
+no-secrets rule still holds.
+
+**Attribution footer** on every page carries the CC BY 3.0 credit and source link, the
+adaptation statement, the SRD 5.1 / CC BY 4.0 notice, the unofficial-project statement and the
+MIT-for-code statement, with no link to this project's own repository (its public URL is not
+yet fixed).
+
+This extends **ADR-005** (frontend placeholder tooling): the `lint`/`typecheck` script names it
+fixed are kept across this swap from `tsc --noEmit` to `astro check`.
+
+### Consequences
+
+Citation code in specs 007 and 008 can hard-code the two URL formulas instead of calling into
+the site, since they are now a recorded contract; changing them later breaks every citation link
+already issued. The site fails its own build on any drift from spec 002's JSON shapes, with a
+single multi-line error rather than a silent partial render. Developers on Node 22 older than
+22.23.4 must upgrade to run `site/`.
+
+## ADR-011: Assistant graph: LangGraph behind ports, deterministic citations, dice and outcomes
+
+Date: 2026-11-07
+Status: Accepted
+
+### Context
+
+Spec 006 turns one user message into one structured reply, with a router, a rules branch and
+a move branch that must never let the LLM invent a rule citation, a dice result or an outcome
+band (handoff 4.4, 7). The orchestration needs typed state, conditional branching and
+node-level streaming hooks for spec 008's SSE, without locking every port and node to one
+provider's API.
+
+### Decision
+
+**LangGraph is the orchestration library** (current major, added via `uv add langgraph`,
+which also pulls in `langchain-core` and `pydantic` transitively, neither imported by our own
+code): it is the library the project brief's architecture diagram names (handoff 4, 4.1
+`graph/`), and it gives typed state, conditional edges and node-level streaming, which spec
+008's SSE needs. **LangGraph is confined to `backend/graph/builder.py`**, the only module that
+imports `langgraph.*`; every node is a plain `async` function over a `TypedDict` state, and
+callers use an `Assistant` wrapper, never a LangGraph type, so a major-version upgrade or a
+typing quirk touches one file. **Ports are async where they do I/O** (`LLMClient.generate`,
+`Retriever.retrieve`) **and sync where they don't** (`Tracer`, `RulebookRepository`).
+**`LLMClient` is one generic method** taking an `LLMRequest` (`role`, `system`, `user`,
+`max_tokens`, `temperature`, optional JSON Schema); prompts, schemas and output validation
+live in `graph/`, so a thin adapter is easy to swap later.
+
+**Structured LLM output is parsed by deterministic code** (`graph/llm_outputs.py`): any
+violation of the required shape is an invalid output, which ends the turn with the fixed error
+reply and a traced event, with no retry. **The dice roll is a deterministic graph node, never
+an LLM function-calling tool**: whether to roll and with which modifier come only from the
+caller-supplied `TurnInput` (`roll_requested`, `modifier`), the `roll` node calls
+`backend.domain.dice.roll`, and the `outcome` node calls `backend.domain.outcome.
+resolve_outcome` — the LLM never invents a roll or an outcome band. **Outcome bands are never
+part of LLM text**: `Reply.text` holds only prose (an LLM explanation or fixed copy); the
+bands live solely in `MoveCard.outcomes` (verbatim from the `Move`) and the rolled result in
+`MoveCard.outcome` / `MoveCard.bands_by_modifier`. **Citations are inline markers
+`[[<section_id>]]`** in the rules answer's plain text, validated by deterministic code with no
+further LLM call: the citation validator keeps a marker whose id is in the retrieved set and
+removes any other marker together with the whitespace run immediately before it, returning
+citations in first-appearance order — no citation ever reaches the reply unless the retriever
+actually returned that section. **A low classifier
+confidence (`< clarify_threshold`, default `0.6`)** always asks one deterministic clarifying
+question instead of guessing which move triggered.
+
+**Tracing is explicit**: a wrapper records one `NodeTrace` per executed node (latency from an
+injected clock, so tests stay deterministic), one `GenerationTrace` per LLM call (full request
+and response, for spec 007's Langfuse cost/latency reporting), and named `TraceEvent`s for
+anti-hallucination and error signals. `trace_id` and `session_id` are supplied by the caller;
+no IP address ever enters the graph (handoff 7).
+
+### Consequences
+
+Dice, outcome text and citations are anti-hallucination by code rather than by prompt alone: an
+LLM that misbehaves can still only produce text that gets stripped or never reaches the reply.
+Swapping LangGraph's major version, or a future orchestration library entirely, touches only
+`builder.py`. The transitively-added `langchain-core` sends LangSmith traces when
+`LANGSMITH_TRACING` or `LANGCHAIN_TRACING_V2` is set; neither is in `.env.example` or CI, and
+the backend tests' no-network guard (D24) would make such a call fail loudly rather than
+silently phoning home, but spec 007's composition root must keep both env vars unset in every
+deployed environment.

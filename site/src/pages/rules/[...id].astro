@@ -1,0 +1,73 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { renderMarkdown } from "../../lib/markdown";
+import { ancestorsOf, loadRulebook, type Section } from "../../lib/rulebook";
+import { HOME_URL, moveUrl, sectionUrl } from "../../lib/urls";
+
+export function getStaticPaths() {
+  const rb = loadRulebook();
+  return rb.sections.map((section) => ({
+    params: { id: section.id },
+    props: { section },
+  }));
+}
+
+interface Props {
+  section: Section;
+}
+
+const { section } = Astro.props;
+const rb = loadRulebook();
+const ancestors = ancestorsOf(rb, section.id);
+const gameClass = rb.classBySectionId.get(section.id);
+const move = rb.moveBySectionId.get(section.id);
+const children = rb.childrenOf.get(section.id) ?? [];
+const sectionIndex = rb.sections.findIndex((candidate) => candidate.id === section.id);
+const previous = sectionIndex > 0 ? rb.sections[sectionIndex - 1] : undefined;
+const next = sectionIndex < rb.sections.length - 1 ? rb.sections[sectionIndex + 1] : undefined;
+---
+
+<BaseLayout title={section.title}>
+  <nav aria-label="Breadcrumb">
+    <ol>
+      <li><a href={HOME_URL}>Contents</a></li>
+      {ancestors.map((ancestor) => (
+        <li><a href={sectionUrl(ancestor.id)}>{ancestor.title}</a></li>
+      ))}
+      <li aria-current="page">{section.title}</li>
+    </ol>
+  </nav>
+  <article data-section-id={section.id}>
+    <h1>{section.title}</h1>
+    {gameClass && (
+      <dl class="class-stats">
+        <dt>Max HP</dt>
+        <dd>{gameClass.max_hp_base} + Constitution</dd>
+        <dt>Base damage</dt>
+        <dd>{gameClass.base_damage}</dd>
+        <dt>Load</dt>
+        <dd>{gameClass.load_base} + Str</dd>
+      </dl>
+    )}
+    {move && (
+      <p>
+        Move card: <a href={moveUrl(move.id)}>{move.name}</a>
+      </p>
+    )}
+    <Fragment set:html={renderMarkdown(section.text_markdown)} />
+    {children.length > 0 && (
+      <>
+        <h2>In this section</h2>
+        <ul>
+          {children.map((child) => (
+            <li><a href={sectionUrl(child.id)}>{child.title}</a></li>
+          ))}
+        </ul>
+      </>
+    )}
+  </article>
+  <nav aria-label="Previous and next">
+    {previous && <a href={sectionUrl(previous.id)}>← {previous.title}</a>}
+    {next && <a href={sectionUrl(next.id)}>{next.title} →</a>}
+  </nav>
+</BaseLayout>

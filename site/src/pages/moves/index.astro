@@ -1,0 +1,36 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { loadRulebook, type Move } from "../../lib/rulebook";
+import { moveUrl } from "../../lib/urls";
+
+const CATEGORY_ORDER = ["basic", "special", "class"] as const;
+const CATEGORY_HEADINGS: Record<Move["category"], string> = {
+  basic: "Basic moves",
+  special: "Special moves",
+  class: "Class moves",
+};
+
+const rb = loadRulebook();
+const groups = CATEGORY_ORDER.map((category) => ({
+  heading: CATEGORY_HEADINGS[category],
+  moves: rb.moves.filter((move) => move.category === category),
+})).filter((group) => group.moves.length > 0);
+---
+
+<BaseLayout title="Moves">
+  <h1>Moves</h1>
+  {
+    groups.map((group) => (
+      <>
+        <h2>{group.heading}</h2>
+        <ul>
+          {group.moves.map((move) => (
+            <li>
+              <a href={moveUrl(move.id)}>{move.name}</a> — {move.trigger}
+            </li>
+          ))}
+        </ul>
+      </>
+    ))
+  }
+</BaseLayout>

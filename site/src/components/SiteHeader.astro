@@ -1,0 +1,15 @@
+---
+import { HOME_URL, MOVES_INDEX_URL } from "../lib/urls";
+
+const pathname = Astro.url.pathname;
+const isHome = pathname === HOME_URL;
+const isMoves = pathname.startsWith(MOVES_INDEX_URL);
+---
+
+<header>
+  <a href={HOME_URL}>Dungeon World Companion</a>
+  <nav aria-label="Main">
+    <a href={HOME_URL} aria-current={isHome ? "page" : undefined}>Contents</a>
+    <a href={MOVES_INDEX_URL} aria-current={isMoves ? "page" : undefined}>Moves</a>
+  </nav>
+</header>

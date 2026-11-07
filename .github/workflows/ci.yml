@@ -24,7 +24,7 @@ jobs:
           submodules: true
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@v10
+        uses: astral-sh/setup-uv@v10.3.3
         with:
           enable-cache: true
 
@@ -68,3 +68,16 @@ jobs:
 
       - name: Type check
         run: npm run typecheck
+        env:
+          ASTRO_TELEMETRY_DISABLED: "1"
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+        env:
+          ASTRO_TELEMETRY_DISABLED: "1"
+
+      - name: Check links
+        run: npm run check-links
