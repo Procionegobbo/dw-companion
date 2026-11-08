@@ -1,0 +1,13 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ChatWidget from "../components/ChatWidget.astro";
+---
+
+<BaseLayout title="Assistant">
+  <h1>Rules assistant</h1>
+  <p>
+    Ask a rules question, or describe what your character does and I'll tell you which move it
+    triggers. Answers can be wrong: follow the links to check the rules.
+  </p>
+  <ChatWidget />
+</BaseLayout>

@@ -8,6 +8,7 @@ const MOVE_ID_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
 export const HOME_URL = "/";
 export const MOVES_INDEX_URL = "/moves/";
+export const ASSISTANT_URL = "/assistant/";
 
 export function sectionUrl(sectionId: string): string {
   if (!SECTION_ID_PATTERN.test(sectionId)) {

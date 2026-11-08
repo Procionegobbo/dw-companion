@@ -1,4 +1,5 @@
 import type { Stat } from "./rulebook";
+import type { Band } from "./chat/protocol";
 
 const SITE_NAME = "Dungeon World Companion";
 
@@ -32,4 +33,14 @@ export function categoryLabel(category: "basic" | "special" | "class"): string {
 export function pageTitle(title?: string): string {
   if (title === undefined) return `${SITE_NAME} (unofficial)`;
   return `${title} · ${SITE_NAME}`;
+}
+
+const BAND_LABELS: Record<Band, string> = {
+  strong_hit: "10+ (strong hit)",
+  weak_hit: "7–9 (weak hit)",
+  miss: "6- (miss)",
+};
+
+export function bandLabel(band: Band): string {
+  return BAND_LABELS[band];
 }

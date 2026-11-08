@@ -1,8 +1,9 @@
 """Turn input/output types and the LangGraph state shape (spec 006 Data Model).
 
-`TurnInput` is validated at construction (D18); the other types here hold no
+`TurnInput` is validated at construction (D18); most other types here hold no
 validation beyond what their own fields' types already guarantee, per the Data
 Model's *Validation Rules* table (which lists no extra rules for them).
+`NodeCompleted` (spec 008) is the one addition: its `node` must be non-empty.
 """
 
 from __future__ import annotations
@@ -88,6 +89,20 @@ class TurnResult:
     router_confidence: float | None
     classification: MoveClassification | None
     retrieved_section_ids: tuple[str, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class NodeCompleted:
+    """One executed graph node, yielded by `Assistant.stream` (spec 008 D4)."""
+
+    node: str
+
+    def __post_init__(self) -> None:
+        if not self.node.strip():
+            raise ValueError("invalid NodeCompleted: node must be non-empty")
+
+
+AssistantEvent = NodeCompleted | TurnResult
 
 
 class GraphState(TypedDict, total=False):

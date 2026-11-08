@@ -1,0 +1,46 @@
+---
+// Markup and client script for the rules assistant (spec 008 D15, "Page and component"). The
+// only script on the site; every other page stays script-free. `mountChatWidget` does all the
+// behaviour — this component only renders the static shell it wires up.
+import { MAX_MESSAGE_CHARS } from "../lib/chat/client";
+---
+
+<section id="chat" class="chat" aria-labelledby="chat-heading">
+  <h2 id="chat-heading" class="visually-hidden">Conversation</h2>
+  <ol id="chat-log" class="chat-log" role="log" aria-label="Conversation"></ol>
+  <p id="chat-status" class="chat-status" role="status"></p>
+  <form id="chat-form" novalidate>
+    <label for="chat-message">Your message</label>
+    <textarea
+      id="chat-message"
+      name="message"
+      rows="3"
+      maxlength={MAX_MESSAGE_CHARS}
+      required
+      aria-describedby="chat-count chat-message-error"></textarea>
+    <p id="chat-count" class="chat-count">0/{MAX_MESSAGE_CHARS}</p>
+    <p id="chat-message-error" class="chat-field-error" hidden></p>
+    <label><input type="checkbox" id="chat-roll" name="roll" /> Roll the dice for me</label>
+    <label for="chat-modifier">Modifier (optional)</label>
+    <input
+      type="number"
+      id="chat-modifier"
+      name="modifier"
+      min="-10"
+      max="10"
+      step="1"
+      inputmode="numeric"
+      disabled
+      aria-describedby="chat-modifier-error"
+    />
+    <p id="chat-modifier-error" class="chat-field-error" hidden></p>
+    <button type="submit" id="chat-submit">Ask</button>
+  </form>
+  <noscript>
+    <p>The assistant needs JavaScript. The rules pages work without it.</p>
+  </noscript>
+  <script>
+    import { mountChatWidget } from "../lib/chat/widget";
+    mountChatWidget();
+  </script>
+</section>

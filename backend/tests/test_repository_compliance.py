@@ -100,6 +100,10 @@ def test_env_example_declares_keys_without_values() -> None:
         "LANGFUSE_PUBLIC_KEY",
         "LANGFUSE_SECRET_KEY",
         "LANGFUSE_BASE_URL",
+        "CHAT_RATE_PER_MINUTE",
+        "CHAT_RATE_PER_DAY",
+        "CHAT_DAILY_BUDGET_USD",
+        "CHAT_TRUSTED_PROXY_HOPS",
     ]
     assert keys == expected_keys
     assert len(keys) == len(set(keys))

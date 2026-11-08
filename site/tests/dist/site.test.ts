@@ -112,4 +112,23 @@ describe("built site", () => {
       expect(html).toContain('id="main"');
     }
   });
+
+  it("assistant page renders the chat widget", () => {
+    const page = readDist(join("assistant", "index.html"));
+    expect(page).toContain('id="chat-form"');
+    expect(page).toContain('maxlength="500"');
+    expect(page).toContain('role="log"');
+    expect(page).toContain('role="status"');
+    expect(page).toContain('<label for="chat-message">');
+    expect(page).toContain("<script type=\"module\"");
+  });
+
+  it("header links the assistant on every page", () => {
+    const files = listHtmlFilesRecursive(DIST);
+    expect(files.length).toBeGreaterThan(0);
+    for (const file of files) {
+      const html = readFileSync(file, "utf-8");
+      expect(html).toContain('href="/assistant/"');
+    }
+  });
 });

@@ -25,3 +25,8 @@
 - [007-real-adapters-and-tracing-003-embedder-index-and-build-cli.md](COMPLETED/007-real-adapters-and-tracing-003-embedder-index-and-build-cli.md)
 - [007-real-adapters-and-tracing-004-hybrid-retriever.md](COMPLETED/007-real-adapters-and-tracing-004-hybrid-retriever.md)
 - [007-real-adapters-and-tracing-006-composition-root-chat-cli-and-docs.md](COMPLETED/007-real-adapters-and-tracing-006-composition-root-chat-cli-and-docs.md)
+- [008-api-and-chat-widget-001-graph-streaming-and-cost-metering.md](COMPLETED/008-api-and-chat-widget-001-graph-streaming-and-cost-metering.md)
+- [008-api-and-chat-widget-002-chat-api-core.md](COMPLETED/008-api-and-chat-widget-002-chat-api-core.md)
+- [008-api-and-chat-widget-004-chat-client-library.md](COMPLETED/008-api-and-chat-widget-004-chat-client-library.md)
+- [008-api-and-chat-widget-003-rate-limit-and-spend-cap.md](COMPLETED/008-api-and-chat-widget-003-rate-limit-and-spend-cap.md)
+- [008-api-and-chat-widget-005-assistant-page-and-widget.md](COMPLETED/008-api-and-chat-widget-005-assistant-page-and-widget.md)

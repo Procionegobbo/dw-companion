@@ -34,3 +34,46 @@ button:focus {
 .skip-link:focus {
   position: static;
 }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.chat-log {
+  list-style: none;
+  padding: 0;
+}
+
+.chat-user {
+  text-align: right;
+}
+
+.chat-assistant {
+  text-align: left;
+  border: 1px solid;
+  padding: 0.5rem;
+  margin-block: 0.5rem;
+}
+
+.chat-text p {
+  white-space: pre-line;
+}
+
+.chat-error {
+  border: 2px solid;
+}
+
+.move-card {
+  border: 1px solid;
+  padding: 0.5rem;
+  margin-block: 0.5rem;
+}
+
+.move-card .is-result {
+  font-weight: bold;
+}

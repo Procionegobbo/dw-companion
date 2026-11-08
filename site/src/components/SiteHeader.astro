@@ -1,9 +1,10 @@
 ---
-import { HOME_URL, MOVES_INDEX_URL } from "../lib/urls";
+import { ASSISTANT_URL, HOME_URL, MOVES_INDEX_URL } from "../lib/urls";
 
 const pathname = Astro.url.pathname;
 const isHome = pathname === HOME_URL;
 const isMoves = pathname.startsWith(MOVES_INDEX_URL);
+const isAssistant = pathname.startsWith(ASSISTANT_URL);
 ---
 
 <header>
@@ -11,5 +12,6 @@ const isMoves = pathname.startsWith(MOVES_INDEX_URL);
   <nav aria-label="Main">
     <a href={HOME_URL} aria-current={isHome ? "page" : undefined}>Contents</a>
     <a href={MOVES_INDEX_URL} aria-current={isMoves ? "page" : undefined}>Moves</a>
+    <a href={ASSISTANT_URL} aria-current={isAssistant ? "page" : undefined}>Assistant</a>
   </nav>
 </header>

@@ -46,6 +46,24 @@ Chat with the assistant from the command line:
 
 Add `--roll --modifier 1` to roll the triggered move.
 
+### Running the API and chat widget locally
+
+Configure `.env` as in ["Running the assistant locally"](#running-the-assistant-locally)
+above. The four `CHAT_*` keys (rate limits, daily spend cap, trusted proxy hops) are optional
+and default to the values described in `.env.example`.
+
+Start the API with a single worker (the rate limiter and spend ledger are in-memory, per
+process):
+
+    uv run --env-file .env uvicorn backend.api.app:create_app --factory --host 127.0.0.1 --port 8000 --no-access-log
+
+Health check:
+
+    curl http://127.0.0.1:8000/api/health
+
+In `site/`, run `npm run dev` and open <http://localhost:4321/assistant/>. Requests to `/api`
+are proxied to port 8000 by the Astro dev server.
+
 ## Attribution
 
 This project uses the text of **Dungeon World** by Sage LaTorra and Adam Koebel, from

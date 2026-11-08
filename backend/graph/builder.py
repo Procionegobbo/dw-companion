@@ -16,8 +16,8 @@ roll and the matched move is rolled, else `END`.
 
 from __future__ import annotations
 
-from collections.abc import Callable, Mapping
-from typing import Protocol, cast
+from collections.abc import AsyncIterator, Callable, Mapping, Sequence
+from typing import Final, Protocol, cast
 
 from langgraph.graph import END, START, StateGraph  # pyright: ignore[reportMissingTypeStubs]
 
@@ -37,13 +37,38 @@ from backend.graph.rules_branch import (
     make_citation_validator,
     make_retrieve,
 )
-from backend.graph.state import GraphState, TurnInput, TurnResult
+from backend.graph.state import (
+    AssistantEvent,
+    GraphState,
+    NodeCompleted,
+    TurnInput,
+    TurnResult,
+)
+
+_NODE_NAMES: Final = frozenset(
+    {
+        "router",
+        "out_of_scope",
+        "retrieve",
+        "answer_with_citations",
+        "citation_validator",
+        "classify_move",
+        "clarify",
+        "no_move",
+        "explain",
+        "roll",
+        "outcome",
+    }
+)
 
 
 class _Compiled(Protocol):
     """The slice of a compiled LangGraph's API `Assistant` relies on."""
 
     async def ainvoke(self, state: Mapping[str, object], /) -> object: ...
+    def astream(
+        self, state: Mapping[str, object], /, *, stream_mode: Sequence[str]
+    ) -> AsyncIterator[tuple[str, object]]: ...
 
 
 def _route_after_router(state: GraphState) -> str:
@@ -96,6 +121,21 @@ def _route_after_explain(state: GraphState) -> str:
     return END
 
 
+def _turn_result_from_state(state: GraphState) -> TurnResult:
+    reply = state.get("reply")
+    if reply is None:
+        raise RuntimeError("graph finished without a reply")
+
+    chunks = state.get("chunks", ())
+    return TurnResult(
+        reply=reply,
+        intent=state.get("intent"),
+        router_confidence=state.get("router_confidence"),
+        classification=state.get("classification"),
+        retrieved_section_ids=tuple(chunk.section_id for chunk in chunks),
+    )
+
+
 class Assistant:
     def __init__(self, compiled: object) -> None:
         self._compiled = compiled
@@ -104,19 +144,27 @@ class Assistant:
         compiled = cast(_Compiled, self._compiled)
         raw_state = await compiled.ainvoke({"turn": turn})
         state = cast(GraphState, raw_state) if raw_state else cast(GraphState, {})
+        return _turn_result_from_state(state)
 
-        reply = state.get("reply")
-        if reply is None:
-            raise RuntimeError("graph finished without a reply")
+    async def stream(self, turn: TurnInput) -> AsyncIterator[AssistantEvent]:
+        """Node-level progress then exactly one `TurnResult` (spec 008 D4).
 
-        chunks = state.get("chunks", ())
-        return TurnResult(
-            reply=reply,
-            intent=state.get("intent"),
-            router_confidence=state.get("router_confidence"),
-            classification=state.get("classification"),
-            retrieved_section_ids=tuple(chunk.section_id for chunk in chunks),
-        )
+        Confined to this module: it drives LangGraph's `astream` directly, the
+        only place in the codebase that does (open risk (c)).
+        """
+        compiled = cast(_Compiled, self._compiled)
+        latest_state: GraphState = cast(GraphState, {})
+        async for mode, chunk in compiled.astream(
+            {"turn": turn}, stream_mode=["updates", "values"]
+        ):
+            if mode == "updates":
+                update = cast(Mapping[str, object], chunk)
+                for name in update:
+                    if name in _NODE_NAMES:
+                        yield NodeCompleted(name)
+            elif mode == "values":
+                latest_state = cast(GraphState, chunk)
+        yield _turn_result_from_state(latest_state)
 
     @property
     def compiled(self) -> object:

@@ -20,6 +20,7 @@ from opentelemetry.sdk.trace.export import SpanExporter
 
 from backend.adapters.json_rulebook import JsonRulebookRepository
 from backend.adapters.langfuse_tracer import make_langfuse_tracer
+from backend.adapters.metered_llm import MeteredLLMClient
 from backend.adapters.null_tracer import NullTracer
 from backend.adapters.openrouter import (
     CHAT_TIMEOUT_S,
@@ -33,6 +34,7 @@ from backend.adapters.retrieval.index import load_index
 from backend.domain.dice import RandomSource
 from backend.graph.builder import Assistant, build_assistant
 from backend.graph.deps import GraphDeps
+from backend.ports.llm import LLMClient
 
 logger = logging.getLogger("backend.composition")
 
@@ -163,6 +165,7 @@ def build_runtime(
     http_client: httpx2.AsyncClient | None = None,
     span_exporter: SpanExporter | None = None,
     rng: RandomSource | None = None,
+    on_llm_cost: Callable[[float], None] | None = None,
 ) -> Runtime:
     index = load_index(index_dir)
     if index.manifest.embedding_model != settings.model_embeddings:
@@ -183,7 +186,7 @@ def build_runtime(
         http_client=http_client,
     )
 
-    llm = OpenRouterLLMClient(
+    llm: LLMClient = OpenRouterLLMClient(
         chat_client,
         {
             "router": settings.model_router,
@@ -191,6 +194,8 @@ def build_runtime(
             "answer": settings.model_answer,
         },
     )
+    if on_llm_cost is not None:
+        llm = MeteredLLMClient(llm, on_llm_cost)
     retriever = HybridRetriever(
         index, OpenRouterEmbedder(embeddings_client, settings.model_embeddings)
     )

@@ -346,6 +346,38 @@ def test_end_to_end_move_turn_with_roll(tmp_path: Path) -> None:
     assert result.reply.text.endswith("Rolled 4 + 5 + 1 = 10: 10+.")
 
 
+def test_build_runtime_meters_llm_cost_when_hook_given(tmp_path: Path) -> None:
+    index_dir, normalized_dir = _write_index(tmp_path)
+    responses = {
+        "m-router": json.dumps({"intent": "rules_question", "confidence": 0.9}),
+        "m-answer": "Hack and Slash lets you deal damage. [[moves/hack-and-slash]]",
+    }
+    handler, _bodies = _e2e_handler(responses)
+    http_client = mock_http(handler)
+    settings = Settings.from_env(_valid_env())
+    costs: list[float] = []
+
+    runtime = build_runtime(
+        settings,
+        index_dir=index_dir,
+        normalized_dir=normalized_dir,
+        http_client=http_client,
+        on_llm_cost=costs.append,
+    )
+    asyncio.run(
+        runtime.assistant.run(
+            TurnInput(
+                message="How does hack and slash work?",
+                session_id="s1",
+                trace_id=TRACE_A,
+            )
+        )
+    )
+    asyncio.run(runtime.aclose())
+
+    assert costs == [0.00042, 0.00042]
+
+
 def test_chat_cli_config_error_exit_2(capsys: pytest.CaptureFixture[str]) -> None:
     code = chat.main(["hi"], environ={})
 

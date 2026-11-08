@@ -137,3 +137,44 @@ The index build CLI (`python -m backend.adapters.retrieval.build`) is the only p
 after every embedding batch has succeeded. `python -m backend.chat` is the local verification
 path for milestone 6: it builds a `Runtime`, runs one turn, prints the reply, citations or move
 card and the trace/session ids, then flushes Langfuse traces before exiting.
+
+## API and chat widget
+
+A FastAPI app exposes the spec 006 assistant to the browser over Server-Sent Events, with every
+request passing through size, schema and length checks and a global spend cap and per-client
+rate limit before any LLM call (see ADR-015).
+
+```
+Browser /assistant/  (site/src/pages/assistant.astro → ChatWidget.astro → mountChatWidget)
+   │ fetch POST /api/chat  {message, roll, modifier, session_id}   Content-Type: application/json
+   │   dev: astro dev :4321 ──Vite proxy /api──▶ uvicorn :8000      prod: same container (spec 011)
+   ▼
+backend/api/app.py  POST /api/chat
+   415 content type ─▶ 413 body > 16 KiB ─▶ 422 schema / message ─▶ 503 budget ─▶ 429 rate limit
+   │ (all JSON {"error": {code, message}}, no LLM call)                 SpendLedger   RateLimiter
+   ▼ 200 text/event-stream                                                 ▲             (in-memory,
+Assistant.stream(TurnInput)  ── NodeCompleted ──▶ event: status {"step"}   │ record(cost) per process)
+   │ (spec 006 graph; LangGraph astream inside builder.py only)            │
+   │   LLMClient = MeteredLLMClient(OpenRouterLLMClient) ──────────────────┘ (spec 007 build_runtime
+   └─ TurnResult ──reply_payload──▶ event: reply {trace_id, kind, text, citations, move}   on_llm_cost hook)
+      timeout / bug ─────────────▶ event: error {code, message}
+GET /api/health ─▶ 200 {"status": "ok"}
+```
+
+`backend/api/` never imports `backend.adapters` or `langgraph`; no other backend package
+imports `fastapi`, `starlette` or `backend.api` (enforced by `test_api_layering.py`).
+
+| Module | Role |
+|--------|------|
+| `backend/api/settings.py` | `ApiSettings.from_env` and the `MAX_*`/`TURN_TIMEOUT_S` constants (D7-D14). |
+| `backend/api/limits.py` | `RateLimiter`, `SpendLedger`, `client_ip`, `ClientKeyer`, `seconds_until_utc_midnight` — the in-memory guards (D9-D12). |
+| `backend/api/schemas.py` | `ChatRequest`, `reply_payload`, `ApiError`. |
+| `backend/api/messages.py` | Fixed, server-authored rejection and error copy. |
+| `backend/api/sse.py` | `sse_event`, the one SSE frame formatter. |
+| `backend/api/app.py` | `create_app`: lifespan wiring, the guard chain, and the `/api/chat`/`/api/health` routes. |
+| `site/src/lib/chat/sse.ts` | `SseParser`/`readSse`: incremental WHATWG event-stream parsing of the fetch response body. |
+| `site/src/lib/chat/protocol.ts` | Zod schemas and types for the wire contract; validates every citation/move `url` against `urls.ts`. |
+| `site/src/lib/chat/client.ts` | `sendChat`: posts the request, maps SSE events and HTTP errors to a `ChatOutcome`. |
+| `site/src/lib/chat/copy.ts` | Fixed widget copy (status, error and validation strings). |
+| `site/src/lib/chat/render.ts` | Turns a validated reply into DOM nodes — citation links, sources list, move card — with no `innerHTML`. |
+| `site/src/lib/chat/widget.ts` | `mountChatWidget`: wires the form, counter, roll toggle and submit flow to `client.ts`/`render.ts`. |

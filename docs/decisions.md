@@ -620,3 +620,129 @@ replaced wholesale on each rebuild (acceptable at this corpus size). The chunk-s
 are unmeasured against the real data pin and are tunable in spec 010 once the build CLI's
 printed statistics are reviewed. BM25's lack of stemming is a deliberate trade-off that spec
 010 may revisit if eval recall shows term-form misses.
+
+## ADR-015: Chat API: SSE protocol, guardrails and in-memory limits
+
+Date: 2026-11-08
+Status: Accepted
+
+### Context
+
+Milestone 7 exposes the spec 006 assistant over HTTP so the browser widget can use it.
+Handoff 7 requires every LLM call to sit behind guardrails — a max input length, a global
+daily spend cap and a per-IP rate limit — checked before any model call, and forbids storing
+or logging raw visitor IPs. The assistant graph has no streaming hook and nothing aggregates
+per-call cost, so both had to be added first (`Assistant.stream`, `MeteredLLMClient`).
+
+### Decision
+
+**Three SSE event types on one stream**: `status {"step"}` after each graph node completes,
+`reply {trace_id, kind, text, citations, move}` once as the terminal event of a successful
+turn, `error {"code", "message"}` once as the terminal event of a failed turn. **No partial-
+token (`delta`) event**: spec 006's citation validator needs the complete answer before any
+of it can be shown, so raw tokens would surface unvalidated `[[id]]` markers and undermine the
+project's anti-hallucination signal. Clients ignore unknown event names, so a `delta` event can
+be added later without breaking the widget. Rejections *before* streaming starts are plain
+HTTP JSON (`{"error": {"code", "message"}}`), not SSE, since every guardrail decision is made
+before any LLM call and no stream needs to be opened; `429` and `503` carry `Retry-After`.
+
+**Guard order for `POST /api/chat`**: content type → body size (16 KiB, read incrementally) →
+JSON/schema → message length → global spend cap → per-client rate limit (which records the
+request) → stream. Rejected requests never reach the graph, and only a request that passes
+every guard counts against the rate limit — a request rejected by an earlier guard, including
+the spend cap, never touches the limiter.
+
+**Defaults**: `CHAT_RATE_PER_MINUTE=5` (sliding 60s window), `CHAT_RATE_PER_DAY=50` (per UTC
+day, checked first), `CHAT_DAILY_BUDGET_USD=1.00` (sum of provider-reported `cost_usd` for
+completed LLM calls in the current UTC day). When a response omits `cost_usd`,
+`MeteredLLMClient` counts a deliberately high `FALLBACK_CALL_COST_USD = 0.01` instead (logged
+once per process at WARNING) so an under-reporting provider exhausts the budget faster rather
+than bypassing it. At most `MAX_TRACKED_CLIENTS = 10000` rate-limiter keys are kept, least
+recently seen evicted first, bounding memory under an IP-rotation attack (backed up by the
+global spend cap regardless of key count).
+
+**Limits are in-memory and per-process — the only implementation in scope.** A restart or a
+second Cloud Run instance each start counting from zero, so daily spend can exceed the cap
+across instances. Three mitigations, none built here: spec 011's `max-instances=1`, owner
+billing alerts, and an OpenRouter per-key credit limit (an owner action). A shared store
+(Firestore, Redis) is a *Future Consideration* — out of scope for a demo, since it adds a
+paid or managed dependency and ops work. Python's single-threaded asyncio with no `await`
+between a limiter's check and its record means no locks are needed.
+
+**Client IP and trusted hops**: with `CHAT_TRUSTED_PROXY_HOPS = n` (default `0`), the client
+IP is the n-th entry from the right of `X-Forwarded-For`; with `n = 0`, or fewer than `n`
+entries, it is the socket peer address (`"unknown"` if none). Taking entries from the right
+ignores values a client prepends. Only the HMAC-derived key (`ClientKeyer`, a per-process
+random salt) is ever stored in the limiter or looked up — never the raw IP — and the API logs
+only rejection codes, trace ids and exception class names, never IPs or message text.
+
+**Dependencies**: `fastapi` — the API framework named in the project brief (handoff 4.1);
+typed request models and an ASGI app Cloud Run can serve. `uvicorn` — the standard ASGI server
+to run the app locally and in the container (spec 011). `starlette.testclient` (used for
+tests) is backed by `httpx2`, already installed transitively by `openai` (spec 007), so no new
+dev dependency was needed. FastAPI's native `EventSourceResponse` was not used in favour of a
+10-line SSE frame formatter, trivially unit-testable and independent of a recent FastAPI API.
+
+**Contract fixture**: `backend/tests/fixtures/chat_reply_examples.json` binds the backend's
+`reply_payload` and the frontend's protocol schema to the same exact JSON, so a backend test
+and a frontend test both assert against the one file.
+
+### Consequences
+
+The API adds no new infrastructure (no database, no managed rate-limit or billing service) at
+the cost of the stated per-process limitation, which must be closed before a sustained public
+launch (spec 011's open risk). The `MeteredLLMClient` wrapper keeps the graph and every other
+adapter unaware that a budget exists. Token-level streaming, shared limiter/ledger state and a
+cancel button remain *Future Considerations*.
+
+## ADR-016: Chat widget: vanilla island on /assistant/, same-origin fetch
+
+Date: 2026-11-08
+Status: Accepted
+
+### Context
+
+The chat API (ADR-015) needs a browser front end. Spec 004 chose an Astro site with no UI-
+framework integration, and handoff 4.5 says to "keep it light." The widget streams progress and
+a structured reply over SSE, must render LLM-authored text safely, and must follow spec 004's
+citation URL contract (`sectionUrl`/`moveUrl`) rather than build its own hrefs.
+
+### Decision
+
+**`fetch("/api/chat")` with the project's own SSE parser, not `EventSource`.** `EventSource`
+only issues GET requests with no body, and its automatic reconnection would silently re-send
+(and re-bill) a turn on a dropped connection. A relative, same-origin path needs no build-time
+API URL and no CORS; in development the Astro dev server proxies `/api` to the local FastAPI
+app (Vite `server.proxy`, `astro.config.ts`), reproducing the production same-origin layout
+(spec 011's single container) locally.
+
+**No UI framework.** Spec 004 adopted no React/Vue/Svelte integration, and one form plus a
+message list needs no framework. The widget is a single vanilla-TypeScript island: an Astro
+component (`ChatWidget.astro`) with a processed `<script>` that imports and calls
+`mountChatWidget()` and references no other globals.
+
+**A dedicated `/assistant/` page, linked from the header, with citation and move links opening
+in a new tab.** Every other page on this static site is a full navigation, so a widget present
+on every page would lose the conversation on every citation click. A dedicated page keeps the
+transcript alive for the length of the visit (no `sessionStorage` needed yet — a *Future
+Consideration*) and keeps every rules page script-free. New-tab links let a visitor follow a
+citation to check the rules without losing their place in the conversation.
+
+**Rendering is safe by construction.** All server-authored text (the reply, citation titles,
+move text) is placed with `textContent`/`createTextNode`, never `innerHTML` — enforced by
+`grep -rn "innerHTML" site/src/lib/chat` finding nothing. Every `href` is built from the
+schema-validated payload's own `url`, which the protocol schema requires to equal
+`sectionUrl(section_id)` or `moveUrl(move_id)` — the same builders every other page uses — so a
+payload cannot carry an arbitrary or `javascript:` href. `[[section_id]]` markers become
+numbered `[n]` links only for ids present in `citations`; unrecognised markers are dropped.
+
+**DOM tests use `happy-dom`** (a new `site/` devDependency), since escaping and link-building
+are security properties that need real DOM assertions, not just string matching. Pure modules
+(`sse.ts`, `protocol.ts`, `client.ts`) stay in the default `node` test environment.
+
+### Consequences
+
+The widget adds one script to one page and no client-side framework or build-time API URL.
+Reconnection, retries and a cancel button are left to the visitor retrying manually — a cancel
+button backed by `sendChat`'s existing `AbortSignal` support is a *Future Consideration*, as is
+persisting the transcript across same-tab navigation.

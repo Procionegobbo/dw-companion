@@ -1,0 +1,62 @@
+{
+  "rules_answer": {
+    "trace_id": "0123456789abcdef0123456789abcdef",
+    "kind": "rules_answer",
+    "text": "Deal your damage [[moves/hack-and-slash]].\n\nTo avoid a blow, Defy Danger [[moves/defy-danger]].",
+    "citations": [
+      {"section_id": "moves/hack-and-slash", "title": "Hack and Slash", "url": "/rules/moves/hack-and-slash/"},
+      {"section_id": "moves/defy-danger", "title": "Defy Danger", "url": "/rules/moves/defy-danger/"}
+    ],
+    "move": null
+  },
+  "rules_not_found": {
+    "trace_id": "11111111111111111111111111111111",
+    "kind": "rules_not_found",
+    "text": "I couldn't find this in the rules.",
+    "citations": [
+      {"section_id": "moves/last-breath", "title": "Last Breath", "url": "/rules/moves/last-breath/"}
+    ],
+    "move": null
+  },
+  "move_rolled_with_modifier": {
+    "trace_id": "22222222222222222222222222222222",
+    "kind": "move",
+    "text": "Attacking the goblin in melee triggers Hack and Slash.\n\nRolled 4 + 5 + 1 = 10: 10+.",
+    "citations": [],
+    "move": {
+      "move_id": "hack-and-slash",
+      "name": "Hack and Slash",
+      "url": "/moves/hack-and-slash/",
+      "trigger": "When you attack an enemy in melee",
+      "stat": "STR",
+      "roll_stat": "STR",
+      "outcomes": {"strong_hit": "On a 10+ you deal your damage.", "weak_hit": "On a 7-9 you deal your damage and the enemy attacks you.", "miss": null},
+      "roll": {"dice": [4, 5], "modifier": 1, "total": 10},
+      "outcome": {"band": "strong_hit", "text": "On a 10+ you deal your damage."},
+      "bands_by_modifier": []
+    }
+  },
+  "move_rolled_without_modifier": {
+    "trace_id": "33333333333333333333333333333333",
+    "kind": "move",
+    "text": "Leaping the chasm under fire triggers Defy Danger.\n\nRolled 3 + 5 = 8. Add your modifier: -3 to -2: 6-; -1 to +1: 7-9; +2 to +3: 10+.",
+    "citations": [],
+    "move": {
+      "move_id": "defy-danger",
+      "name": "Defy Danger",
+      "url": "/moves/defy-danger/",
+      "trigger": "When you act despite an imminent threat",
+      "stat": "VARIES",
+      "roll_stat": null,
+      "outcomes": {"strong_hit": "On a 10+, you do what you set out to.", "weak_hit": "On a 7-9, you stumble or hesitate.", "miss": null},
+      "roll": {"dice": [3, 5], "modifier": null, "total": null},
+      "outcome": null,
+      "bands_by_modifier": [
+        {"modifier": -3, "band": "miss"}, {"modifier": -2, "band": "miss"},
+        {"modifier": -1, "band": "weak_hit"}, {"modifier": 0, "band": "weak_hit"},
+        {"modifier": 1, "band": "weak_hit"}, {"modifier": 2, "band": "strong_hit"},
+        {"modifier": 3, "band": "strong_hit"}
+      ]
+    }
+  }
+}
