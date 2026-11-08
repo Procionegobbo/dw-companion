@@ -8,7 +8,9 @@ and every request asks for provider-reported cost (`usage.include`). Failures be
 
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
+import math
+from collections.abc import Collection, Mapping, Sequence
+from dataclasses import dataclass
 from typing import Final, cast
 
 import httpx2
@@ -22,6 +24,7 @@ from openai.types.chat import (
 )
 from openai.types.chat.completion_create_params import ResponseFormat
 from openai.types.completion_usage import CompletionUsage
+from openai.types.model import Model
 from openai.types.shared_params.response_format_json_schema import (
     JSONSchema,
     ResponseFormatJSONSchema,
@@ -196,3 +199,69 @@ class OpenRouterEmbedder:
                 f"openrouter embeddings request failed: {type(exc).__name__}"
             ) from exc
         return response.data
+
+
+@dataclass(frozen=True, slots=True)
+class ModelPrice:
+    """Per-token USD prices for one model (D8e/D10), read from OpenRouter's
+    `/models` response. Both fields must be finite and `>= 0` (spec 005 D11)."""
+
+    prompt_usd_per_token: float
+    completion_usd_per_token: float
+
+    def __post_init__(self) -> None:
+        for name in ("prompt_usd_per_token", "completion_usd_per_token"):
+            value = getattr(self, name)
+            if isinstance(value, bool) or not isinstance(value, int | float):
+                raise ValueError(f"invalid ModelPrice: {name} must be a float")
+            if not math.isfinite(value) or value < 0:
+                raise ValueError(f"invalid ModelPrice: {name} must be finite and >= 0")
+
+
+def _price_from_model(model: Model) -> ModelPrice | None:
+    """Reads `pricing` from pydantic `model_extra` (open risk b): the openai SDK's
+    `Model` type does not declare it, the same technique as `usage.cost`."""
+    extra = model.model_extra or {}
+    pricing = extra.get("pricing")
+    if not isinstance(pricing, Mapping):
+        return None
+    try:
+        prompt = float(cast(str, pricing["prompt"]))
+        completion = float(cast(str, pricing["completion"]))
+        return ModelPrice(prompt, completion)
+    except (KeyError, TypeError, ValueError):
+        return None
+
+
+async def fetch_model_prices(
+    client: AsyncOpenAI, model_ids: Collection[str]
+) -> dict[str, ModelPrice]:
+    """Fetches per-token prices for exactly `model_ids` from `GET /models` (D10).
+
+    Matches ids exactly. A model id absent from the response, or present with
+    missing/invalid `pricing`, raises `PortError`.
+    """
+    found: dict[str, ModelPrice] = {}
+    wanted = set(model_ids)
+    try:
+        async for model in client.models.list():
+            if model.id not in wanted or model.id in found:
+                continue
+            price = _price_from_model(model)
+            if price is not None:
+                found[model.id] = price
+    except openai.APIStatusError as exc:
+        raise PortError(
+            f"openrouter models request failed: {type(exc).__name__} "
+            f"(status {exc.status_code})"
+        ) from exc
+    except openai.APIError as exc:
+        raise PortError(
+            f"openrouter models request failed: {type(exc).__name__}"
+        ) from exc
+
+    for model_id in model_ids:
+        if model_id not in found:
+            raise PortError(f"openrouter pricing unavailable for {model_id}")
+
+    return found

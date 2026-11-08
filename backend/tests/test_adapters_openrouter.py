@@ -10,13 +10,16 @@ from __future__ import annotations
 import asyncio
 
 import httpx2
+import openai
 import pytest
 
 from backend.adapters.openrouter import (
     CHAT_TIMEOUT_S,
     EMBEDDINGS_TIMEOUT_S,
+    ModelPrice,
     OpenRouterEmbedder,
     OpenRouterLLMClient,
+    fetch_model_prices,
     make_openrouter_client,
 )
 from backend.adapters.retrieval.embedder import Embedder
@@ -28,6 +31,7 @@ from backend.tests.adapter_helpers import (
     chat_completion_json,
     embeddings_json,
     mock_http,
+    models_json,
 )
 
 MODELS: dict[ModelRole, str] = {
@@ -292,6 +296,78 @@ def test_embedder_empty_input_no_request() -> None:
 
     assert result == []
     assert handler.requests == []
+
+
+def _models_handler(body: dict[str, object], status: int = 200) -> SyncHandler:
+    def handler(request: httpx2.Request) -> httpx2.Response:
+        return httpx2.Response(status, json=body)
+
+    return handler
+
+
+def _models_client(handler: SyncHandler) -> openai.AsyncOpenAI:
+    http_client = mock_http(handler)
+    return make_openrouter_client(
+        "test-key", timeout=CHAT_TIMEOUT_S, http_client=http_client
+    )
+
+
+def test_fetch_model_prices_parses_extra_pricing() -> None:
+    handler = _models_handler(models_json({"m-a": ("0.000001", "0.000002")}))
+    client = _models_client(handler)
+
+    prices = asyncio.run(fetch_model_prices(client, ["m-a"]))
+
+    assert prices == {"m-a": ModelPrice(0.000001, 0.000002)}
+
+
+def test_fetch_model_prices_missing_model_port_error() -> None:
+    handler = _models_handler(models_json({"m-a": ("0.000001", "0.000002")}))
+    client = _models_client(handler)
+
+    with pytest.raises(PortError, match="openrouter pricing unavailable for m-missing"):
+        asyncio.run(fetch_model_prices(client, ["m-missing"]))
+
+
+@pytest.mark.parametrize(
+    "pricing",
+    [
+        None,
+        {"prompt": "abc", "completion": "0.000002"},
+        {"prompt": "-1", "completion": "0.000002"},
+    ],
+    ids=["missing", "non_numeric", "negative"],
+)
+def test_fetch_model_prices_invalid_pricing_port_error(
+    pricing: dict[str, str] | None,
+) -> None:
+    model: dict[str, object] = {
+        "id": "m-a",
+        "object": "model",
+        "created": 0,
+        "owned_by": "openrouter",
+    }
+    if pricing is not None:
+        model["pricing"] = pricing
+    handler = _models_handler({"object": "list", "data": [model]})
+    client = _models_client(handler)
+
+    with pytest.raises(PortError, match="openrouter pricing unavailable for m-a"):
+        asyncio.run(fetch_model_prices(client, ["m-a"]))
+
+
+def test_fetch_model_prices_http_error_port_error() -> None:
+    handler = _models_handler(
+        {"error": {"message": "server error", "type": "server_error"}}, status=500
+    )
+    client = _models_client(handler)
+
+    with pytest.raises(PortError) as exc_info:
+        asyncio.run(fetch_model_prices(client, ["m-a"]))
+
+    message = str(exc_info.value)
+    assert "(status 500)" in message
+    assert "test-key" not in message
 
 
 def test_adapters_satisfy_protocols() -> None:

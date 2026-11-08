@@ -12,6 +12,7 @@ import logging
 import re
 import time
 from collections import OrderedDict
+from collections.abc import Mapping, Sequence
 from contextlib import AbstractContextManager
 from typing import Final, Literal
 
@@ -55,10 +56,26 @@ def _trace_id_for(trace_id: str) -> str:
 
 
 class LangfuseTracer:
-    """Satisfies `ports.tracer.Tracer` by exporting observations to Langfuse."""
+    """Satisfies `ports.tracer.Tracer` by exporting observations to Langfuse.
 
-    def __init__(self, client: Langfuse) -> None:
+    `trace_name`, `static_metadata` and `static_tags` (D7/D8c) default to spec
+    007's exact behaviour: trace name `"chat_turn"`, no extra metadata or tags.
+    Every observation carries the static metadata/tags; once the router has run
+    for a trace, `"intent"`/`"intent:<x>"` are merged in on top of them.
+    """
+
+    def __init__(
+        self,
+        client: Langfuse,
+        *,
+        trace_name: str = "chat_turn",
+        static_metadata: Mapping[str, str] | None = None,
+        static_tags: Sequence[str] = (),
+    ) -> None:
         self._client = client
+        self._trace_name = trace_name
+        self._static_metadata = dict(static_metadata) if static_metadata else {}
+        self._static_tags = tuple(static_tags)
         self._intents: OrderedDict[str, str] = OrderedDict()
 
     def _remember_intent(self, trace_id: str, intent: str) -> None:
@@ -71,14 +88,28 @@ class LangfuseTracer:
         self, trace_id: str, session_id: str
     ) -> AbstractContextManager[object]:
         intent = self._intents.get(trace_id)
-        if intent is None:
-            return propagate_attributes(session_id=session_id, trace_name="chat_turn")
-        return propagate_attributes(
-            session_id=session_id,
-            trace_name="chat_turn",
-            metadata={"intent": intent},
-            tags=[f"intent:{intent}"],
-        )
+        metadata: dict[str, str] = dict(self._static_metadata)
+        tags: list[str] = list(self._static_tags)
+        if intent is not None:
+            metadata["intent"] = intent
+            tags.append(f"intent:{intent}")
+
+        if metadata and tags:
+            return propagate_attributes(
+                session_id=session_id,
+                trace_name=self._trace_name,
+                metadata=metadata,
+                tags=tags,
+            )
+        if metadata:
+            return propagate_attributes(
+                session_id=session_id, trace_name=self._trace_name, metadata=metadata
+            )
+        if tags:
+            return propagate_attributes(
+                session_id=session_id, trace_name=self._trace_name, tags=tags
+            )
+        return propagate_attributes(session_id=session_id, trace_name=self._trace_name)
 
     def record_node(self, trace: NodeTrace) -> None:
         try:
@@ -185,6 +216,9 @@ def make_langfuse_tracer(
     base_url: str,
     *,
     span_exporter: SpanExporter | None = None,
+    trace_name: str = "chat_turn",
+    static_metadata: Mapping[str, str] | None = None,
+    static_tags: Sequence[str] = (),
 ) -> LangfuseTracer:
     client = Langfuse(
         public_key=public_key,
@@ -192,4 +226,9 @@ def make_langfuse_tracer(
         base_url=base_url,
         span_exporter=span_exporter,
     )
-    return LangfuseTracer(client)
+    return LangfuseTracer(
+        client,
+        trace_name=trace_name,
+        static_metadata=static_metadata,
+        static_tags=static_tags,
+    )

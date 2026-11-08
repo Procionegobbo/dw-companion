@@ -17,6 +17,8 @@ PINNED_COMMIT = "e67bd51c09d24518a7f989149b76094fbcc7fecc"
 
 ENV_KEY_PATTERN = re.compile(r"^[A-Z][A-Z0-9_]*=$")
 
+SECRET_WORKFLOWS = frozenset({"evals.yml"})
+
 
 def _read(path: str) -> str:
     return (REPO_ROOT / path).read_text(encoding="utf-8")
@@ -118,6 +120,20 @@ def test_ci_workflows_reference_no_secrets() -> None:
     )
 
     for path in yaml_files:
+        if path.name in SECRET_WORKFLOWS:
+            continue
         assert "secrets." not in path.read_text(encoding="utf-8"), (
             f"{path.relative_to(REPO_ROOT)} must not reference secrets."
         )
+
+
+def test_secret_workflows_are_manual_only() -> None:
+    workflows_dir = REPO_ROOT / ".github" / "workflows"
+    for name in SECRET_WORKFLOWS:
+        path = workflows_dir / name
+        if not path.is_file():
+            continue
+        text = path.read_text(encoding="utf-8")
+        assert "workflow_dispatch" in text, f"{name} must trigger on workflow_dispatch"
+        for forbidden in ("pull_request", "push:", "schedule:"):
+            assert forbidden not in text, f"{name} must not contain {forbidden!r}"

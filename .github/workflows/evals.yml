@@ -1,0 +1,67 @@
+name: Evals
+
+on:
+  workflow_dispatch:
+    inputs:
+      config:
+        description: Eval config name (evals/configs/<name>.toml)
+        type: string
+        required: true
+        default: baseline
+      dataset:
+        description: Dataset to run
+        type: choice
+        options:
+          - all
+          - router
+          - rules_qa
+          - move_classification
+        default: all
+      budget_usd:
+        description: Hard budget guard, in USD
+        type: string
+        default: "3.00"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: evals
+  cancel-in-progress: false
+
+jobs:
+  evals:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v10
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --locked
+
+      - name: Run evals
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
+          LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
+          LANGFUSE_BASE_URL: ${{ vars.LANGFUSE_BASE_URL }}
+          EVAL_CONFIG: ${{ inputs.config }}
+          EVAL_DATASET: ${{ inputs.dataset }}
+          EVAL_BUDGET_USD: ${{ inputs.budget_usd }}
+        run: uv run python -m evals.run --config "$EVAL_CONFIG" --dataset "$EVAL_DATASET" --budget-usd "$EVAL_BUDGET_USD"
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: eval-report-${{ github.run_id }}
+          path: |
+            evals/reports/*.json
+            evals/reports/*.md
+          if-no-files-found: ignore

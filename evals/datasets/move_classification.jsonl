@@ -1,0 +1,86 @@
+{"id": "move-001", "message": "I swing my sword at the goblin standing right in front of me.", "expected_move_id": "hack-and-slash", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-002", "message": "I charge the orc and bring my axe down on its skull.", "expected_move_id": "hack-and-slash", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-003", "message": "I lunge at the bandit with my dagger drawn.", "expected_move_id": "hack-and-slash", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-004", "message": "I smash my warhammer into the skeleton's ribs.", "expected_move_id": "hack-and-slash", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-005", "message": "I close the distance and stab the cultist with my shortsword.", "expected_move_id": "hack-and-slash", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-006", "message": "I duck under the ogre's swinging club and drive my blade into its side.", "expected_move_id": "hack-and-slash", "acceptable_alternatives": ["defy-danger"], "reviewed": false}
+{"id": "move-007", "message": "I draw my bow and loose an arrow at the archer on the ramparts.", "expected_move_id": "volley", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-008", "message": "I take aim with my sling and fling a stone at the wolf across the clearing.", "expected_move_id": "volley", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-009", "message": "I nock an arrow and fire at the fleeing thief from a distance.", "expected_move_id": "volley", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-010", "message": "I throw my javelin at the ogre before it reaches us.", "expected_move_id": "volley", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-011", "message": "I aim my crossbow at the raider on the far side of the river.", "expected_move_id": "volley", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-012", "message": "I dive out of the way as the ceiling starts to collapse.", "expected_move_id": "defy-danger", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-013", "message": "I try to keep my footing as the rope bridge sways wildly over the chasm.", "expected_move_id": "defy-danger", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-014", "message": "I hold my breath and push through the flooded tunnel before my air runs out.", "expected_move_id": "defy-danger", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-015", "message": "I grit my teeth and resist the poison coursing through my veins.", "expected_move_id": "defy-danger", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-016", "message": "I try to pick the lock quickly before the guards round the corner.", "expected_move_id": "defy-danger", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-017", "message": "As the troll's club crashes toward me, I dive aside and slash it with my sword on the way down.", "expected_move_id": "defy-danger", "acceptable_alternatives": ["hack-and-slash"], "reviewed": false}
+{"id": "move-018", "message": "I plant myself in front of the fallen priest and raise my shield against the charging boar.", "expected_move_id": "defend", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-019", "message": "I stand between the wizard and the advancing skeletons to protect her.", "expected_move_id": "defend", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-020", "message": "I guard the chest of relics with my spear raised, daring anyone to get past me.", "expected_move_id": "defend", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-021", "message": "I block the doorway so the orcs can't get to the wounded scout behind me.", "expected_move_id": "defend", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-022", "message": "I shield the merchant's cart from the bandits' arrows with my body.", "expected_move_id": "defend", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-023", "message": "I try to recall what I know about the history of this ruined temple.", "expected_move_id": "spout-lore", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-024", "message": "I think back on everything I've read about dragons and their weaknesses.", "expected_move_id": "spout-lore", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-025", "message": "I rack my brain for anything I know about this strange heraldry on the banner.", "expected_move_id": "spout-lore", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-026", "message": "What do I know about the cult that worships the Black Gates?", "expected_move_id": "spout-lore", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-027", "message": "I search my memory for lore about these runes carved into the altar.", "expected_move_id": "spout-lore", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-028", "message": "I study the ancient mural, trying to recall what I know about the symbols while looking for anything out of place.", "expected_move_id": "spout-lore", "acceptable_alternatives": ["discern-realities"], "reviewed": false}
+{"id": "move-029", "message": "I carefully examine the room for anything unusual before we proceed.", "expected_move_id": "discern-realities", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-030", "message": "I study the bandit leader's face, trying to read his intentions.", "expected_move_id": "discern-realities", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-031", "message": "I look over the crime scene for clues about what happened here.", "expected_move_id": "discern-realities", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-032", "message": "I scan the horizon to see what's lurking beyond the treeline.", "expected_move_id": "discern-realities", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-033", "message": "I take a long look at the mechanism to figure out how the trap works.", "expected_move_id": "discern-realities", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-034", "message": "I examine the strange device closely, trying to recall anything I've read about devices like it.", "expected_move_id": "discern-realities", "acceptable_alternatives": ["spout-lore"], "reviewed": false}
+{"id": "move-035", "message": "I remind the corrupt sheriff that I know about his smuggling operation and ask him to let us pass.", "expected_move_id": "parley", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-036", "message": "I offer the goblin chief a share of our loot if he calls off the attack.", "expected_move_id": "parley", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-037", "message": "I lean on the merchant's debt to us and ask him to open the warehouse early.", "expected_move_id": "parley", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-038", "message": "I tell the captured knight we'll free him if he tells us where the key is.", "expected_move_id": "parley", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-039", "message": "I use the fact that I saved the duke's life to ask him for safe passage.", "expected_move_id": "parley", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-040", "message": "I rush to help Toren hold the line against the ogre.", "expected_move_id": "aid-or-interfere", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-041", "message": "I distract the guard so Mira can slip past him unseen.", "expected_move_id": "aid-or-interfere", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-042", "message": "I throw myself between my ally and the charging boar to protect her.", "expected_move_id": "aid-or-interfere", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-043", "message": "I try to trip the fleeing cultist so my friend can catch him.", "expected_move_id": "aid-or-interfere", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-044", "message": "I lend my strength to help Dez force the stuck door open.", "expected_move_id": "aid-or-interfere", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-045", "message": "My HP just dropped to zero after the troll's blow.", "expected_move_id": "last-breath", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-046", "message": "I've been reduced to 0 HP and everything is going dark.", "expected_move_id": "last-breath", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-047", "message": "I'm carrying way more gear than my load allows and I try to scale the wall anyway.", "expected_move_id": "encumbrance", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-048", "message": "Loaded down with the chest of gold on top of my normal gear, I attempt to sprint from the guards.", "expected_move_id": "encumbrance", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-049", "message": "We stop for the night and set up camp in the forest.", "expected_move_id": "make-camp", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-050", "message": "We settle in to rest here, eat a ration, and post a watch.", "expected_move_id": "make-camp", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-051", "message": "I'm on watch by the fire when I hear footsteps approaching the camp.", "expected_move_id": "take-watch", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-052", "message": "While keeping watch over the sleeping party, something starts creeping toward our camp.", "expected_move_id": "take-watch", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-053", "message": "We set out across the Ashlands, a hostile stretch of territory, heading for the ruined keep.", "expected_move_id": "undertake-a-perilous-journey", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-054", "message": "The party treks through the hostile swamp toward the old temple, assigning roles for the journey.", "expected_move_id": "undertake-a-perilous-journey", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-055", "message": "I've got enough XP and some downtime, so I want to level up my character.", "expected_move_id": "level-up", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-056", "message": "After the session, with XP equal to my level plus seven and some free time, I take a new advanced move.", "expected_move_id": "level-up", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-057", "message": "We've reached the end of tonight's session, so let's resolve bonds and check alignment.", "expected_move_id": "end-of-session", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-058", "message": "That wraps up our session—time to see if we learned something new or looted a memorable treasure.", "expected_move_id": "end-of-session", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-059", "message": "We won big tonight—let's throw a huge party in town and spend some coin celebrating.", "expected_move_id": "carouse", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-060", "message": "Triumphant from the dungeon, I spend 100 coin throwing a wild party at the tavern.", "expected_move_id": "carouse", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-061", "message": "I head to the market to buy a rare alchemical reagent with the gold I'm carrying.", "expected_move_id": "supply", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-062", "message": "I go looking to purchase a masterwork blade with the coin on hand.", "expected_move_id": "supply", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-063", "message": "I spend the next few days resting safely in the inn, doing nothing but recuperating.", "expected_move_id": "recover", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-064", "message": "We hole up in the safehouse for a day of pure rest to heal up.", "expected_move_id": "recover", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-065", "message": "I put out word around town that I'm looking to hire some sellswords for the expedition.", "expected_move_id": "recruit", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-066", "message": "I spread word in the tavern that I need hired help and I'm paying well.", "expected_move_id": "recruit", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-067", "message": "We're heading back into the city where I caused that huge brawl last time.", "expected_move_id": "outstanding-warrants", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-068", "message": "I return to the town where the guards still remember the mess I made months ago.", "expected_move_id": "outstanding-warrants", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-069", "message": "I spend the next month in quiet meditation, preparing myself for what's to come.", "expected_move_id": "bolster", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-070", "message": "I dedicate a week of downtime to hard practice with my blade.", "expected_move_id": "bolster", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-071", "message": "My character's name is Lyra and she grew up in a fishing village.", "expected_move_id": "no_move", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-072", "message": "Can you remind me how many players are usually in a Dungeon World group?", "expected_move_id": "no_move", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-073", "message": "I just want to describe walking down the quiet, empty hallway.", "expected_move_id": "no_move", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-074", "message": "I sit by the fire and tell the others a joke to lighten the mood.", "expected_move_id": "no_move", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-075", "message": "What does my character's starting gear look like on the sheet?", "expected_move_id": "no_move", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-076", "message": "I take a moment to admire the sunset over the hills.", "expected_move_id": "no_move", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-077", "message": "I ask the GM what day of the week it is in the game world.", "expected_move_id": "no_move", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-078", "message": "I doodle a little sketch of my character in my notebook.", "expected_move_id": "no_move", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-079", "message": "I greet the innkeeper and ask for a room for the night.", "expected_move_id": "no_move", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-080", "message": "I organize my backpack while we wait for the others to arrive.", "expected_move_id": "no_move", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-081", "message": "I hum a tune while we walk along the familiar road home.", "expected_move_id": "no_move", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-082", "message": "I ask my fellow player what their character's bond says.", "expected_move_id": "no_move", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-083", "message": "I stretch my legs after sitting for so long at the table.", "expected_move_id": "no_move", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-084", "message": "I wave to the farmer tending his field as we pass by.", "expected_move_id": "no_move", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-085", "message": "I check the time to see how long we've been playing tonight.", "expected_move_id": "no_move", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-086", "message": "I compliment the bard on her choice of song.", "expected_move_id": "no_move", "acceptable_alternatives": [], "reviewed": false}

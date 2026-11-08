@@ -11,15 +11,19 @@ from pathlib import Path
 from uuid import uuid4
 
 import httpx2
+import openai
 import pytest
 from opentelemetry.sdk.trace.export.in_memory_span_exporter import (
     InMemorySpanExporter,
 )
 
 from backend import chat
+from backend.adapters.null_tracer import NullTracer
+from backend.adapters.openrouter import ModelPrice
 from backend.adapters.retrieval.bm25 import tokenize
 from backend.adapters.retrieval.chunking import build_chunks
 from backend.adapters.retrieval.index import write_index
+from backend.adapters.tee_tracer import TeeTracer
 from backend.composition import (
     ENV_VARS,
     REPO_ROOT,
@@ -27,22 +31,28 @@ from backend.composition import (
     LangfuseSettings,
     Runtime,
     Settings,
+    TraceOptions,
+    build_eval_support,
     build_runtime,
 )
 from backend.domain.rulebook import move_from_dict, section_from_dict
+from backend.graph.deps import GraphSettings
 from backend.graph.state import TurnInput
 from backend.ports.errors import PortError
+from backend.ports.llm import LLMRequest
 from backend.tests.adapter_helpers import (
     SyncHandler,
     chat_completion_json,
     embeddings_json,
     mini_normalized,
     mock_http,
+    models_json,
 )
 from backend.tests.domain_helpers import ScriptedRandom
 from backend.tests.fakes.embedder import FakeEmbedder
 from backend.tests.fakes.llm import FakeLLMClient
 from backend.tests.fakes.retriever import FakeRetriever
+from backend.tests.fakes.tracer import FakeTracer
 from backend.tests.graph_helpers import chunk as fake_chunk
 from backend.tests.graph_helpers import make_assistant, router_json
 
@@ -376,6 +386,174 @@ def test_build_runtime_meters_llm_cost_when_hook_given(tmp_path: Path) -> None:
     asyncio.run(runtime.aclose())
 
     assert costs == [0.00042, 0.00042]
+
+
+def _rules_turn_runtime(
+    tmp_path: Path, **build_runtime_kwargs: object
+) -> tuple[Runtime, object]:
+    """Builds a runtime over the spec 007 mock-transport rules-turn setup, with no
+    Langfuse keys (D8 additions only), for the composition seam tests."""
+    index_dir, normalized_dir = _write_index(tmp_path)
+    responses = {
+        "m-router": json.dumps({"intent": "rules_question", "confidence": 0.9}),
+        "m-answer": "Hack and Slash lets you deal damage. [[moves/hack-and-slash]]",
+    }
+    handler, bodies = _e2e_handler(responses)
+    http_client = mock_http(handler)
+    settings = Settings.from_env(_valid_env())
+
+    runtime = build_runtime(
+        settings,
+        index_dir=index_dir,
+        normalized_dir=normalized_dir,
+        http_client=http_client,
+        **build_runtime_kwargs,  # type: ignore[arg-type]
+    )
+    return runtime, bodies
+
+
+def test_build_runtime_defaults_unchanged(tmp_path: Path) -> None:
+    runtime, _bodies = _rules_turn_runtime(tmp_path)
+
+    assert isinstance(runtime.tracer, NullTracer)
+
+    result = asyncio.run(
+        runtime.assistant.run(
+            TurnInput(
+                message="How does hack and slash work?",
+                session_id="s1",
+                trace_id=TRACE_A,
+            )
+        )
+    )
+    asyncio.run(runtime.aclose())
+
+    assert len(result.retrieved_section_ids) == GraphSettings().retrieval_k
+
+
+def test_build_runtime_graph_settings_applied(tmp_path: Path) -> None:
+    runtime, _bodies = _rules_turn_runtime(
+        tmp_path, graph_settings=GraphSettings(retrieval_k=3)
+    )
+
+    result = asyncio.run(
+        runtime.assistant.run(
+            TurnInput(
+                message="How does hack and slash work?",
+                session_id="s1",
+                trace_id=TRACE_A,
+            )
+        )
+    )
+    asyncio.run(runtime.aclose())
+
+    assert len(result.retrieved_section_ids) == 3
+
+
+def test_build_runtime_tracer_tap_receives_records(tmp_path: Path) -> None:
+    tap = FakeTracer()
+    runtime, _bodies = _rules_turn_runtime(tmp_path, tracer_tap=tap)
+
+    assert isinstance(runtime.tracer, TeeTracer)
+
+    asyncio.run(
+        runtime.assistant.run(
+            TurnInput(
+                message="How does hack and slash work?",
+                session_id="s1",
+                trace_id=TRACE_A,
+            )
+        )
+    )
+    asyncio.run(runtime.aclose())
+
+    assert tap.nodes
+    assert tap.generations
+
+
+@pytest.mark.parametrize(
+    "kwargs",
+    [
+        {"trace_name": "Eval-Turn"},
+        {"metadata": {"eval-config": "x"}},
+        {"metadata": {"intent": "x"}},
+        {"metadata": {"k": "x" * 201}},
+        {"tags": ("",)},
+        {"tags": ("x" * 201,)},
+        {"tags": ("intent:foo",)},
+    ],
+    ids=[
+        "bad_trace_name",
+        "bad_metadata_key",
+        "reserved_intent_key",
+        "metadata_value_too_long",
+        "empty_tag",
+        "tag_too_long",
+        "tag_starts_with_intent",
+    ],
+)
+def test_trace_options_validation(kwargs: dict[str, object]) -> None:
+    with pytest.raises(ValueError, match="invalid TraceOptions"):
+        TraceOptions(**kwargs)  # type: ignore[arg-type]
+
+
+def test_build_eval_support_judge_and_prices(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    requests: list[dict[str, object]] = []
+
+    def handler(request: httpx2.Request) -> httpx2.Response:
+        if request.url.path.endswith("/models"):
+            return httpx2.Response(
+                200,
+                json=models_json(
+                    {
+                        "m-router": ("0.000001", "0.000002"),
+                        "m-judge": ("0.000003", "0.000004"),
+                    }
+                ),
+            )
+        body = json.loads(request.content)
+        requests.append(body)
+        return httpx2.Response(
+            200, json=chat_completion_json("ok", model=body["model"])
+        )
+
+    http_client = mock_http(handler)
+    settings = Settings.from_env(_valid_env())
+
+    close_calls = {"n": 0}
+    original_close = openai.AsyncOpenAI.close
+
+    async def counting_close(self: openai.AsyncOpenAI) -> None:
+        close_calls["n"] += 1
+        await original_close(self)
+
+    monkeypatch.setattr(openai.AsyncOpenAI, "close", counting_close)
+
+    support = asyncio.run(
+        build_eval_support(
+            settings, "m-judge", ["m-router", "m-judge"], http_client=http_client
+        )
+    )
+    asyncio.run(
+        support.judge.generate(
+            LLMRequest(
+                role="answer", system="s", user="u", max_tokens=10, temperature=0.0
+            )
+        )
+    )
+
+    assert requests[0]["model"] == "m-judge"
+    assert support.prices == {
+        "m-router": ModelPrice(0.000001, 0.000002),
+        "m-judge": ModelPrice(0.000003, 0.000004),
+    }
+
+    asyncio.run(support.aclose())
+    asyncio.run(support.aclose())
+
+    assert close_calls["n"] == 1
 
 
 def test_chat_cli_config_error_exit_2(capsys: pytest.CaptureFixture[str]) -> None:

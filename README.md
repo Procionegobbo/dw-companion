@@ -64,6 +64,17 @@ Health check:
 In `site/`, run `npm run dev` and open <http://localhost:4321/assistant/>. Requests to `/api`
 are proxied to port 8000 by the Astro dev server.
 
+### Running evals
+
+Dataset labels are owner-reviewed — see [`evals/README.md`](evals/README.md) for the labelling
+rule and the review procedure. No number from a run is meaningful before that review.
+
+    make eval
+    make eval CONFIG=<name> DATASET=router BUDGET=1.50
+
+The manual "Evals" GitHub Actions workflow runs the same command, with repository secrets, on
+demand (`workflow_dispatch`).
+
 ## Attribution
 
 This project uses the text of **Dungeon World** by Sage LaTorra and Adam Koebel, from

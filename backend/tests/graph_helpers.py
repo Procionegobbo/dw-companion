@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import json
 from collections.abc import Callable, Sequence
+from typing import overload
 
 from backend.domain.dice import RandomSource
 from backend.domain.rulebook import AbilityStat, Move, move_from_dict
@@ -22,6 +23,7 @@ from backend.graph.state import TurnInput
 from backend.ports.llm import LLMClient
 from backend.ports.retriever import ChunkType, RetrievedChunk, Retriever
 from backend.ports.rulebook import RulebookRepository
+from backend.ports.tracer import Tracer
 from backend.tests.domain_helpers import (
     DEFY_DANGER,
     DISCERN_REALITIES,
@@ -101,6 +103,7 @@ def _fake_clock() -> Callable[[], float]:
     return clock
 
 
+@overload
 def make_assistant(
     llm: LLMClient,
     *,
@@ -109,7 +112,30 @@ def make_assistant(
     rng: RandomSource | None = None,
     tracer: FakeTracer | None = None,
     settings: GraphSettings | None = None,
-) -> tuple[Assistant, FakeTracer]:
+) -> tuple[Assistant, FakeTracer]: ...
+
+
+@overload
+def make_assistant(
+    llm: LLMClient,
+    *,
+    retriever: Retriever | None = None,
+    rulebook: RulebookRepository | None = None,
+    rng: RandomSource | None = None,
+    tracer: Tracer,
+    settings: GraphSettings | None = None,
+) -> tuple[Assistant, Tracer]: ...
+
+
+def make_assistant(
+    llm: LLMClient,
+    *,
+    retriever: Retriever | None = None,
+    rulebook: RulebookRepository | None = None,
+    rng: RandomSource | None = None,
+    tracer: Tracer | None = None,
+    settings: GraphSettings | None = None,
+) -> tuple[Assistant, Tracer]:
     resolved_tracer = tracer if tracer is not None else FakeTracer()
     deps = GraphDeps(
         llm=llm,

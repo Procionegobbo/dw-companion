@@ -12,16 +12,20 @@ from __future__ import annotations
 import json
 import logging
 from collections.abc import Mapping
+from uuid import uuid4
 
 import pytest
 from langfuse import Langfuse
 from opentelemetry.sdk.trace import ReadableSpan
+from opentelemetry.sdk.trace.export.in_memory_span_exporter import (
+    InMemorySpanExporter,
+)
 
-from backend.adapters.langfuse_tracer import LangfuseTracer
+from backend.adapters.langfuse_tracer import LangfuseTracer, make_langfuse_tracer
 from backend.adapters.null_tracer import NullTracer
 from backend.ports.llm import LLMRequest, LLMResponse
 from backend.ports.tracer import GenerationTrace, NodeTrace, TraceEvent, Tracer
-from backend.tests.adapter_helpers import memory_tracer
+from backend.tests.adapter_helpers import memory_exporter, memory_tracer
 
 TRACE_A = "ab" * 16
 TRACE_B = "cd" * 16
@@ -69,6 +73,12 @@ def _response(**overrides: object) -> LLMResponse:
 
 def _metadata(attrs: Mapping[str, object], key: str) -> object:
     raw = attrs[f"langfuse.observation.metadata.{key}"]
+    assert isinstance(raw, str)
+    return json.loads(raw)
+
+
+def _trace_metadata(attrs: Mapping[str, object], key: str) -> object:
+    raw = attrs[f"langfuse.trace.metadata.{key}"]
     assert isinstance(raw, str)
     return json.loads(raw)
 
@@ -371,6 +381,106 @@ def test_null_tracer_accepts_everything() -> None:
     )
     assert tracer.flush() is None
     assert tracer.close() is None
+
+
+def _tracer_with_options(
+    *,
+    trace_name: str = "chat_turn",
+    static_metadata: Mapping[str, str] | None = None,
+    static_tags: tuple[str, ...] = (),
+) -> tuple[LangfuseTracer, InMemorySpanExporter]:
+    exporter = memory_exporter()
+    tracer = make_langfuse_tracer(
+        f"pk-test-{uuid4().hex}",
+        "sk-test",
+        "https://langfuse.invalid",
+        span_exporter=exporter,
+        trace_name=trace_name,
+        static_metadata=static_metadata,
+        static_tags=static_tags,
+    )
+    return tracer, exporter
+
+
+def test_default_options_unchanged() -> None:
+    tracer, exporter = _tracer_with_options()
+
+    tracer.record_node(
+        NodeTrace(
+            trace_id=TRACE_A,
+            session_id="s1",
+            node="retrieve",
+            latency_ms=1.0,
+            attributes={},
+        )
+    )
+    tracer.flush()
+
+    span = exporter.get_finished_spans()[0]
+    attrs = _attrs(span)
+    assert attrs["langfuse.trace.name"] == "chat_turn"
+    assert not any(key.startswith("langfuse.trace.metadata.") for key in attrs)
+    assert "langfuse.trace.tags" not in attrs
+
+
+def test_static_metadata_and_tags_on_every_observation() -> None:
+    tracer, exporter = _tracer_with_options(
+        static_metadata={"eval_config": "baseline"},
+        static_tags=("eval", "config:baseline"),
+    )
+
+    tracer.record_node(
+        NodeTrace(
+            trace_id=TRACE_A,
+            session_id="s1",
+            node="router",
+            latency_ms=1.0,
+            attributes={"intent": "rules_question"},
+        )
+    )
+    tracer.record_node(
+        NodeTrace(
+            trace_id=TRACE_A,
+            session_id="s1",
+            node="retrieve",
+            latency_ms=1.0,
+            attributes={"count": 1},
+        )
+    )
+    tracer.flush()
+
+    spans = {span.name: span for span in exporter.get_finished_spans()}
+
+    router_attrs = _attrs(spans["router"])
+    assert _trace_metadata(router_attrs, "eval_config") == "baseline"
+    assert "eval" in router_attrs["langfuse.trace.tags"]  # type: ignore[operator]
+    assert "config:baseline" in router_attrs["langfuse.trace.tags"]  # type: ignore[operator]
+
+    retrieve_attrs = _attrs(spans["retrieve"])
+    assert _trace_metadata(retrieve_attrs, "eval_config") == "baseline"
+    assert _trace_metadata(retrieve_attrs, "intent") == "rules_question"
+    tags = retrieve_attrs["langfuse.trace.tags"]
+    assert "eval" in tags  # type: ignore[operator]
+    assert "config:baseline" in tags  # type: ignore[operator]
+    assert "intent:rules_question" in tags  # type: ignore[operator]
+
+
+def test_custom_trace_name() -> None:
+    tracer, exporter = _tracer_with_options(trace_name="eval_turn")
+
+    tracer.record_node(
+        NodeTrace(
+            trace_id=TRACE_A,
+            session_id="s1",
+            node="retrieve",
+            latency_ms=1.0,
+            attributes={},
+        )
+    )
+    tracer.flush()
+
+    span = exporter.get_finished_spans()[0]
+    assert _attrs(span)["langfuse.trace.name"] == "eval_turn"
 
 
 def test_tracers_satisfy_protocol() -> None:

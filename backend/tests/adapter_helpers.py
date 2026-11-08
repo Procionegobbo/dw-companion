@@ -1,4 +1,5 @@
-"""Shared test helpers for the adapter tests (spec 007 Testing).
+"""Shared test helpers for the adapter tests (spec 007 Testing; spec 009 D8/D10 adds
+`memory_exporter` and `models_json`).
 
 HTTP parts (`mock_http`, `chat_completion_json`, `RecordingHandler`), `mini_normalized`
 (the small committed-data-shaped fixture used by the chunking and retrieval tests),
@@ -8,6 +9,7 @@ used by `test_adapters_hybrid.py`. Not collected by pytest (no `test_` prefix).
 
 from __future__ import annotations
 
+import hashlib
 import json
 from collections.abc import Callable, Mapping, Sequence
 from pathlib import Path
@@ -20,6 +22,7 @@ from opentelemetry.sdk.trace.export.in_memory_span_exporter import (
 )
 
 from backend.adapters.langfuse_tracer import LangfuseTracer, make_langfuse_tracer
+from backend.adapters.retrieval.bm25 import tokenize
 from backend.tests.domain_helpers import (
     DEFY_DANGER,
     DISCERN_REALITIES,
@@ -259,6 +262,83 @@ class ScriptedEmbedder:
                 raise AssertionError(f"ScriptedEmbedder: unmapped text {text!r}")
             results.append(list(self._vectors[text]))
         return results
+
+
+def memory_exporter() -> InMemorySpanExporter:
+    """A fresh in-memory span exporter, for tests that need to pass `trace_name`,
+    `static_metadata` or `static_tags` to `make_langfuse_tracer` directly (spec 009
+    D8c), which `memory_tracer()` does not expose."""
+    return InMemorySpanExporter()
+
+
+def models_json(prices: Mapping[str, tuple[str, str]]) -> dict[str, object]:
+    """An OpenRouter-shaped `GET /models` response body (spec 009 D10), with
+    string `pricing.prompt`/`pricing.completion` per model id."""
+    return {
+        "object": "list",
+        "data": [
+            {
+                "id": model_id,
+                "object": "model",
+                "created": 0,
+                "owned_by": "openrouter",
+                "pricing": {"prompt": prompt, "completion": completion},
+            }
+            for model_id, (prompt, completion) in prices.items()
+        ],
+    }
+
+
+def fake_embedding_vector(text: str, dim: int = 64) -> list[float]:
+    """Mirrors `FakeEmbedder`'s hashed bag-of-words algorithm, so a mocked
+    `/embeddings` endpoint can return vectors matching a `FakeEmbedder`-built
+    index (spec 009 D16's CLI wiring test; same technique as `VectorStubEmbedder`
+    above, exposed directly here so callers outside `backend/` - which may not
+    import `httpx2` themselves - can still build a consistent mock transport via
+    `mock_openrouter_transport`)."""
+    vector = [0.0] * dim
+    for token in tokenize(text):
+        index = int(hashlib.sha256(token.encode("utf-8")).hexdigest(), 16)
+        vector[index % dim] += 1.0
+    if all(value == 0.0 for value in vector):
+        vector[0] = 1.0
+    return vector
+
+
+def mock_openrouter_transport(
+    *,
+    prices: Mapping[str, tuple[str, str]],
+    chat_response: Callable[[str, Mapping[str, object]], str],
+    embedding_dim: int = 64,
+) -> tuple[SyncHandler, list[dict[str, object]]]:
+    """A `mock_http` handler answering OpenRouter's `GET /models`, `POST
+    /embeddings` and `POST /chat/completions` (spec 009 D16's CLI wiring test).
+    `/models` replies from `prices` (`models_json`); `/embeddings` replies with
+    `fake_embedding_vector`s, matching a `FakeEmbedder`-built index; `/chat/
+    completions` replies with `chat_response(model, body)`'s text. Returns the
+    handler and the list of every chat completion request body, in order - so
+    a caller that must not import `httpx2` directly (evals/ never does, D8)
+    can still build and inspect a full mock transport."""
+    requests: list[dict[str, object]] = []
+
+    def handler(request: httpx2.Request) -> httpx2.Response:
+        if request.url.path.endswith("/models"):
+            return httpx2.Response(200, json=models_json(prices))
+        if request.url.path.endswith("/embeddings"):
+            body = json.loads(request.content)
+            vectors = [
+                fake_embedding_vector(text, embedding_dim) for text in body["input"]
+            ]
+            return httpx2.Response(
+                200, json=embeddings_json(vectors, model=body["model"])
+            )
+        body = json.loads(request.content)
+        requests.append(body)
+        model = body["model"]
+        content = chat_response(model, body)
+        return httpx2.Response(200, json=chat_completion_json(content, model=model))
+
+    return handler, requests
 
 
 def memory_tracer() -> tuple[LangfuseTracer, InMemorySpanExporter]:

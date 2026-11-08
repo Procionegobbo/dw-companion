@@ -1,0 +1,13 @@
+# Baseline eval config. Models are spec 007's provisional choices; spec 010 replaces them with measured ones.
+# The judge must differ from the answer model (handoff 6.2).
+[models]
+router = "openai/gpt-4.1-nano"
+classifier = "openai/gpt-4.1-nano"
+answer = "openai/gpt-4.1-mini"
+embeddings = "openai/text-embedding-3-small"
+judge = "anthropic/claude-haiku-5.5"
+
+# Any spec 006 GraphSettings field; omitted fields keep their defaults.
+[graph]
+retrieval_k = 6
+clarify_threshold = 0.6
