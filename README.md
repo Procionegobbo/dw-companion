@@ -2,7 +2,35 @@
 
 An unofficial Dungeon World rules site with an AI assistant for players and GMs at the table.
 
-> Status: under construction.
+## Project status
+
+Implemented:
+
+- **Rulebook site** — the Dungeon World rulebook is parsed into normalized sections, moves and
+  classes data, and published as a static Astro site (rules pages, move pages, home, 404).
+- **AI assistant** — a LangGraph assistant routes a question to a rules answer (with citations
+  back to the source section), a move lookup (classify/clarify/roll/outcome), or an
+  out-of-scope reply. Retrieval is hybrid (BM25 + vector, fused with RRF) over the rulebook
+  text; LLM calls go through OpenRouter, with Langfuse tracing.
+- **Chat API and widget** — a FastAPI endpoint streams the assistant's reply over SSE, with
+  per-call cost metering, per-client rate limits and a daily spend cap. A vanilla-JS widget on
+  `/assistant/` renders replies with citation links and move cards.
+- **Evaluation harness** — eval datasets go through an owner-review gate (`"reviewed": true`
+  row by row) before any run can use them; a budget-capped runner judges rules answers against
+  expected key facts and produces metrics/report files. Owner review of the drafted datasets
+  is still pending, so no report has been run for real yet.
+
+Not started yet: model-tuning comparisons, a Cloud Run deployment, and a final README/launch
+pass.
+
+## How this is built
+
+This project is built with a spec-to-code pipeline: a rough idea becomes a full **spec**
+(`STORIES/SPECS/`), the spec is sliced into small **stories** (`STORIES/TODO/`), and each story
+is implemented by a stack-specific builder agent and checked by an independent reviewer agent
+before it closes out. Completed stories move to `STORIES/COMPLETED/`, indexed in
+[`STORIES/COMPLETED.md`](STORIES/COMPLETED.md). Design decisions made along the way are logged
+in [`docs/decisions.md`](docs/decisions.md).
 
 ## Development
 
