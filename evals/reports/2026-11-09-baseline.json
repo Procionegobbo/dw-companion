@@ -1,0 +1,3933 @@
+{
+  "schema_version": 1,
+  "run_id": "57ad717b964a4f5a934a2e64e7f56b9d",
+  "status": "completed",
+  "started_at": "2026-11-09T22:33:39.200539+00:00",
+  "finished_at": "2026-11-09T22:44:32.102684+00:00",
+  "git_commit": "8188831d1ce9fb78131f0d9ffc32cb1b91120bd8",
+  "config": {
+    "name": "baseline",
+    "sha256": "14ac200d9c292cec9d4d6884f8730b0cb8189e04864064b58afaffe307ac1512",
+    "models": {
+      "router": "openai/gpt-4.1-nano",
+      "classifier": "openai/gpt-4.1-nano",
+      "answer": "openai/gpt-4.1-mini",
+      "embeddings": "openai/text-embedding-3-small",
+      "judge": "anthropic/claude-haiku-4.5"
+    },
+    "graph": {
+      "retrieval_k": 6,
+      "closest_sections_limit": 3,
+      "clarify_threshold": 0.6,
+      "router_max_tokens": 100,
+      "classifier_max_tokens": 400,
+      "answer_max_tokens": 700,
+      "explain_max_tokens": 300,
+      "answer_temperature": 0.0
+    }
+  },
+  "budget": {
+    "limit_usd": 3.0,
+    "estimated_usd": 1.27864,
+    "spent_usd": 0.119716,
+    "unknown_cost_calls": 0
+  },
+  "langfuse": {
+    "session_id": "57ad717b964a4f5a934a2e64e7f56b9d",
+    "trace_name": "eval_turn"
+  },
+  "labels": {
+    "all_rows_reviewed": true
+  },
+  "datasets": {
+    "router": {
+      "file": "evals/datasets/router.jsonl",
+      "sha256": "0773b7a98aaebb94fc785e6504a07e28d96931b244fde624c2daa6b511f162ea",
+      "rows": 45,
+      "completed": 45,
+      "metrics": {
+        "n": 45,
+        "accuracy": 0.8444,
+        "confusion_matrix": {
+          "rules_question": {
+            "rules_question": 15
+          },
+          "action_description": {
+            "action_description": 11,
+            "rules_question": 4
+          },
+          "out_of_scope": {
+            "out_of_scope": 12,
+            "error": 2,
+            "rules_question": 1
+          }
+        }
+      },
+      "system": {
+        "all": {
+          "n": 45,
+          "latency_ms_p50": 3428.8,
+          "latency_ms_p95": 5063.8,
+          "input_tokens_mean": 2193.4,
+          "output_tokens_mean": 122.8,
+          "cost_usd_mean": 0.000419,
+          "cost_unknown_calls": 0
+        },
+        "rules_question": {
+          "n": 20,
+          "latency_ms_p50": 3937.4,
+          "latency_ms_p95": 5233.5,
+          "input_tokens_mean": 4020.6,
+          "output_tokens_mean": 203.5,
+          "cost_usd_mean": 0.000758,
+          "cost_unknown_calls": 0
+        },
+        "action_description": {
+          "n": 11,
+          "latency_ms_p50": 3522.8,
+          "latency_ms_p95": 5805.6,
+          "input_tokens_mean": 1454.4,
+          "output_tokens_mean": 119.4,
+          "cost_usd_mean": 0.000311,
+          "cost_unknown_calls": 0
+        },
+        "out_of_scope": {
+          "n": 12,
+          "latency_ms_p50": 1286.9,
+          "latency_ms_p95": 1702.2,
+          "input_tokens_mean": 191.1,
+          "output_tokens_mean": 12.0,
+          "cost_usd_mean": 2.4e-05,
+          "cost_unknown_calls": 0
+        },
+        "error": {
+          "n": 2,
+          "latency_ms_p50": 2550.6,
+          "latency_ms_p95": 2584.0,
+          "input_tokens_mean": 0.0,
+          "output_tokens_mean": 0.0,
+          "cost_usd_mean": 0.0,
+          "cost_unknown_calls": 0
+        }
+      },
+      "cases": [
+        {
+          "id": "router-001",
+          "trace_id": "51d30664d41a4f11b2a110f43242fafe",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 5167.1,
+          "input_tokens": 4943,
+          "output_tokens": 371,
+          "cost_usd": 0.001115,
+          "correct": true,
+          "expected_intent": "rules_question"
+        },
+        {
+          "id": "router-002",
+          "trace_id": "db5dc26ae72945728df17c5b27ea69e5",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3316.0,
+          "input_tokens": 5305,
+          "output_tokens": 158,
+          "cost_usd": 0.000803,
+          "correct": true,
+          "expected_intent": "rules_question"
+        },
+        {
+          "id": "router-003",
+          "trace_id": "5ad2a65b942a4030b4929039ff2923f5",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3652.5,
+          "input_tokens": 4566,
+          "output_tokens": 192,
+          "cost_usd": 0.000793,
+          "correct": true,
+          "expected_intent": "rules_question"
+        },
+        {
+          "id": "router-004",
+          "trace_id": "15b29c0e2f644f21ba9343e67ac045e9",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 2843.4,
+          "input_tokens": 2418,
+          "output_tokens": 91,
+          "cost_usd": 0.000425,
+          "correct": true,
+          "expected_intent": "rules_question"
+        },
+        {
+          "id": "router-005",
+          "trace_id": "c2890725664f4638a6328d433298ed4e",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3467.1,
+          "input_tokens": 4352,
+          "output_tokens": 129,
+          "cost_usd": 0.000684,
+          "correct": true,
+          "expected_intent": "rules_question"
+        },
+        {
+          "id": "router-006",
+          "trace_id": "1a4f11c562cc4dbdaa0e0278b19eb8ad",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3515.0,
+          "input_tokens": 2893,
+          "output_tokens": 174,
+          "cost_usd": 0.000595,
+          "correct": true,
+          "expected_intent": "rules_question"
+        },
+        {
+          "id": "router-007",
+          "trace_id": "cfbcc5ec379443ce87aed5aad16a66fe",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3496.2,
+          "input_tokens": 5448,
+          "output_tokens": 131,
+          "cost_usd": 0.00078,
+          "correct": true,
+          "expected_intent": "rules_question"
+        },
+        {
+          "id": "router-008",
+          "trace_id": "6fa2f5e68e97459980835f2767e4888f",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 4619.7,
+          "input_tokens": 3804,
+          "output_tokens": 339,
+          "cost_usd": 0.000954,
+          "correct": true,
+          "expected_intent": "rules_question"
+        },
+        {
+          "id": "router-009",
+          "trace_id": "d9e7caf93c6b4f059bf1d044274ac023",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3898.7,
+          "input_tokens": 4797,
+          "output_tokens": 245,
+          "cost_usd": 0.000894,
+          "correct": true,
+          "expected_intent": "rules_question"
+        },
+        {
+          "id": "router-010",
+          "trace_id": "e1698945209e42eea15d254cea76ef62",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 2716.9,
+          "input_tokens": 1392,
+          "output_tokens": 39,
+          "cost_usd": 0.000239,
+          "correct": true,
+          "expected_intent": "rules_question"
+        },
+        {
+          "id": "router-011",
+          "trace_id": "3ba23f076fe64ad9af1565631245d6ec",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 2877.5,
+          "input_tokens": 3432,
+          "output_tokens": 49,
+          "cost_usd": 0.000457,
+          "correct": true,
+          "expected_intent": "rules_question"
+        },
+        {
+          "id": "router-012",
+          "trace_id": "4f0d48f6a6744644a6342e370aee8a27",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 6494.4,
+          "input_tokens": 3502,
+          "output_tokens": 133,
+          "cost_usd": 0.000581,
+          "correct": true,
+          "expected_intent": "rules_question"
+        },
+        {
+          "id": "router-013",
+          "trace_id": "020512c67ab84296b46fa8288ed5f1cf",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3189.3,
+          "input_tokens": 5635,
+          "output_tokens": 131,
+          "cost_usd": 0.000816,
+          "correct": true,
+          "expected_intent": "rules_question"
+        },
+        {
+          "id": "router-014",
+          "trace_id": "8e7f095561214126beb0d4f4a090e4c5",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 4501.3,
+          "input_tokens": 3150,
+          "output_tokens": 316,
+          "cost_usd": 0.000846,
+          "correct": true,
+          "expected_intent": "rules_question"
+        },
+        {
+          "id": "router-015",
+          "trace_id": "5253faf8c0cf46aba4036c15ddd11130",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3994.9,
+          "input_tokens": 2774,
+          "output_tokens": 56,
+          "cost_usd": 0.000396,
+          "correct": true,
+          "expected_intent": "rules_question"
+        },
+        {
+          "id": "router-016",
+          "trace_id": "0bf682f8e3a0435f874f1337bf4f0f87",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 2924.7,
+          "input_tokens": 1440,
+          "output_tokens": 102,
+          "cost_usd": 0.000286,
+          "correct": true,
+          "expected_intent": "action_description"
+        },
+        {
+          "id": "router-017",
+          "trace_id": "63c8bb06a704493997c4193c8918c0b7",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 4093.8,
+          "input_tokens": 1443,
+          "output_tokens": 106,
+          "cost_usd": 0.000306,
+          "correct": true,
+          "expected_intent": "action_description"
+        },
+        {
+          "id": "router-018",
+          "trace_id": "10549018debf4202bcd5b07e6959bcaf",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3522.8,
+          "input_tokens": 1480,
+          "output_tokens": 144,
+          "cost_usd": 0.000353,
+          "correct": true,
+          "expected_intent": "action_description"
+        },
+        {
+          "id": "router-019",
+          "trace_id": "bc48310682b746e09b8d47bc22cb14fa",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3438.3,
+          "input_tokens": 1469,
+          "output_tokens": 124,
+          "cost_usd": 0.000304,
+          "correct": true,
+          "expected_intent": "action_description"
+        },
+        {
+          "id": "router-020",
+          "trace_id": "435172f329134cb59d20680167ae67c9",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3624.5,
+          "input_tokens": 1433,
+          "output_tokens": 114,
+          "cost_usd": 0.000299,
+          "correct": true,
+          "expected_intent": "action_description"
+        },
+        {
+          "id": "router-021",
+          "trace_id": "2f47aca42640419cba47e32eed5a92ed",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3420.0,
+          "input_tokens": 1462,
+          "output_tokens": 127,
+          "cost_usd": 0.000328,
+          "correct": true,
+          "expected_intent": "action_description"
+        },
+        {
+          "id": "router-022",
+          "trace_id": "5201c05a5fe1457aa293f5bc30cd184e",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 4281.1,
+          "input_tokens": 1450,
+          "output_tokens": 115,
+          "cost_usd": 0.0003,
+          "correct": true,
+          "expected_intent": "action_description"
+        },
+        {
+          "id": "router-023",
+          "trace_id": "47702373e14345f88d74b2abe51c0f42",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3077.3,
+          "input_tokens": 1436,
+          "output_tokens": 110,
+          "cost_usd": 0.000299,
+          "correct": true,
+          "expected_intent": "action_description"
+        },
+        {
+          "id": "router-024",
+          "trace_id": "21f9410db25640a78842d95de956e3ee",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3706.7,
+          "input_tokens": 1456,
+          "output_tokens": 117,
+          "cost_usd": 0.000308,
+          "correct": true,
+          "expected_intent": "action_description"
+        },
+        {
+          "id": "router-025",
+          "trace_id": "e01ce0617ec74a5aa896583e267b6b6c",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 7330.2,
+          "input_tokens": 1447,
+          "output_tokens": 120,
+          "cost_usd": 0.00031,
+          "correct": true,
+          "expected_intent": "action_description"
+        },
+        {
+          "id": "router-026",
+          "trace_id": "a578e00bc1834e86bd320af123dd7291",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 4194.5,
+          "input_tokens": 6569,
+          "output_tokens": 260,
+          "cost_usd": 0.001125,
+          "correct": false,
+          "expected_intent": "action_description"
+        },
+        {
+          "id": "router-027",
+          "trace_id": "dcdf05c923f84bcaab4ef714421f82b5",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3428.8,
+          "input_tokens": 1482,
+          "output_tokens": 134,
+          "cost_usd": 0.000327,
+          "correct": true,
+          "expected_intent": "action_description"
+        },
+        {
+          "id": "router-028",
+          "trace_id": "eafb5d456ea3463392c9acc2e4dfe74a",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 4373.3,
+          "input_tokens": 5712,
+          "output_tokens": 337,
+          "cost_usd": 0.001135,
+          "correct": false,
+          "expected_intent": "action_description"
+        },
+        {
+          "id": "router-029",
+          "trace_id": "e62380ff1a53441f837c65b1630cfe29",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 4650.6,
+          "input_tokens": 3780,
+          "output_tokens": 334,
+          "cost_usd": 0.000934,
+          "correct": false,
+          "expected_intent": "action_description"
+        },
+        {
+          "id": "router-030",
+          "trace_id": "ba5027a0e68c4172b6caacf3f030eca5",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 4435.7,
+          "input_tokens": 3648,
+          "output_tokens": 362,
+          "cost_usd": 0.000963,
+          "correct": false,
+          "expected_intent": "action_description"
+        },
+        {
+          "id": "router-031",
+          "trace_id": "ca770a542df1437fb9a2537d4001fe0d",
+          "intent": "out_of_scope",
+          "kind": "out_of_scope",
+          "latency_ms": 1413.3,
+          "input_tokens": 189,
+          "output_tokens": 12,
+          "cost_usd": 2.4e-05,
+          "correct": true,
+          "expected_intent": "out_of_scope"
+        },
+        {
+          "id": "router-032",
+          "trace_id": "40b668bf05bb481d99fe68066e033fa0",
+          "intent": "out_of_scope",
+          "kind": "out_of_scope",
+          "latency_ms": 1533.1,
+          "input_tokens": 191,
+          "output_tokens": 12,
+          "cost_usd": 2.4e-05,
+          "correct": true,
+          "expected_intent": "out_of_scope"
+        },
+        {
+          "id": "router-033",
+          "trace_id": "5b1294483bc54e86b3c27e52a4b7114b",
+          "intent": "out_of_scope",
+          "kind": "out_of_scope",
+          "latency_ms": 1169.8,
+          "input_tokens": 190,
+          "output_tokens": 12,
+          "cost_usd": 2.4e-05,
+          "correct": true,
+          "expected_intent": "out_of_scope"
+        },
+        {
+          "id": "router-034",
+          "trace_id": "e9d4ab5fc057403aa3cb14d672af2038",
+          "intent": "out_of_scope",
+          "kind": "out_of_scope",
+          "latency_ms": 1216.6,
+          "input_tokens": 190,
+          "output_tokens": 12,
+          "cost_usd": 2.4e-05,
+          "correct": true,
+          "expected_intent": "out_of_scope"
+        },
+        {
+          "id": "router-035",
+          "trace_id": "e1fcfa3583724c6faa1c57373956d59b",
+          "intent": "out_of_scope",
+          "kind": "out_of_scope",
+          "latency_ms": 1398.8,
+          "input_tokens": 188,
+          "output_tokens": 12,
+          "cost_usd": 2.4e-05,
+          "correct": true,
+          "expected_intent": "out_of_scope"
+        },
+        {
+          "id": "router-036",
+          "trace_id": "97ddc736510d41ae81146a9e6dace3e4",
+          "intent": "out_of_scope",
+          "kind": "out_of_scope",
+          "latency_ms": 1439.1,
+          "input_tokens": 192,
+          "output_tokens": 12,
+          "cost_usd": 2.4e-05,
+          "correct": true,
+          "expected_intent": "out_of_scope"
+        },
+        {
+          "id": "router-037",
+          "trace_id": "59f4549b7ad442319e7d4c8553ed0fde",
+          "intent": "out_of_scope",
+          "kind": "out_of_scope",
+          "latency_ms": 1353.6,
+          "input_tokens": 191,
+          "output_tokens": 12,
+          "cost_usd": 2.4e-05,
+          "correct": true,
+          "expected_intent": "out_of_scope"
+        },
+        {
+          "id": "router-038",
+          "trace_id": "f475268bbf9a445d891046ca94f0945c",
+          "intent": "out_of_scope",
+          "kind": "out_of_scope",
+          "latency_ms": 1201.9,
+          "input_tokens": 193,
+          "output_tokens": 12,
+          "cost_usd": 2.4e-05,
+          "correct": true,
+          "expected_intent": "out_of_scope"
+        },
+        {
+          "id": "router-039",
+          "trace_id": "1a0f65dfe83a4991b41c19da73b8498a",
+          "intent": "out_of_scope",
+          "kind": "out_of_scope",
+          "latency_ms": 1220.2,
+          "input_tokens": 189,
+          "output_tokens": 12,
+          "cost_usd": 2.4e-05,
+          "correct": true,
+          "expected_intent": "out_of_scope"
+        },
+        {
+          "id": "router-040",
+          "trace_id": "1ee3613404204b5799fe184666371396",
+          "intent": "out_of_scope",
+          "kind": "out_of_scope",
+          "latency_ms": 865.5,
+          "input_tokens": 191,
+          "output_tokens": 12,
+          "cost_usd": 2.4e-05,
+          "correct": true,
+          "expected_intent": "out_of_scope"
+        },
+        {
+          "id": "router-041",
+          "trace_id": "7c23f2e86739463196e4d6d55effb4e8",
+          "intent": null,
+          "kind": "error",
+          "latency_ms": 2513.6,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "cost_usd": 0.0,
+          "correct": false,
+          "expected_intent": "out_of_scope"
+        },
+        {
+          "id": "router-042",
+          "trace_id": "8f026b68fd284870b9647dbfb22e0ffe",
+          "intent": null,
+          "kind": "error",
+          "latency_ms": 2587.7,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "cost_usd": 0.0,
+          "correct": false,
+          "expected_intent": "out_of_scope"
+        },
+        {
+          "id": "router-043",
+          "trace_id": "2b5303831c8d4c0998ae740e64606a93",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3976.0,
+          "input_tokens": 2291,
+          "output_tokens": 223,
+          "cost_usd": 0.000621,
+          "correct": false,
+          "expected_intent": "out_of_scope"
+        },
+        {
+          "id": "router-044",
+          "trace_id": "ff80bf5f28a042a8b9d9322a2a637d04",
+          "intent": "out_of_scope",
+          "kind": "out_of_scope",
+          "latency_ms": 1171.2,
+          "input_tokens": 191,
+          "output_tokens": 12,
+          "cost_usd": 2.4e-05,
+          "correct": true,
+          "expected_intent": "out_of_scope"
+        },
+        {
+          "id": "router-045",
+          "trace_id": "bb7243a0d3c1412ca374628d88d552a4",
+          "intent": "out_of_scope",
+          "kind": "out_of_scope",
+          "latency_ms": 1908.8,
+          "input_tokens": 198,
+          "output_tokens": 12,
+          "cost_usd": 2.5e-05,
+          "correct": true,
+          "expected_intent": "out_of_scope"
+        }
+      ]
+    },
+    "rules_qa": {
+      "file": "evals/datasets/rules_qa.jsonl",
+      "sha256": "4935ef76b1135af63af6bf758c53e11ab9fb3c156a18b7e40979a960b55abf5b",
+      "rows": 45,
+      "completed": 45,
+      "metrics": {
+        "n": 45,
+        "answerable_n": 36,
+        "unanswerable_n": 9,
+        "retrieval_k": 6,
+        "recall_at_k": 1.0,
+        "citations_valid": 71,
+        "citations_stripped": 0,
+        "answers_without_citations": 2,
+        "citation_validity_rate": 1.0,
+        "key_fact_coverage": 0.9329,
+        "key_fact_judged_n": 36,
+        "judge_errors": 0,
+        "correct_refusal_rate": 0.2222,
+        "misrouted": 0
+      },
+      "system": {
+        "all": {
+          "n": 45,
+          "latency_ms_p50": 3788.5,
+          "latency_ms_p95": 4381.7,
+          "input_tokens_mean": 3729.8,
+          "output_tokens_mean": 174.4,
+          "cost_usd_mean": 0.000834,
+          "cost_unknown_calls": 0
+        },
+        "rules_question": {
+          "n": 45,
+          "latency_ms_p50": 3788.5,
+          "latency_ms_p95": 4381.7,
+          "input_tokens_mean": 3729.8,
+          "output_tokens_mean": 174.4,
+          "cost_usd_mean": 0.000834,
+          "cost_unknown_calls": 0
+        }
+      },
+      "eval_overhead": {
+        "judge_calls": 36,
+        "judge_cost_usd": 0.035896
+      },
+      "cases": [
+        {
+          "id": "rules-001",
+          "trace_id": "dfbd99980c1945bd8050f9167b12220f",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 4701.8,
+          "input_tokens": 4943,
+          "output_tokens": 380,
+          "cost_usd": 0.00113,
+          "expected_section_ids": [
+            "moves/last-breath"
+          ],
+          "retrieved_section_ids": [
+            "moves-discussion/last-breath",
+            "moves/last-breath",
+            "playing-the-game/harm-and-healing",
+            "example",
+            "cleric/advanced-moves",
+            "character-creation/12-choose-bonds"
+          ],
+          "recall": 1.0,
+          "citations_valid": 3,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 1.0,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "You roll with no stat bonus added",
+              "present": true,
+              "evidence": "you roll the dice with no modifiers"
+            },
+            {
+              "index": 1,
+              "fact": "On a 10+ you cheat death and remain alive",
+              "present": true,
+              "evidence": "On a 10+, you have cheated Death. You are still alive"
+            },
+            {
+              "index": 2,
+              "fact": "On a 7-9 Death offers you a bargain to stabilize, or you can refuse and die",
+              "present": true,
+              "evidence": "On a 7\u20139, Death offers you a bargain. You can accept the bargain and stabilize (remaining alive but unconscious at 0 HP), or refuse and pass beyond the Black Gates"
+            },
+            {
+              "index": 3,
+              "fact": "On a miss your fate is sealed and you'll die soon",
+              "present": true,
+              "evidence": "On a 6 or less, your fate is sealed. You are marked as Death's own and will cross the threshold soon"
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-002",
+          "trace_id": "63c4ab1aa0ae472d93fb1d9265554a75",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 4295.2,
+          "input_tokens": 5235,
+          "output_tokens": 177,
+          "cost_usd": 0.000844,
+          "expected_section_ids": [
+            "moves/hack-and-slash"
+          ],
+          "retrieved_section_ids": [
+            "moves-discussion/hack-and-slash",
+            "moves/hack-and-slash",
+            "playing-the-game/making-moves",
+            "advanced-delving/development-of-a-move",
+            "moves-discussion/defy-danger",
+            "fighter/advanced-moves"
+          ],
+          "recall": 1.0,
+          "citations_valid": 2,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 1.0,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "You deal your damage to the enemy",
+              "present": true,
+              "evidence": "you deal your damage to the enemy"
+            },
+            {
+              "index": 1,
+              "fact": "The enemy also makes an attack against you",
+              "present": true,
+              "evidence": "the enemy also makes an attack against you"
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-003",
+          "trace_id": "2cd5b2795dda4468a8c5a695c806091e",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 4254.4,
+          "input_tokens": 4331,
+          "output_tokens": 321,
+          "cost_usd": 0.002171,
+          "expected_section_ids": [
+            "moves/defy-danger"
+          ],
+          "retrieved_section_ids": [
+            "moves-discussion/defy-danger",
+            "character-creation/5-choose-stats",
+            "moves/defy-danger",
+            "thief/advanced-moves",
+            "playing-the-game/making-moves",
+            "fighter/starting-moves"
+          ],
+          "recall": 1.0,
+          "citations_valid": 2,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 0.75,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "You use it when you act despite an imminent threat or suffer a calamity",
+              "present": true,
+              "evidence": "You use Defy Danger when you act despite an imminent threat or suffer a calamity."
+            },
+            {
+              "index": 1,
+              "fact": "The stat you add depends on how you deal with the danger",
+              "present": true,
+              "evidence": "The stat you add depends on how you deal with the danger"
+            },
+            {
+              "index": 2,
+              "fact": "On a 10+ the threat doesn't come to bear",
+              "present": true,
+              "evidence": "On a roll of 10+, you succeed and avoid the threat."
+            },
+            {
+              "index": 3,
+              "fact": "On a 7-9 the GM offers a worse outcome, hard bargain, or ugly choice",
+              "present": false,
+              "evidence": ""
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-004",
+          "trace_id": "6981941e320f4ef3a209a2dfb97bba37",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3788.5,
+          "input_tokens": 4639,
+          "output_tokens": 207,
+          "cost_usd": 0.000846,
+          "expected_section_ids": [
+            "moves/volley"
+          ],
+          "retrieved_section_ids": [
+            "moves/volley",
+            "moves-discussion/volley",
+            "advanced-delving/development-of-a-move",
+            "wizard-spells/level-9-spells",
+            "wizard/advanced-moves",
+            "advanced-delving/adventure-moves"
+          ],
+          "recall": 1.0,
+          "citations_valid": 2,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 1.0,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "You still deal your damage",
+              "present": true,
+              "evidence": "you still deal your damage"
+            },
+            {
+              "index": 1,
+              "fact": "You choose one: move into danger, take -1d6 damage, or use up ammo",
+              "present": true,
+              "evidence": "you must choose one of the following complications: - You have to move to get the shot, placing you in danger as described by the GM. - You have to take what you can get, which means you deal -1d6 damage. - You have to take several shots, reducing your ammo by one."
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-005",
+          "trace_id": "a754e3ade05e440286362dd8d5334d88",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 4094.5,
+          "input_tokens": 3833,
+          "output_tokens": 303,
+          "cost_usd": 0.000908,
+          "expected_section_ids": [
+            "moves/defend"
+          ],
+          "retrieved_section_ids": [
+            "moves-discussion/defend",
+            "moves/defend",
+            "moves-discussion/defy-danger",
+            "paladin/advanced-moves",
+            "moves-discussion/aid-or-interfere",
+            "playing-the-game/making-moves"
+          ],
+          "recall": 1.0,
+          "citations_valid": 3,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 1.0,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "You can redirect an attack from the thing you defend to yourself",
+              "present": true,
+              "evidence": "Redirect an attack from the thing you defend to yourself"
+            },
+            {
+              "index": 1,
+              "fact": "You can halve the attack's effect or damage",
+              "present": true,
+              "evidence": "Halve the attack's effect or damage"
+            },
+            {
+              "index": 2,
+              "fact": "You can give an ally +1 forward against the attacker",
+              "present": true,
+              "evidence": "Open up the attacker to an ally, giving that ally +1 forward against the attacker"
+            },
+            {
+              "index": 3,
+              "fact": "You can deal damage to the attacker equal to your level",
+              "present": true,
+              "evidence": "Deal damage to the attacker equal to your level"
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-006",
+          "trace_id": "47c48e8df0eb4772894c4191bff7b04e",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3863.3,
+          "input_tokens": 3679,
+          "output_tokens": 236,
+          "cost_usd": 0.000776,
+          "expected_section_ids": [
+            "moves/discern-realities"
+          ],
+          "retrieved_section_ids": [
+            "moves/discern-realities",
+            "moves-discussion/discern-realities",
+            "moves-discussion/volley",
+            "example",
+            "fighter/advanced-moves",
+            "thief/starting-moves"
+          ],
+          "recall": 1.0,
+          "citations_valid": 2,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 1.0,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "You get to ask the GM 3 questions from the list",
+              "present": true,
+              "evidence": "you get to ask the GM 3 questions from the following list"
+            },
+            {
+              "index": 1,
+              "fact": "You take +1 forward when acting on the answers",
+              "present": true,
+              "evidence": "You then take +1 forward when acting on the answers"
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-007",
+          "trace_id": "939c4cd1e1b24d01a83665f8ac08342b",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3130.6,
+          "input_tokens": 4436,
+          "output_tokens": 167,
+          "cost_usd": 0.00074,
+          "expected_section_ids": [
+            "moves/parley"
+          ],
+          "retrieved_section_ids": [
+            "moves/parley",
+            "moves-discussion/parley",
+            "moves-discussion/volley",
+            "bard/advanced-moves",
+            "moves/outstanding-warrants",
+            "example"
+          ],
+          "recall": 1.0,
+          "citations_valid": 2,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 1.0,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "They ask you for something and do it if you make them a promise first",
+              "present": true,
+              "evidence": "the target does what you ask if you first promise what they ask of you"
+            },
+            {
+              "index": 1,
+              "fact": "On a 7-9 they need concrete assurance of your promise right now",
+              "present": true,
+              "evidence": "On a 7\u20139, they will do what you ask, but need some concrete assurance of your promise right now"
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-008",
+          "trace_id": "c33092c4b762445fb5a29b97734198f6",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3492.3,
+          "input_tokens": 3117,
+          "output_tokens": 181,
+          "cost_usd": 0.000656,
+          "expected_section_ids": [
+            "moves/make-camp"
+          ],
+          "retrieved_section_ids": [
+            "moves/make-camp",
+            "moves-discussion/make-camp",
+            "playing-the-game/making-a-hireling",
+            "playing-the-game/harm-and-healing",
+            "moves/recover",
+            "character-creation/10-choose-gear"
+          ],
+          "recall": 1.0,
+          "citations_valid": 3,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 1.0,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "You consume a ration when you settle in to rest",
+              "present": true,
+              "evidence": "you settle in to rest and consume a ration"
+            },
+            {
+              "index": 1,
+              "fact": "Waking from at least a few uninterrupted hours of sleep heals half your max HP",
+              "present": true,
+              "evidence": "after at least a few uninterrupted hours of sleep, you heal damage equal to half your maximum HP"
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-009",
+          "trace_id": "12606e53f1ce4273be1a0059d6c6af6b",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 4036.6,
+          "input_tokens": 3471,
+          "output_tokens": 191,
+          "cost_usd": 0.000698,
+          "expected_section_ids": [
+            "moves/take-watch"
+          ],
+          "retrieved_section_ids": [
+            "moves/take-watch",
+            "moves-discussion/take-watch",
+            "playing-the-game/making-moves",
+            "moves/last-breath",
+            "gm/moves",
+            "advanced-delving/making-moves"
+          ],
+          "recall": 1.0,
+          "citations_valid": 1,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 1.0,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "It triggers when you're on watch and something approaches the camp",
+              "present": true,
+              "evidence": "when you're on watch and something approaches the camp"
+            },
+            {
+              "index": 1,
+              "fact": "On a miss whatever is approaching has the drop on you",
+              "present": true,
+              "evidence": "On a miss (6 or less), whatever lurks outside the campfire's light has the drop on you"
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-010",
+          "trace_id": "27e4b1eb71be459f940db3369462bac5",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 4330.0,
+          "input_tokens": 4198,
+          "output_tokens": 269,
+          "cost_usd": 0.000883,
+          "expected_section_ids": [
+            "moves/undertake-a-perilous-journey"
+          ],
+          "retrieved_section_ids": [
+            "moves/undertake-a-perilous-journey",
+            "moves-discussion/undertake-a-perilous-journey",
+            "playing-the-game/the-adventurers-life",
+            "ranger/starting-moves",
+            "playing-the-game/making-a-hireling",
+            "moves/recruit"
+          ],
+          "recall": 1.0,
+          "citations_valid": 2,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 0.6667,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "One party member acts as trailblazer, one as scout, one as quartermaster",
+              "present": true,
+              "evidence": "choosing one member of the party to act as the trailblazer, one to scout ahead, and one to be the quartermaster"
+            },
+            {
+              "index": 1,
+              "fact": "A role left unfilled is treated as if it rolled a 6",
+              "present": true,
+              "evidence": "If you don't have enough party members or choose not to assign a job, treat that job as if it had rolled a 6"
+            },
+            {
+              "index": 2,
+              "fact": "On a 10+ the quartermaster reduces rations needed by one",
+              "present": false,
+              "evidence": ""
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-011",
+          "trace_id": "65a9bcfaa3984e79a71d5a13a9669f34",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3593.6,
+          "input_tokens": 2478,
+          "output_tokens": 160,
+          "cost_usd": 0.001174,
+          "expected_section_ids": [
+            "character-creation/7-set-maximum-hp"
+          ],
+          "retrieved_section_ids": [
+            "character-creation/7-set-maximum-hp",
+            "character-creation/10-choose-gear",
+            "character-creation/5-choose-stats",
+            "playing-the-game/harm-and-healing",
+            "character-creation/8-choose-starting-moves",
+            "character-creation/11-introduce-your-character"
+          ],
+          "recall": 1.0,
+          "citations_valid": 2,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 1.0,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "Maximum HP equals your class's base HP plus your Constitution score",
+              "present": true,
+              "evidence": "Your character's maximum HP is determined by adding your class's base HP to your Constitution score."
+            },
+            {
+              "index": 1,
+              "fact": "You start the game at your maximum HP",
+              "present": true,
+              "evidence": "You start play with your maximum HP."
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-012",
+          "trace_id": "4e3bf9d8fed5480899ae6316ce141598",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 4109.1,
+          "input_tokens": 1349,
+          "output_tokens": 158,
+          "cost_usd": 0.000412,
+          "expected_section_ids": [
+            "character-creation/5-choose-stats"
+          ],
+          "retrieved_section_ids": [
+            "character-creation/5-choose-stats",
+            "character-creation",
+            "character-creation/10-choose-gear",
+            "character-creation/11-introduce-your-character",
+            "character-creation/8-choose-starting-moves",
+            "character-creation/9-choose-alignment"
+          ],
+          "recall": 1.0,
+          "citations_valid": 1,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 1.0,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "You assign the scores 16, 15, 13, 12, 9, 8 to your stats",
+              "present": true,
+              "evidence": "you assign the following stat scores to your stats: 16, 15, 13, 12, 9, and 8"
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-013",
+          "trace_id": "f4b514a11965443bb9cf0c5f64961d5c",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 2875.5,
+          "input_tokens": 3382,
+          "output_tokens": 70,
+          "cost_usd": 0.000468,
+          "expected_section_ids": [
+            "character-creation/6-figure-out-modifiers"
+          ],
+          "retrieved_section_ids": [
+            "character-creation/6-figure-out-modifiers",
+            "character-creation/5-choose-stats",
+            "playing-the-game",
+            "playing-the-game/making-moves",
+            "moves/level-up",
+            "npcs/100-instincts"
+          ],
+          "recall": 1.0,
+          "citations_valid": 1,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 1.0,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "A score of 16-17 gives a +2 modifier",
+              "present": true,
+              "evidence": "For a score of 16 or 17, your modifier is +2"
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-014",
+          "trace_id": "a05be458fb45498b87b64e47fbd367b0",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 5140.8,
+          "input_tokens": 2645,
+          "output_tokens": 181,
+          "cost_usd": 0.000584,
+          "expected_section_ids": [
+            "playing-the-game/alignment"
+          ],
+          "retrieved_section_ids": [
+            "character-creation/9-choose-alignment",
+            "playing-the-game/alignment",
+            "playing-the-game/character-change",
+            "character-creation/5-choose-stats",
+            "character-creation/11-introduce-your-character",
+            "character-creation/10-choose-gear"
+          ],
+          "recall": 1.0,
+          "citations_valid": 1,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 1.0,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "Alignment can change, usually through a gradual shift to a decisive moment",
+              "present": true,
+              "evidence": "alignment can and will change, usually as a gradual move toward a decisive moment"
+            },
+            {
+              "index": 1,
+              "fact": "You need a reason for the change that you can explain to the other players",
+              "present": true,
+              "evidence": "The player must have a reason for the change which they can explain to the other players"
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-015",
+          "trace_id": "475abef6fe6d49a0b9cb4af41af1a32c",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3714.9,
+          "input_tokens": 3302,
+          "output_tokens": 225,
+          "cost_usd": 0.000724,
+          "expected_section_ids": [
+            "playing-the-game/alignment"
+          ],
+          "retrieved_section_ids": [
+            "playing-the-game/alignment",
+            "introduction/whats-dungeon-world-like-to-play",
+            "character-creation/9-choose-alignment",
+            "gm",
+            "monsters/monster-settings",
+            "introduction/why"
+          ],
+          "recall": 1.0,
+          "citations_valid": 1,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 1.0,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "The alignments are Good, Lawful, Neutral, Chaotic, and Evil",
+              "present": true,
+              "evidence": "The five alignments in Dungeon World are:\n\n1. Good  \n2. Lawful  \n3. Neutral  \n4. Chaotic  \n5. Evil"
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-016",
+          "trace_id": "f11828759ed1467c831aa26738956b4b",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3713.0,
+          "input_tokens": 5448,
+          "output_tokens": 133,
+          "cost_usd": 0.000783,
+          "expected_section_ids": [
+            "gm/agenda"
+          ],
+          "retrieved_section_ids": [
+            "gm",
+            "advanced-delving/the-gm",
+            "gm/agenda",
+            "gm/moves",
+            "first-session/prep",
+            "playing-the-game/making-moves"
+          ],
+          "recall": 1.0,
+          "citations_valid": 1,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 1.0,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "Portray a fantastic world",
+              "present": true,
+              "evidence": "Portray a fantastic world"
+            },
+            {
+              "index": 1,
+              "fact": "Fill the characters' lives with adventure",
+              "present": true,
+              "evidence": "Fill the characters' lives with adventure"
+            },
+            {
+              "index": 2,
+              "fact": "Play to find out what happens",
+              "present": true,
+              "evidence": "Play to find out what happens"
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-017",
+          "trace_id": "6728901641ff49a0a736c7fc0fdbba33",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3149.2,
+          "input_tokens": 4946,
+          "output_tokens": 123,
+          "cost_usd": 0.000719,
+          "expected_section_ids": [
+            "gm/principles"
+          ],
+          "retrieved_section_ids": [
+            "advanced-delving/the-gm",
+            "gm",
+            "gm/principles",
+            "gm/moves",
+            "advanced-delving/changing-the-basics",
+            "monsters/using-monsters"
+          ],
+          "recall": 1.0,
+          "citations_valid": 1,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 1.0,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "Name every person",
+              "present": true,
+              "evidence": "Name every person"
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-018",
+          "trace_id": "a74d4cc99a8549d9bbe4209bf8441e53",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 4010.3,
+          "input_tokens": 4886,
+          "output_tokens": 115,
+          "cost_usd": 0.002065,
+          "expected_section_ids": [
+            "gm/moves"
+          ],
+          "retrieved_section_ids": [
+            "gm/moves",
+            "advanced-delving/changing-the-basics",
+            "advanced-delving/development-of-a-move",
+            "moves/recruit",
+            "advanced-delving/the-gm",
+            "playing-the-game/character-change"
+          ],
+          "recall": 1.0,
+          "citations_valid": 1,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 0.5,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "Use up their resources is one of the GM's moves",
+              "present": true,
+              "evidence": "The GM move that involves taking away a resource is called \"Use up their resources.\""
+            },
+            {
+              "index": 1,
+              "fact": "GM moves are never spoken as code words, they're things that happen in the fiction",
+              "present": false,
+              "evidence": ""
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-019",
+          "trace_id": "eb95fda1faff4783bdfcba7f0324eac2",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3806.2,
+          "input_tokens": 4592,
+          "output_tokens": 184,
+          "cost_usd": 0.000791,
+          "expected_section_ids": [
+            "gm/dungeon-moves"
+          ],
+          "retrieved_section_ids": [
+            "gm/dungeon-moves",
+            "advanced-delving/making-moves",
+            "moves-discussion/special-moves",
+            "playing-the-game/making-moves",
+            "moves-discussion/basic-moves",
+            "playing-the-game"
+          ],
+          "recall": 1.0,
+          "citations_valid": 1,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 0.5,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "Dungeon moves are used to make or alter a dungeon on the fly",
+              "present": true,
+              "evidence": "Dungeon Moves are used by the GM to make or alter a dungeon on the fly"
+            },
+            {
+              "index": 1,
+              "fact": "They're used while mapping out the area being explored",
+              "present": false,
+              "evidence": ""
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-020",
+          "trace_id": "0ce637aee42d47969937a9941cb07055",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3942.1,
+          "input_tokens": 6010,
+          "output_tokens": 215,
+          "cost_usd": 0.000985,
+          "expected_section_ids": [
+            "gm/dungeon-moves"
+          ],
+          "retrieved_section_ids": [
+            "advanced-delving/changing-the-basics",
+            "gm/dungeon-moves",
+            "advanced-delving/making-moves",
+            "advanced-delving/the-gm",
+            "playing-the-game/character-change",
+            "first-session/prep"
+          ],
+          "recall": 1.0,
+          "citations_valid": 1,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 1.0,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "You can make dungeon moves when the players present an opportunity or miss on a roll",
+              "present": true,
+              "evidence": "When the players present the GM with an opportunity. When the players miss on a roll."
+            },
+            {
+              "index": 1,
+              "fact": "They're well suited for when characters enter a new room or hallway",
+              "present": true,
+              "evidence": "Particularly when the characters enter a new room or hallway and want to know what they find there."
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-021",
+          "trace_id": "588c1b9e3b024258885fd34e3ee85410",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3480.9,
+          "input_tokens": 4352,
+          "output_tokens": 129,
+          "cost_usd": 0.000684,
+          "expected_section_ids": [
+            "equipment/armor"
+          ],
+          "retrieved_section_ids": [
+            "equipment/armor",
+            "equipment/weapons",
+            "fighter/starting-moves",
+            "equipment/magic-items",
+            "thief/advanced-moves",
+            "playing-the-game/making-moves"
+          ],
+          "recall": 1.0,
+          "citations_valid": 2,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 1.0,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "Clumsy armor gives -1 ongoing while using it",
+              "present": true,
+              "evidence": "imposes a -1 ongoing penalty while using it"
+            },
+            {
+              "index": 1,
+              "fact": "The Clumsy penalty is cumulative",
+              "present": true,
+              "evidence": "This penalty is cumulative if you wear multiple pieces of armor with the Clumsy tag"
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-022",
+          "trace_id": "8ef8d02b36fa455a9c999ae432237f89",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 4391.4,
+          "input_tokens": 4625,
+          "output_tokens": 263,
+          "cost_usd": 0.000931,
+          "expected_section_ids": [
+            "equipment/armor"
+          ],
+          "retrieved_section_ids": [
+            "fighter/advanced-moves",
+            "playing-the-game/harm-and-healing",
+            "equipment/weapons",
+            "advanced-delving/development-of-a-move",
+            "equipment/armor",
+            "paladin/gear"
+          ],
+          "recall": 1.0,
+          "citations_valid": 3,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 1.0,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "Armor subtracts its value from the damage taken",
+              "present": true,
+              "evidence": "Armor reduces damage by subtracting its armor value from the total damage dealt to a character."
+            },
+            {
+              "index": 1,
+              "fact": "If you have more than one item with n Armor, only the highest value counts",
+              "present": true,
+              "evidence": "Only the highest armor value counts if a character has more than one armor item."
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-023",
+          "trace_id": "03e233d91ebc4a5f99b806da85b844cc",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3281.6,
+          "input_tokens": 4802,
+          "output_tokens": 68,
+          "cost_usd": 0.000612,
+          "expected_section_ids": [
+            "equipment/weapons"
+          ],
+          "retrieved_section_ids": [
+            "equipment/weapons",
+            "fighter/starting-moves",
+            "playing-the-game/making-moves",
+            "advanced-delving/development-of-a-move",
+            "fighter/advanced-moves",
+            "class-moves-discussion/magic-weapon"
+          ],
+          "recall": 1.0,
+          "citations_valid": 1,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 1.0,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "A Forceful weapon can knock someone back a pace, maybe even off their feet",
+              "present": true,
+              "evidence": "the weapon can knock someone back a pace, maybe even off their feet"
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-024",
+          "trace_id": "8b128b7f563143b094088bd697350cb9",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3187.0,
+          "input_tokens": 4775,
+          "output_tokens": 86,
+          "cost_usd": 0.000669,
+          "expected_section_ids": [
+            "equipment/poisons"
+          ],
+          "retrieved_section_ids": [
+            "equipment/poisons",
+            "thief/starting-moves",
+            "swamp",
+            "example",
+            "thief/advanced-moves",
+            "depths"
+          ],
+          "recall": 1.0,
+          "citations_valid": 1,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 1.0,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "Anyone dealing damage against the target rolls twice and takes the better result",
+              "present": true,
+              "evidence": "anyone dealing damage against the target rolls twice and takes the better result"
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-025",
+          "trace_id": "72fdd602cb7f4cb7813b0a9745b2fd05",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3344.7,
+          "input_tokens": 3654,
+          "output_tokens": 127,
+          "cost_usd": 0.000592,
+          "expected_section_ids": [
+            "equipment/transport"
+          ],
+          "retrieved_section_ids": [
+            "equipment/transport",
+            "moves-discussion/encumbrance",
+            "character-creation/10-choose-gear",
+            "equipment/magic-items",
+            "equipment/weapons",
+            "playing-the-game/hirelings"
+          ],
+          "recall": 1.0,
+          "citations_valid": 2,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 1.0,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "A warhorse costs 400 coins",
+              "present": true,
+              "evidence": "A warhorse costs 400 coins"
+            },
+            {
+              "index": 1,
+              "fact": "A warhorse has a load of 12",
+              "present": true,
+              "evidence": "has a load of 12"
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-026",
+          "trace_id": "603cac80584f4dc68b19e0afaf156c83",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3209.9,
+          "input_tokens": 1520,
+          "output_tokens": 145,
+          "cost_usd": 0.000422,
+          "expected_section_ids": [
+            "wizard/gear"
+          ],
+          "retrieved_section_ids": [
+            "wizard/gear",
+            "wizard/starting-moves",
+            "character-creation/8-choose-starting-moves",
+            "character-creation/10-choose-gear",
+            "ranger/gear",
+            "fighter/gear"
+          ],
+          "recall": 1.0,
+          "citations_valid": 1,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 1.0,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "The wizard's load is 7 plus their Strength score",
+              "present": true,
+              "evidence": "The wizard's starting load is 7 + their Strength score."
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-027",
+          "trace_id": "3bc39af0e4f34d388432d11294efa659",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 4083.6,
+          "input_tokens": 1110,
+          "output_tokens": 174,
+          "cost_usd": 0.00065,
+          "expected_section_ids": [
+            "fighter/gear"
+          ],
+          "retrieved_section_ids": [
+            "fighter/gear",
+            "ranger/gear",
+            "paladin/gear",
+            "thief/gear",
+            "wizard/gear",
+            "character-creation/10-choose-gear"
+          ],
+          "recall": 1.0,
+          "citations_valid": 2,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 1.0,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "The fighter's load is 12 plus their Strength score",
+              "present": true,
+              "evidence": "Load: 12 + Strength"
+            },
+            {
+              "index": 1,
+              "fact": "They carry their signature weapon and dungeon rations",
+              "present": true,
+              "evidence": "Signature weapon (your choice)\n- Dungeon rations (5 uses, 1 weight)"
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-028",
+          "trace_id": "b39219c7bced475ca0c65d8008d17f78",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3313.0,
+          "input_tokens": 4485,
+          "output_tokens": 146,
+          "cost_usd": 0.000724,
+          "expected_section_ids": [
+            "class-moves-discussion/backstab"
+          ],
+          "retrieved_section_ids": [
+            "class-moves-discussion/backstab",
+            "moves-discussion/hack-and-slash",
+            "thief/starting-moves",
+            "advanced-delving/development-of-a-move",
+            "thief/advanced-moves",
+            "equipment/weapons"
+          ],
+          "recall": 1.0,
+          "citations_valid": 1,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 1.0,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "Reducing armor means the enemy loses it until they do something to compensate, like getting a fresh suit or healing up",
+              "present": true,
+              "evidence": "the enemy loses armor until they do something to compensate for the damage, such as repairing their armor or healing a wound"
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-029",
+          "trace_id": "db377dfbf4ab4e6a8f3eac599b67436d",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3869.7,
+          "input_tokens": 3058,
+          "output_tokens": 182,
+          "cost_usd": 0.000632,
+          "expected_section_ids": [
+            "class-moves-discussion/fireball"
+          ],
+          "retrieved_section_ids": [
+            "wizard-spells/level-3-spells",
+            "class-moves-discussion/fireball",
+            "wizard-spells/level-9-spells",
+            "wizard/starting-moves",
+            "equipment/weapons",
+            "playing-the-game/magic"
+          ],
+          "recall": 1.0,
+          "citations_valid": 1,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 1.0,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "Nearby depends on context: a few paces in open space, more in an enclosed room",
+              "present": true,
+              "evidence": "In an open space, \"nearby\" might mean just a few paces. In an enclosed room, \"nearby\" could be considerably more."
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-030",
+          "trace_id": "3e2fa0184e6d47afa55662967b0e6685",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3010.5,
+          "input_tokens": 5532,
+          "output_tokens": 60,
+          "cost_usd": 0.000699,
+          "expected_section_ids": [
+            "playing-the-game/harm-and-healing"
+          ],
+          "retrieved_section_ids": [
+            "playing-the-game/harm-and-healing",
+            "monsters/elements-of-a-monster",
+            "cleric-spells/level-9-spells",
+            "depths",
+            "wizard/stats",
+            "undead"
+          ],
+          "recall": 1.0,
+          "citations_valid": 1,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 1.0,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "Damage can never take a character below 0 HP",
+              "present": true,
+              "evidence": "damage can never take you below 0 HP"
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-031",
+          "trace_id": "c50595020867468586dee78e734cee97",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 4316.5,
+          "input_tokens": 3915,
+          "output_tokens": 286,
+          "cost_usd": 0.000875,
+          "expected_section_ids": [
+            "playing-the-game/harm-and-healing"
+          ],
+          "retrieved_section_ids": [
+            "playing-the-game/harm-and-healing",
+            "moves-discussion/last-breath",
+            "character-creation/10-choose-gear",
+            "moves-discussion/volley",
+            "monsters/elements-of-a-monster",
+            "gm"
+          ],
+          "recall": 1.0,
+          "citations_valid": 2,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 1.0,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "A character reduced to 0 HP immediately takes their Last Breath",
+              "present": true,
+              "evidence": "The moment your HP hits 0, your character immediately takes their Last Breath."
+            },
+            {
+              "index": 1,
+              "fact": "No stat is added to the Last Breath roll",
+              "present": true,
+              "evidence": "you roll (with no modifiers)"
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-032",
+          "trace_id": "309132d640c04e468308630223ee3299",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 2772.9,
+          "input_tokens": 2149,
+          "output_tokens": 94,
+          "cost_usd": 0.000935,
+          "expected_section_ids": [
+            "moves/recover"
+          ],
+          "retrieved_section_ids": [
+            "moves/recover",
+            "moves-discussion/recover",
+            "playing-the-game/harm-and-healing",
+            "moves/make-camp",
+            "moves-discussion/make-camp",
+            "character-creation/10-choose-gear"
+          ],
+          "recall": 1.0,
+          "citations_valid": 4,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 0.5,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "After a day of rest you recover all your HP",
+              "present": true,
+              "evidence": "you recover all your HP"
+            },
+            {
+              "index": 1,
+              "fact": "After three days of rest you remove one debility of your choice",
+              "present": false,
+              "evidence": ""
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-033",
+          "trace_id": "e527e06a09e44691b0d111fcdb1053ad",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 2866.3,
+          "input_tokens": 4716,
+          "output_tokens": 62,
+          "cost_usd": 0.000605,
+          "expected_section_ids": [
+            "playing-the-game/making-a-hireling"
+          ],
+          "retrieved_section_ids": [
+            "playing-the-game/making-a-hireling",
+            "playing-the-game/hirelings",
+            "ranger/starting-moves",
+            "the-world/elements-of-a-steading",
+            "character-creation/8-choose-starting-moves",
+            "cleric/starting-moves"
+          ],
+          "recall": 1.0,
+          "citations_valid": 1,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 1.0,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "City hirelings start with 6-10 points to distribute",
+              "present": true,
+              "evidence": "A hireling found in a city starts with a number of points between 6 and 10"
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-034",
+          "trace_id": "713250f8ec874d39bc66be9db851c6ca",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3161.3,
+          "input_tokens": 4733,
+          "output_tokens": 183,
+          "cost_usd": 0.000806,
+          "expected_section_ids": [
+            "playing-the-game/making-a-hireling"
+          ],
+          "retrieved_section_ids": [
+            "playing-the-game/hirelings",
+            "playing-the-game/making-a-hireling",
+            "npcs",
+            "moves/recruit",
+            "gm/moves",
+            "playing-the-game/harm-and-healing"
+          ],
+          "recall": 1.0,
+          "citations_valid": 1,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 1.0,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "If it's been a while since their cost was last paid they get -1 loyalty ongoing until it's met",
+              "present": true,
+              "evidence": "they get -1 loyalty ongoing until their cost is met"
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-035",
+          "trace_id": "c7639e6afc2b429eb6268c2214abc8b5",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3893.7,
+          "input_tokens": 2006,
+          "output_tokens": 193,
+          "cost_usd": 0.000539,
+          "expected_section_ids": [
+            "playing-the-game/bonds"
+          ],
+          "retrieved_section_ids": [
+            "playing-the-game/bonds",
+            "character-creation/12-choose-bonds",
+            "moves/end-of-session",
+            "moves-discussion/end-of-session",
+            "fronts/resolving-a-front",
+            "moves/aid-or-interfere"
+          ],
+          "recall": 1.0,
+          "citations_valid": 3,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 1.0,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "You may resolve one bond at the end of each session",
+              "present": true,
+              "evidence": "You can resolve a bond at the end of each session."
+            },
+            {
+              "index": 1,
+              "fact": "Resolving a bond lets you mark XP",
+              "present": true,
+              "evidence": "you mark XP and write a new bond"
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-036",
+          "trace_id": "bb71e7b3c55149e0a823c6f7fda66b74",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 4343.2,
+          "input_tokens": 3444,
+          "output_tokens": 260,
+          "cost_usd": 0.000798,
+          "expected_section_ids": [],
+          "retrieved_section_ids": [
+            "wizard/advanced-moves",
+            "wizard-spells/level-5-spells",
+            "wizard-spells/level-7-spells",
+            "wizard/starting-moves",
+            "wizard-spells/level-3-spells",
+            "wizard-spells/level-9-spells"
+          ],
+          "recall": null,
+          "citations_valid": 1,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": null,
+          "facts": null,
+          "judge_error": null
+        },
+        {
+          "id": "rules-037",
+          "trace_id": "15f74e9b83c345b68e2f576c0f6f3509",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 4100.9,
+          "input_tokens": 3132,
+          "output_tokens": 139,
+          "cost_usd": 0.001401,
+          "expected_section_ids": [
+            "equipment/magic-items"
+          ],
+          "retrieved_section_ids": [
+            "moves-discussion/encumbrance",
+            "moves/encumbrance",
+            "equipment/magic-items",
+            "wizard/gear",
+            "equipment/dungeon-gear",
+            "monsters/treasure"
+          ],
+          "recall": 1.0,
+          "citations_valid": 1,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": 0.6667,
+          "facts": [
+            {
+              "index": 0,
+              "fact": "A bag of holding can hold an infinite number of items",
+              "present": true,
+              "evidence": "can contain an infinite number of items"
+            },
+            {
+              "index": 1,
+              "fact": "A bag of holding always weighs 0, no matter how many items it contains",
+              "present": true,
+              "evidence": "A bag of holding has a weight of 0 and can contain an infinite number of items without increasing its weight"
+            },
+            {
+              "index": 2,
+              "fact": "Retrieving an item requires a roll+WIS, with a 7-9 giving a similar item quickly or the exact item after a delay",
+              "present": false,
+              "evidence": ""
+            }
+          ],
+          "judge_error": null
+        },
+        {
+          "id": "rules-038",
+          "trace_id": "2bc5864588aa4e91af527da65e796358",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 4247.1,
+          "input_tokens": 5539,
+          "output_tokens": 263,
+          "cost_usd": 0.001027,
+          "expected_section_ids": [],
+          "retrieved_section_ids": [
+            "advanced-delving/development-of-a-move",
+            "moves-discussion/volley",
+            "example",
+            "moves-discussion/carouse",
+            "ranger/starting-moves",
+            "gm/moves"
+          ],
+          "recall": null,
+          "citations_valid": 2,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": null,
+          "facts": null,
+          "judge_error": null
+        },
+        {
+          "id": "rules-039",
+          "trace_id": "46298a623ca6480f9be7408ab36826b2",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3896.2,
+          "input_tokens": 3052,
+          "output_tokens": 249,
+          "cost_usd": 0.000737,
+          "expected_section_ids": [],
+          "retrieved_section_ids": [
+            "playing-the-game/character-change",
+            "moves/level-up",
+            "advanced-delving/changing-the-basics",
+            "moves-discussion/level-up",
+            "character-creation/6-figure-out-modifiers",
+            "wizard/advanced-moves"
+          ],
+          "recall": null,
+          "citations_valid": 2,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": null,
+          "facts": null,
+          "judge_error": null
+        },
+        {
+          "id": "rules-040",
+          "trace_id": "c8fa3d7142cf4d20bff4b691129ec2a1",
+          "intent": "rules_question",
+          "kind": "rules_not_found",
+          "latency_ms": 3077.7,
+          "input_tokens": 2313,
+          "output_tokens": 79,
+          "cost_usd": 0.000978,
+          "expected_section_ids": [],
+          "retrieved_section_ids": [
+            "introduction/whats-dungeon-world-like-to-play",
+            "the-world",
+            "moves-discussion/undertake-a-perilous-journey",
+            "playing-the-game",
+            "advanced-delving",
+            "playing-the-game/the-adventurers-life"
+          ],
+          "recall": null,
+          "citations_valid": 0,
+          "citations_stripped": 0,
+          "refused": true,
+          "key_fact_coverage": null,
+          "facts": null,
+          "judge_error": null
+        },
+        {
+          "id": "rules-041",
+          "trace_id": "4633f19275bc499e85c8084855f973a1",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3795.5,
+          "input_tokens": 1699,
+          "output_tokens": 170,
+          "cost_usd": 0.000494,
+          "expected_section_ids": [],
+          "retrieved_section_ids": [
+            "character-creation/10-choose-gear",
+            "character-creation/5-choose-stats",
+            "character-creation/7-set-maximum-hp",
+            "character-creation/8-choose-starting-moves",
+            "character-creation/11-introduce-your-character",
+            "equipment"
+          ],
+          "recall": null,
+          "citations_valid": 2,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": null,
+          "facts": null,
+          "judge_error": null
+        },
+        {
+          "id": "rules-042",
+          "trace_id": "15d8ef86b3f04168a0450448fc33ebf0",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3305.5,
+          "input_tokens": 3922,
+          "output_tokens": 144,
+          "cost_usd": 0.00065,
+          "expected_section_ids": [],
+          "retrieved_section_ids": [
+            "equipment/weapons",
+            "advanced-delving",
+            "equipment/magic-items",
+            "introduction/whats-dungeon-world-like-to-play",
+            "conversion/magic-and-treasure",
+            "equipment"
+          ],
+          "recall": null,
+          "citations_valid": 2,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": null,
+          "facts": null,
+          "judge_error": null
+        },
+        {
+          "id": "rules-043",
+          "trace_id": "7f037ddd1ccc449b9ac6e0676d6d73e9",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3177.6,
+          "input_tokens": 3310,
+          "output_tokens": 98,
+          "cost_usd": 0.001407,
+          "expected_section_ids": [],
+          "retrieved_section_ids": [
+            "class-moves-discussion/fireball",
+            "wizard-spells/level-3-spells",
+            "wizard-spells/level-5-spells",
+            "cleric/starting-moves",
+            "wizard/starting-moves",
+            "wizard/advanced-moves"
+          ],
+          "recall": null,
+          "citations_valid": 1,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": null,
+          "facts": null,
+          "judge_error": null
+        },
+        {
+          "id": "rules-044",
+          "trace_id": "635707b0296c41809fe56429897be052",
+          "intent": "rules_question",
+          "kind": "rules_not_found",
+          "latency_ms": 3132.1,
+          "input_tokens": 1521,
+          "output_tokens": 80,
+          "cost_usd": 0.000663,
+          "expected_section_ids": [],
+          "retrieved_section_ids": [
+            "character-creation/10-choose-gear",
+            "character-creation/9-choose-alignment",
+            "character-creation/5-choose-stats",
+            "character-creation/11-introduce-your-character",
+            "character-creation/12-choose-bonds",
+            "character-creation/1-choose-a-class"
+          ],
+          "recall": null,
+          "citations_valid": 0,
+          "citations_stripped": 0,
+          "refused": true,
+          "key_fact_coverage": null,
+          "facts": null,
+          "judge_error": null
+        },
+        {
+          "id": "rules-045",
+          "trace_id": "1cc8574ac1ca44e18c0f76d92d90998e",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3419.0,
+          "input_tokens": 3559,
+          "output_tokens": 171,
+          "cost_usd": 0.000664,
+          "expected_section_ids": [],
+          "retrieved_section_ids": [
+            "playing-the-game",
+            "introduction/whats-dungeon-world-like-to-play",
+            "conversion/monsters",
+            "introduction/how-to-use-this-book",
+            "playing-the-game/harm-and-healing",
+            "conversion/magic-and-treasure"
+          ],
+          "recall": null,
+          "citations_valid": 1,
+          "citations_stripped": 0,
+          "refused": false,
+          "key_fact_coverage": null,
+          "facts": null,
+          "judge_error": null
+        }
+      ]
+    },
+    "move_classification": {
+      "file": "evals/datasets/move_classification.jsonl",
+      "sha256": "6235f338d7468ff762bf5c3a6693c1e1f1f9b1852a712aec85656feb55b3b13b",
+      "rows": 86,
+      "completed": 86,
+      "metrics": {
+        "n": 86,
+        "accuracy": 0.6047,
+        "confusion_matrix": {
+          "hack-and-slash": {
+            "hack-and-slash": 4,
+            "(not routed)": 2
+          },
+          "volley": {
+            "volley": 2,
+            "(not routed)": 2,
+            "hack-and-slash": 1
+          },
+          "defy-danger": {
+            "defy-danger": 5,
+            "hack-and-slash": 1
+          },
+          "defend": {
+            "hack-and-slash": 1,
+            "defend": 4,
+            "(not routed)": 1
+          },
+          "spout-lore": {
+            "spout-lore": 4,
+            "(not routed)": 2
+          },
+          "discern-realities": {
+            "discern-realities": 5,
+            "spout-lore": 1
+          },
+          "parley": {
+            "parley": 5
+          },
+          "aid-or-interfere": {
+            "hack-and-slash": 1,
+            "parley": 1,
+            "defy-danger": 1,
+            "aid-or-interfere": 1
+          },
+          "last-breath": {
+            "last-breath": 2
+          },
+          "encumbrance": {
+            "defy-danger": 2
+          },
+          "make-camp": {
+            "make-camp": 2
+          },
+          "take-watch": {
+            "take-watch": 2
+          },
+          "undertake-a-perilous-journey": {
+            "undertake-a-perilous-journey": 2
+          },
+          "level-up": {
+            "level-up": 2
+          },
+          "end-of-session": {
+            "end-of-session": 1,
+            "no_move": 1
+          },
+          "carouse": {
+            "carouse": 2
+          },
+          "supply": {
+            "supply": 2
+          },
+          "recover": {
+            "recover": 1,
+            "make-camp": 1
+          },
+          "recruit": {
+            "parley": 2
+          },
+          "outstanding-warrants": {
+            "defy-danger": 2
+          },
+          "bolster": {
+            "make-camp": 2
+          },
+          "no_move": {
+            "no_move": 4,
+            "(not routed)": 3,
+            "defy-danger": 1,
+            "parley": 2,
+            "make-camp": 4,
+            "aid-or-interfere": 1,
+            "discern-realities": 1
+          }
+        },
+        "no_move_precision": 0.8,
+        "no_move_recall": 0.25,
+        "clarification_rate": 0.0233,
+        "misrouted": 10
+      },
+      "system": {
+        "all": {
+          "n": 86,
+          "latency_ms_p50": 3265.8,
+          "latency_ms_p95": 5184.0,
+          "input_tokens_mean": 1427.8,
+          "output_tokens_mean": 110.8,
+          "cost_usd_mean": 0.000319,
+          "cost_unknown_calls": 0
+        },
+        "rules_question": {
+          "n": 3,
+          "latency_ms_p50": 3536.5,
+          "latency_ms_p95": 4160.0,
+          "input_tokens_mean": 4112.7,
+          "output_tokens_mean": 159.0,
+          "cost_usd_mean": 0.001402,
+          "cost_unknown_calls": 0
+        },
+        "action_description": {
+          "n": 76,
+          "latency_ms_p50": 3357.6,
+          "latency_ms_p95": 5209.9,
+          "input_tokens_mean": 1448.1,
+          "output_tokens_mean": 118.7,
+          "cost_usd_mean": 0.000305,
+          "cost_unknown_calls": 0
+        },
+        "out_of_scope": {
+          "n": 2,
+          "latency_ms_p50": 1054.2,
+          "latency_ms_p95": 1171.6,
+          "input_tokens_mean": 197.5,
+          "output_tokens_mean": 14.0,
+          "cost_usd_mean": 2.5e-05,
+          "cost_unknown_calls": 0
+        },
+        "error": {
+          "n": 5,
+          "latency_ms_p50": 3034.2,
+          "latency_ms_p95": 3370.7,
+          "input_tokens_mean": 0.0,
+          "output_tokens_mean": 0.0,
+          "cost_usd_mean": 0.0,
+          "cost_unknown_calls": 0
+        }
+      },
+      "cases": [
+        {
+          "id": "move-001",
+          "trace_id": "c63f2372563347f8847080c54a4eeedc",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 2854.1,
+          "input_tokens": 1446,
+          "output_tokens": 105,
+          "cost_usd": 0.000293,
+          "correct": true,
+          "expected_move_id": "hack-and-slash",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "hack-and-slash",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-002",
+          "trace_id": "f8eb7f01398e44c8b679ee5a4be418e7",
+          "intent": null,
+          "kind": "error",
+          "latency_ms": 3394.5,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "cost_usd": 0.0,
+          "correct": false,
+          "expected_move_id": "hack-and-slash",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "(not routed)",
+          "confidence": null,
+          "clarified": false
+        },
+        {
+          "id": "move-003",
+          "trace_id": "21c4c0ff1e494ba4afbe0c2d860d6491",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3129.2,
+          "input_tokens": 1446,
+          "output_tokens": 123,
+          "cost_usd": 0.000312,
+          "correct": true,
+          "expected_move_id": "hack-and-slash",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "hack-and-slash",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-004",
+          "trace_id": "caf8728b9b764d5fb66cd256694f208f",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 8537.3,
+          "input_tokens": 1437,
+          "output_tokens": 111,
+          "cost_usd": 0.000291,
+          "correct": true,
+          "expected_move_id": "hack-and-slash",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "hack-and-slash",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-005",
+          "trace_id": "7f282cbd5bb746b28490a0bbbedbc6b1",
+          "intent": null,
+          "kind": "error",
+          "latency_ms": 2872.3,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "cost_usd": 0.0,
+          "correct": false,
+          "expected_move_id": "hack-and-slash",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "(not routed)",
+          "confidence": null,
+          "clarified": false
+        },
+        {
+          "id": "move-006",
+          "trace_id": "989d0769e5ae4a7581cbbac2b806150e",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 2906.7,
+          "input_tokens": 1456,
+          "output_tokens": 103,
+          "cost_usd": 0.000287,
+          "correct": true,
+          "expected_move_id": "hack-and-slash",
+          "acceptable_alternatives": [
+            "defy-danger"
+          ],
+          "predicted_move_id": "hack-and-slash",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-007",
+          "trace_id": "3dd6966509a74120bf2e462b15bfe3a6",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3544.3,
+          "input_tokens": 1455,
+          "output_tokens": 126,
+          "cost_usd": 0.000318,
+          "correct": true,
+          "expected_move_id": "volley",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "volley",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-008",
+          "trace_id": "b8af370f678a4664bcf74e40ac38f297",
+          "intent": null,
+          "kind": "error",
+          "latency_ms": 3275.2,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "cost_usd": 0.0,
+          "correct": false,
+          "expected_move_id": "volley",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "(not routed)",
+          "confidence": null,
+          "clarified": false
+        },
+        {
+          "id": "move-009",
+          "trace_id": "cc0ae950710942b29fc7e725ab387851",
+          "intent": null,
+          "kind": "error",
+          "latency_ms": 3034.2,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "cost_usd": 0.0,
+          "correct": false,
+          "expected_move_id": "volley",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "(not routed)",
+          "confidence": null,
+          "clarified": false
+        },
+        {
+          "id": "move-010",
+          "trace_id": "871fe1003e9f481181d7ebda39c61257",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 4507.1,
+          "input_tokens": 1446,
+          "output_tokens": 106,
+          "cost_usd": 0.000292,
+          "correct": false,
+          "expected_move_id": "volley",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "hack-and-slash",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-011",
+          "trace_id": "a167bf83f44f431fbee1d80327e66152",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3161.0,
+          "input_tokens": 1469,
+          "output_tokens": 121,
+          "cost_usd": 0.000307,
+          "correct": true,
+          "expected_move_id": "volley",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "volley",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-012",
+          "trace_id": "4e4c08bbbe0c4e5f9848714b0bab4cdf",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3550.8,
+          "input_tokens": 1453,
+          "output_tokens": 124,
+          "cost_usd": 0.000317,
+          "correct": true,
+          "expected_move_id": "defy-danger",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "defy-danger",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-013",
+          "trace_id": "3648d883b6d84e1a8b656b16b42f5732",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3256.3,
+          "input_tokens": 1470,
+          "output_tokens": 139,
+          "cost_usd": 0.00034,
+          "correct": true,
+          "expected_move_id": "defy-danger",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "defy-danger",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-014",
+          "trace_id": "95fc24c4954c46a2a0d9c75b2618e466",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3119.3,
+          "input_tokens": 1470,
+          "output_tokens": 121,
+          "cost_usd": 0.000314,
+          "correct": true,
+          "expected_move_id": "defy-danger",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "defy-danger",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-015",
+          "trace_id": "056756dd46914436a2c312778b1a4d75",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3909.6,
+          "input_tokens": 1463,
+          "output_tokens": 121,
+          "cost_usd": 0.000313,
+          "correct": true,
+          "expected_move_id": "defy-danger",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "defy-danger",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-016",
+          "trace_id": "d720f78ae5e94eeb8f147c7e6fb80a2a",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3351.5,
+          "input_tokens": 1458,
+          "output_tokens": 119,
+          "cost_usd": 0.000306,
+          "correct": true,
+          "expected_move_id": "defy-danger",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "defy-danger",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-017",
+          "trace_id": "94bb622dcabf4a70a7d1dfa015233671",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3389.0,
+          "input_tokens": 1466,
+          "output_tokens": 100,
+          "cost_usd": 0.000293,
+          "correct": true,
+          "expected_move_id": "defy-danger",
+          "acceptable_alternatives": [
+            "hack-and-slash"
+          ],
+          "predicted_move_id": "hack-and-slash",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-018",
+          "trace_id": "d904a94e907e4c088d79824488b900df",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3144.4,
+          "input_tokens": 1474,
+          "output_tokens": 130,
+          "cost_usd": 0.00032,
+          "correct": false,
+          "expected_move_id": "defend",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "hack-and-slash",
+          "confidence": 0.8,
+          "clarified": false
+        },
+        {
+          "id": "move-019",
+          "trace_id": "c8ec72668542452b907acb6f928a0d87",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3144.4,
+          "input_tokens": 1470,
+          "output_tokens": 125,
+          "cost_usd": 0.000308,
+          "correct": true,
+          "expected_move_id": "defend",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "defend",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-020",
+          "trace_id": "e2699011f46643fdad33e1c6ba342887",
+          "intent": null,
+          "kind": "error",
+          "latency_ms": 2749.6,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "cost_usd": 0.0,
+          "correct": false,
+          "expected_move_id": "defend",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "(not routed)",
+          "confidence": null,
+          "clarified": false
+        },
+        {
+          "id": "move-021",
+          "trace_id": "faf6e3ca704447de90132b4afb1b6b01",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3033.5,
+          "input_tokens": 1468,
+          "output_tokens": 116,
+          "cost_usd": 0.000304,
+          "correct": true,
+          "expected_move_id": "defend",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "defend",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-022",
+          "trace_id": "5b3bb4d8ea97403682f93b82fbb4a6bc",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3196.5,
+          "input_tokens": 1469,
+          "output_tokens": 125,
+          "cost_usd": 0.000315,
+          "correct": true,
+          "expected_move_id": "defend",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "defend",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-023",
+          "trace_id": "c194178bb0654d4ebc1344709a51f7f0",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3498.2,
+          "input_tokens": 1458,
+          "output_tokens": 119,
+          "cost_usd": 0.000309,
+          "correct": true,
+          "expected_move_id": "spout-lore",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "spout-lore",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-024",
+          "trace_id": "38a33c774871428e90c58c3afd26f555",
+          "intent": "out_of_scope",
+          "kind": "out_of_scope",
+          "latency_ms": 1184.6,
+          "input_tokens": 196,
+          "output_tokens": 14,
+          "cost_usd": 2.5e-05,
+          "correct": false,
+          "expected_move_id": "spout-lore",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "(not routed)",
+          "confidence": null,
+          "clarified": false
+        },
+        {
+          "id": "move-025",
+          "trace_id": "879cdd0727fe4480ab19c56ab2f730f9",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 2651.8,
+          "input_tokens": 1462,
+          "output_tokens": 121,
+          "cost_usd": 0.000311,
+          "correct": true,
+          "expected_move_id": "spout-lore",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "spout-lore",
+          "confidence": 0.8,
+          "clarified": false
+        },
+        {
+          "id": "move-026",
+          "trace_id": "b4bf1e4420574e228745be3f679cdcef",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 4229.3,
+          "input_tokens": 7357,
+          "output_tokens": 193,
+          "cost_usd": 0.003177,
+          "correct": false,
+          "expected_move_id": "spout-lore",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "(not routed)",
+          "confidence": null,
+          "clarified": false
+        },
+        {
+          "id": "move-027",
+          "trace_id": "b71aa625a0fe443e9667144cc10066f5",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3902.5,
+          "input_tokens": 1456,
+          "output_tokens": 116,
+          "cost_usd": 0.000306,
+          "correct": true,
+          "expected_move_id": "spout-lore",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "spout-lore",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-028",
+          "trace_id": "c104a415fa944ce2a127cfef24494383",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3002.2,
+          "input_tokens": 1482,
+          "output_tokens": 124,
+          "cost_usd": 0.000322,
+          "correct": true,
+          "expected_move_id": "spout-lore",
+          "acceptable_alternatives": [
+            "discern-realities"
+          ],
+          "predicted_move_id": "spout-lore",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-029",
+          "trace_id": "e3593de515124376aa61d429264e83e3",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 4282.4,
+          "input_tokens": 1440,
+          "output_tokens": 117,
+          "cost_usd": 0.000307,
+          "correct": true,
+          "expected_move_id": "discern-realities",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "discern-realities",
+          "confidence": 0.8,
+          "clarified": false
+        },
+        {
+          "id": "move-030",
+          "trace_id": "2bf85b8a42a547118893a0dc7ff8718a",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3221.8,
+          "input_tokens": 1459,
+          "output_tokens": 127,
+          "cost_usd": 0.000318,
+          "correct": true,
+          "expected_move_id": "discern-realities",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "discern-realities",
+          "confidence": 0.8,
+          "clarified": false
+        },
+        {
+          "id": "move-031",
+          "trace_id": "0b8403efc5944a83acb1a05e0046e54d",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3221.1,
+          "input_tokens": 1450,
+          "output_tokens": 126,
+          "cost_usd": 0.000318,
+          "correct": true,
+          "expected_move_id": "discern-realities",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "discern-realities",
+          "confidence": 0.8,
+          "clarified": false
+        },
+        {
+          "id": "move-032",
+          "trace_id": "21b83729d0cf4c85bf48d7fe6daadcc7",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 4291.8,
+          "input_tokens": 1447,
+          "output_tokens": 123,
+          "cost_usd": 0.000315,
+          "correct": true,
+          "expected_move_id": "discern-realities",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "discern-realities",
+          "confidence": 0.8,
+          "clarified": false
+        },
+        {
+          "id": "move-033",
+          "trace_id": "273be6dd154543d1af44ecceecb0e593",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3669.5,
+          "input_tokens": 1458,
+          "output_tokens": 130,
+          "cost_usd": 0.000326,
+          "correct": true,
+          "expected_move_id": "discern-realities",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "discern-realities",
+          "confidence": 0.8,
+          "clarified": false
+        },
+        {
+          "id": "move-034",
+          "trace_id": "7fd39267dc994172bd67433bec1b0511",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 2939.0,
+          "input_tokens": 1468,
+          "output_tokens": 130,
+          "cost_usd": 0.000324,
+          "correct": true,
+          "expected_move_id": "discern-realities",
+          "acceptable_alternatives": [
+            "spout-lore"
+          ],
+          "predicted_move_id": "spout-lore",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-035",
+          "trace_id": "ff193b1fd636495f8023c705f3c231d8",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3153.3,
+          "input_tokens": 1501,
+          "output_tokens": 149,
+          "cost_usd": 0.000344,
+          "correct": true,
+          "expected_move_id": "parley",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "parley",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-036",
+          "trace_id": "e3c1a0ebf23147f5bf14d7496be6dc70",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3149.1,
+          "input_tokens": 1469,
+          "output_tokens": 114,
+          "cost_usd": 0.000305,
+          "correct": true,
+          "expected_move_id": "parley",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "parley",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-037",
+          "trace_id": "3b58cb32966945b1a8c75a80fbb07469",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3143.5,
+          "input_tokens": 1466,
+          "output_tokens": 113,
+          "cost_usd": 0.000305,
+          "correct": true,
+          "expected_move_id": "parley",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "parley",
+          "confidence": 0.8,
+          "clarified": false
+        },
+        {
+          "id": "move-038",
+          "trace_id": "2dc2ec5cc2db41a59c4f650d866be44e",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3370.3,
+          "input_tokens": 1471,
+          "output_tokens": 130,
+          "cost_usd": 0.000321,
+          "correct": true,
+          "expected_move_id": "parley",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "parley",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-039",
+          "trace_id": "b30d018dbe854689be722b52cb14078b",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3115.9,
+          "input_tokens": 1477,
+          "output_tokens": 128,
+          "cost_usd": 0.000321,
+          "correct": true,
+          "expected_move_id": "parley",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "parley",
+          "confidence": 0.8,
+          "clarified": false
+        },
+        {
+          "id": "move-040",
+          "trace_id": "9e64eafcbcfa42ea8e4ba87504eafea6",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3939.1,
+          "input_tokens": 1452,
+          "output_tokens": 117,
+          "cost_usd": 0.000302,
+          "correct": false,
+          "expected_move_id": "aid-or-interfere",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "hack-and-slash",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-041",
+          "trace_id": "d27e35e017c94f43b0081c830e60a52d",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 2955.1,
+          "input_tokens": 1449,
+          "output_tokens": 128,
+          "cost_usd": 0.000325,
+          "correct": false,
+          "expected_move_id": "aid-or-interfere",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "parley",
+          "confidence": 0.8,
+          "clarified": false
+        },
+        {
+          "id": "move-042",
+          "trace_id": "0e66b9c290174258ade98fe78dbf48ec",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 5251.3,
+          "input_tokens": 1454,
+          "output_tokens": 109,
+          "cost_usd": 0.000299,
+          "correct": true,
+          "expected_move_id": "defend",
+          "acceptable_alternatives": [
+            "aid-or-interfere"
+          ],
+          "predicted_move_id": "defend",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-043",
+          "trace_id": "b102c177c8b34629a2677df2f8b772a6",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 5147.6,
+          "input_tokens": 1485,
+          "output_tokens": 164,
+          "cost_usd": 0.000358,
+          "correct": false,
+          "expected_move_id": "aid-or-interfere",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "defy-danger",
+          "confidence": 0.8,
+          "clarified": false
+        },
+        {
+          "id": "move-044",
+          "trace_id": "517d01d0d75c41cf8586f44e3e14b506",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 2907.1,
+          "input_tokens": 1455,
+          "output_tokens": 128,
+          "cost_usd": 0.000311,
+          "correct": true,
+          "expected_move_id": "aid-or-interfere",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "aid-or-interfere",
+          "confidence": 0.8,
+          "clarified": false
+        },
+        {
+          "id": "move-045",
+          "trace_id": "498b593eb8c84b549df6a36b26196b79",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 7305.8,
+          "input_tokens": 1440,
+          "output_tokens": 115,
+          "cost_usd": 0.000316,
+          "correct": true,
+          "expected_move_id": "last-breath",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "last-breath",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-046",
+          "trace_id": "9b70b142838541c6857227795ef384a5",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3587.5,
+          "input_tokens": 1445,
+          "output_tokens": 112,
+          "cost_usd": 0.000311,
+          "correct": true,
+          "expected_move_id": "last-breath",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "last-breath",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-047",
+          "trace_id": "536c62f61548414ead173d6196ad452e",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 5196.1,
+          "input_tokens": 1487,
+          "output_tokens": 140,
+          "cost_usd": 0.000335,
+          "correct": false,
+          "expected_move_id": "encumbrance",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "defy-danger",
+          "confidence": 0.8,
+          "clarified": false
+        },
+        {
+          "id": "move-048",
+          "trace_id": "ea408d62ca9f45ffbb5eadde71b7e835",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3703.7,
+          "input_tokens": 1486,
+          "output_tokens": 128,
+          "cost_usd": 0.000329,
+          "correct": false,
+          "expected_move_id": "encumbrance",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "defy-danger",
+          "confidence": 0.8,
+          "clarified": false
+        },
+        {
+          "id": "move-049",
+          "trace_id": "6303f2937c904beaa6b001ccfb93b0a9",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3527.0,
+          "input_tokens": 1443,
+          "output_tokens": 115,
+          "cost_usd": 0.000306,
+          "correct": true,
+          "expected_move_id": "make-camp",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "make-camp",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-050",
+          "trace_id": "9ac4d5a92fcd4eb4af74b7fdb58e068a",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3363.7,
+          "input_tokens": 1452,
+          "output_tokens": 111,
+          "cost_usd": 0.000303,
+          "correct": true,
+          "expected_move_id": "make-camp",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "make-camp",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-051",
+          "trace_id": "6e40e180a62045c8aa15800f8c3f73bf",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 2905.8,
+          "input_tokens": 1446,
+          "output_tokens": 112,
+          "cost_usd": 0.000303,
+          "correct": true,
+          "expected_move_id": "take-watch",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "take-watch",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-052",
+          "trace_id": "55bdcfb126d6487992a974ec6d5934c4",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3152.9,
+          "input_tokens": 1456,
+          "output_tokens": 122,
+          "cost_usd": 0.000314,
+          "correct": true,
+          "expected_move_id": "take-watch",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "take-watch",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-053",
+          "trace_id": "dc830279c4344318a8b6be6a2443e7fb",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3526.7,
+          "input_tokens": 1473,
+          "output_tokens": 124,
+          "cost_usd": 0.000319,
+          "correct": true,
+          "expected_move_id": "undertake-a-perilous-journey",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "undertake-a-perilous-journey",
+          "confidence": 0.8,
+          "clarified": false
+        },
+        {
+          "id": "move-054",
+          "trace_id": "c97864a049344cc4b981a9b1811a4e8f",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3587.0,
+          "input_tokens": 1462,
+          "output_tokens": 113,
+          "cost_usd": 0.000301,
+          "correct": true,
+          "expected_move_id": "undertake-a-perilous-journey",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "undertake-a-perilous-journey",
+          "confidence": 0.8,
+          "clarified": false
+        },
+        {
+          "id": "move-055",
+          "trace_id": "6035494cfcd14f2e8c0861d456d2a27b",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3211.0,
+          "input_tokens": 1487,
+          "output_tokens": 121,
+          "cost_usd": 0.00032,
+          "correct": true,
+          "expected_move_id": "level-up",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "level-up",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-056",
+          "trace_id": "64ae2c0b5cf2471e8ed697b83a5a71cb",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 5927.4,
+          "input_tokens": 1493,
+          "output_tokens": 105,
+          "cost_usd": 0.000311,
+          "correct": true,
+          "expected_move_id": "level-up",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "level-up",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-057",
+          "trace_id": "6c84b88dc1ef461c93822228d4ff6f84",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3144.8,
+          "input_tokens": 1453,
+          "output_tokens": 96,
+          "cost_usd": 0.000284,
+          "correct": true,
+          "expected_move_id": "end-of-session",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "end-of-session",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-058",
+          "trace_id": "dc671dd8120f49d194d8abf9f9212d34",
+          "intent": "action_description",
+          "kind": "clarification",
+          "latency_ms": 2372.7,
+          "input_tokens": 1261,
+          "output_tokens": 64,
+          "cost_usd": 0.000152,
+          "correct": false,
+          "expected_move_id": "end-of-session",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "no_move",
+          "confidence": 0.2,
+          "clarified": true
+        },
+        {
+          "id": "move-059",
+          "trace_id": "f966c95556ab4fb6bfaa6426df8934b5",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 2985.9,
+          "input_tokens": 1467,
+          "output_tokens": 111,
+          "cost_usd": 0.000318,
+          "correct": true,
+          "expected_move_id": "carouse",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "carouse",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-060",
+          "trace_id": "569f56066507436394f12e4f07c077cd",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3718.5,
+          "input_tokens": 1478,
+          "output_tokens": 113,
+          "cost_usd": 0.000318,
+          "correct": true,
+          "expected_move_id": "carouse",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "carouse",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-061",
+          "trace_id": "bc4d6fe2fd524ae7803782242b7a65cd",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3746.2,
+          "input_tokens": 1467,
+          "output_tokens": 117,
+          "cost_usd": 0.000307,
+          "correct": true,
+          "expected_move_id": "supply",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "supply",
+          "confidence": 0.8,
+          "clarified": false
+        },
+        {
+          "id": "move-062",
+          "trace_id": "e4cc369af19f4511aba39ad69d51630e",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3418.0,
+          "input_tokens": 1455,
+          "output_tokens": 117,
+          "cost_usd": 0.000307,
+          "correct": true,
+          "expected_move_id": "supply",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "supply",
+          "confidence": 0.8,
+          "clarified": false
+        },
+        {
+          "id": "move-063",
+          "trace_id": "9dd7f59e67df4d1f8dbe46809115810f",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3675.2,
+          "input_tokens": 1466,
+          "output_tokens": 123,
+          "cost_usd": 0.000317,
+          "correct": true,
+          "expected_move_id": "recover",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "recover",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-064",
+          "trace_id": "c2c694ebab37481dbed4c4fb10759328",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 4195.9,
+          "input_tokens": 1460,
+          "output_tokens": 121,
+          "cost_usd": 0.000316,
+          "correct": false,
+          "expected_move_id": "recover",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "make-camp",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-065",
+          "trace_id": "b30ddcb2e92b4b17bd52dab55093b5ab",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 4475.5,
+          "input_tokens": 1474,
+          "output_tokens": 143,
+          "cost_usd": 0.000344,
+          "correct": false,
+          "expected_move_id": "recruit",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "parley",
+          "confidence": 0.8,
+          "clarified": false
+        },
+        {
+          "id": "move-066",
+          "trace_id": "8de36453dd9c45198980327caa718be6",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 2963.5,
+          "input_tokens": 1463,
+          "output_tokens": 115,
+          "cost_usd": 0.000304,
+          "correct": false,
+          "expected_move_id": "recruit",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "parley",
+          "confidence": 0.8,
+          "clarified": false
+        },
+        {
+          "id": "move-067",
+          "trace_id": "9a22c9f83d48472c9007bfe3d5279c36",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3440.4,
+          "input_tokens": 1496,
+          "output_tokens": 155,
+          "cost_usd": 0.00037,
+          "correct": false,
+          "expected_move_id": "outstanding-warrants",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "defy-danger",
+          "confidence": 0.8,
+          "clarified": false
+        },
+        {
+          "id": "move-068",
+          "trace_id": "263d9202ea1345f28a5aeaaeb0e9d41c",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3575.7,
+          "input_tokens": 1487,
+          "output_tokens": 150,
+          "cost_usd": 0.000366,
+          "correct": false,
+          "expected_move_id": "outstanding-warrants",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "defy-danger",
+          "confidence": 0.8,
+          "clarified": false
+        },
+        {
+          "id": "move-069",
+          "trace_id": "8c63b0df79814d8da18040ea73504cc3",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3379.1,
+          "input_tokens": 1456,
+          "output_tokens": 120,
+          "cost_usd": 0.000312,
+          "correct": false,
+          "expected_move_id": "bolster",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "make-camp",
+          "confidence": 0.8,
+          "clarified": false
+        },
+        {
+          "id": "move-070",
+          "trace_id": "bd73449a62e245b18941e6983588b92f",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3479.3,
+          "input_tokens": 1439,
+          "output_tokens": 108,
+          "cost_usd": 0.000297,
+          "correct": false,
+          "expected_move_id": "bolster",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "make-camp",
+          "confidence": 0.8,
+          "clarified": false
+        },
+        {
+          "id": "move-071",
+          "trace_id": "fb277626a4af41ecb6066ca0e55f6c28",
+          "intent": "action_description",
+          "kind": "clarification",
+          "latency_ms": 2796.2,
+          "input_tokens": 1251,
+          "output_tokens": 68,
+          "cost_usd": 0.000152,
+          "correct": true,
+          "expected_move_id": "no_move",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "no_move",
+          "confidence": 0.2,
+          "clarified": true
+        },
+        {
+          "id": "move-072",
+          "trace_id": "2357a61f997541cbb6a2d55579b4c37f",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3146.2,
+          "input_tokens": 2457,
+          "output_tokens": 96,
+          "cost_usd": 0.000447,
+          "correct": false,
+          "expected_move_id": "no_move",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "(not routed)",
+          "confidence": null,
+          "clarified": false
+        },
+        {
+          "id": "move-073",
+          "trace_id": "2299e39468b44186916af80b17e60853",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 2935.0,
+          "input_tokens": 1493,
+          "output_tokens": 145,
+          "cost_usd": 0.000342,
+          "correct": false,
+          "expected_move_id": "no_move",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "defy-danger",
+          "confidence": 0.8,
+          "clarified": false
+        },
+        {
+          "id": "move-074",
+          "trace_id": "5088cf9dd70b458ab066b9629df70799",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3491.1,
+          "input_tokens": 1461,
+          "output_tokens": 125,
+          "cost_usd": 0.000319,
+          "correct": false,
+          "expected_move_id": "no_move",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "parley",
+          "confidence": 0.8,
+          "clarified": false
+        },
+        {
+          "id": "move-075",
+          "trace_id": "32f97b0c40c04769a82aecaf7ea50db3",
+          "intent": "rules_question",
+          "kind": "rules_answer",
+          "latency_ms": 3536.5,
+          "input_tokens": 2524,
+          "output_tokens": 188,
+          "cost_usd": 0.000583,
+          "correct": false,
+          "expected_move_id": "no_move",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "(not routed)",
+          "confidence": null,
+          "clarified": false
+        },
+        {
+          "id": "move-076",
+          "trace_id": "e0554a3ca3ad4b588b3d6f49ab6ff006",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3445.5,
+          "input_tokens": 1439,
+          "output_tokens": 125,
+          "cost_usd": 0.000319,
+          "correct": false,
+          "expected_move_id": "no_move",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "make-camp",
+          "confidence": 0.8,
+          "clarified": false
+        },
+        {
+          "id": "move-077",
+          "trace_id": "33f60529bc6b4631bd10d3462a103ab6",
+          "intent": "out_of_scope",
+          "kind": "out_of_scope",
+          "latency_ms": 923.9,
+          "input_tokens": 199,
+          "output_tokens": 14,
+          "cost_usd": 2.5e-05,
+          "correct": false,
+          "expected_move_id": "no_move",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "(not routed)",
+          "confidence": null,
+          "clarified": false
+        },
+        {
+          "id": "move-078",
+          "trace_id": "4afb6bcd199c44ecb14086b5e2eb1963",
+          "intent": "action_description",
+          "kind": "no_move",
+          "latency_ms": 2124.0,
+          "input_tokens": 1245,
+          "output_tokens": 74,
+          "cost_usd": 0.000154,
+          "correct": true,
+          "expected_move_id": "no_move",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "no_move",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-079",
+          "trace_id": "72e2ea8fa0b74901a720521aff5a6c09",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3022.5,
+          "input_tokens": 1446,
+          "output_tokens": 111,
+          "cost_usd": 0.000299,
+          "correct": false,
+          "expected_move_id": "no_move",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "make-camp",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-080",
+          "trace_id": "eae3316158b24abc95863019a1f9c9bc",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3253.0,
+          "input_tokens": 1463,
+          "output_tokens": 157,
+          "cost_usd": 0.000353,
+          "correct": false,
+          "expected_move_id": "no_move",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "make-camp",
+          "confidence": 0.8,
+          "clarified": false
+        },
+        {
+          "id": "move-081",
+          "trace_id": "1b9153e0d30b491f9fa02aeaa44f89e8",
+          "intent": "action_description",
+          "kind": "no_move",
+          "latency_ms": 2433.8,
+          "input_tokens": 1245,
+          "output_tokens": 64,
+          "cost_usd": 0.00015,
+          "correct": true,
+          "expected_move_id": "no_move",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "no_move",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-082",
+          "trace_id": "e87a5fd0d2724e6797abe169b0314ab4",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3143.9,
+          "input_tokens": 1459,
+          "output_tokens": 135,
+          "cost_usd": 0.000326,
+          "correct": false,
+          "expected_move_id": "no_move",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "aid-or-interfere",
+          "confidence": 0.8,
+          "clarified": false
+        },
+        {
+          "id": "move-083",
+          "trace_id": "7a91379574c44b5c9c167ec825b3bcb8",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3190.7,
+          "input_tokens": 1439,
+          "output_tokens": 95,
+          "cost_usd": 0.000276,
+          "correct": false,
+          "expected_move_id": "no_move",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "make-camp",
+          "confidence": 0.8,
+          "clarified": false
+        },
+        {
+          "id": "move-084",
+          "trace_id": "dee4330ccb894ebcacc33663e677ecf1",
+          "intent": "action_description",
+          "kind": "no_move",
+          "latency_ms": 2050.7,
+          "input_tokens": 1245,
+          "output_tokens": 68,
+          "cost_usd": 0.000152,
+          "correct": true,
+          "expected_move_id": "no_move",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "no_move",
+          "confidence": 0.9,
+          "clarified": false
+        },
+        {
+          "id": "move-085",
+          "trace_id": "c53aabba400249378dd05f034c30ff1f",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 4228.8,
+          "input_tokens": 1452,
+          "output_tokens": 125,
+          "cost_usd": 0.000321,
+          "correct": false,
+          "expected_move_id": "no_move",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "discern-realities",
+          "confidence": 0.8,
+          "clarified": false
+        },
+        {
+          "id": "move-086",
+          "trace_id": "c3dedf68d3764cf88da09fdae9e897b2",
+          "intent": "action_description",
+          "kind": "move",
+          "latency_ms": 3399.5,
+          "input_tokens": 1449,
+          "output_tokens": 133,
+          "cost_usd": 0.000327,
+          "correct": false,
+          "expected_move_id": "no_move",
+          "acceptable_alternatives": [],
+          "predicted_move_id": "parley",
+          "confidence": 0.8,
+          "clarified": false
+        }
+      ]
+    }
+  }
+}

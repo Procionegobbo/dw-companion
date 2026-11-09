@@ -1,0 +1,7 @@
+{
+  "format_version": 1,
+  "embedding_model": "openai/text-embedding-3-small",
+  "dimensions": 1536,
+  "chunk_count": 299,
+  "chunks_sha256": "e09fd72e74e3ba4372f0e8cd7d51d6e01ec6a2ab8e59311df70493a05a5d62d3"
+}

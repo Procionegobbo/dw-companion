@@ -5,7 +5,7 @@ router = "openai/gpt-4.1-nano"
 classifier = "openai/gpt-4.1-nano"
 answer = "openai/gpt-4.1-mini"
 embeddings = "openai/text-embedding-3-small"
-judge = "anthropic/claude-haiku-5.5"
+judge = "anthropic/claude-haiku-4.5"
 
 # Any spec 006 GraphSettings field; omitted fields keep their defaults.
 [graph]
