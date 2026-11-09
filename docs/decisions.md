@@ -844,3 +844,13 @@ per-fact evidence quotes are recorded in every report for owner spot-checks, and
 judge against owner labels is left as a *Future Consideration*. Any later workflow that needs a
 secret (e.g. spec 011's deploy) must add itself to `SECRET_WORKFLOWS` under the same
 manual-only or `main`-only reasoning rather than weakening the test further.
+
+**2026-11-09 update — judge model swap.** `baseline.toml`'s judge was `anthropic/claude-haiku-5.5`
+(owner review item #1, D6). Running the first real report, every `rules_qa` judge call failed
+with `openrouter chat request failed: NotFoundError (status 404)`. The adapter sends
+`provider: {require_parameters: true}` with the judge's strict JSON schema (D8/`openrouter.py`),
+and none of `claude-haiku-5.5`'s OpenRouter endpoints currently accept that combination
+(confirmed by reproducing the exact request directly against OpenRouter's API). The owner swapped
+the judge to `anthropic/claude-haiku-4.5`, confirmed by the same direct request to return `200`,
+before re-running. It keeps the "different vendor from the answer model" property this ADR's
+Decision section calls for.
