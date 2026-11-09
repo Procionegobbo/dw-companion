@@ -34,7 +34,7 @@
 {"id": "rules-034", "message": "What happens to a hireling's loyalty if their cost goes unpaid?", "expected_section_ids": ["playing-the-game/making-a-hireling"], "key_facts": ["If it's been a while since their cost was last paid they get -1 loyalty ongoing until it's met"], "reviewed": false}
 {"id": "rules-035", "message": "When can I resolve a bond?", "expected_section_ids": ["playing-the-game/bonds"], "key_facts": ["You may resolve one bond at the end of each session", "Resolving a bond lets you mark XP"], "reviewed": false}
 {"id": "rules-036", "message": "How many spell slots does a 5th-level wizard have?", "expected_section_ids": [], "key_facts": [], "reviewed": false}
-{"id": "rules-037", "message": "What's the carrying capacity bonus from a bag of holding?", "expected_section_ids": [], "key_facts": [], "reviewed": false}
+{"id": "rules-037", "message": "What's the carrying capacity bonus from a bag of holding?", "expected_section_ids": ["equipment/magic-items"], "key_facts": ["A bag of holding can hold an infinite number of items", "A bag of holding always weighs 0, no matter how many items it contains", "Retrieving an item requires a roll+WIS, with a 7-9 giving a similar item quickly or the exact item after a delay"], "reviewed": false}
 {"id": "rules-038", "message": "How many attacks of opportunity do I get per round?", "expected_section_ids": [], "key_facts": [], "reviewed": false}
 {"id": "rules-039", "message": "What's the exact XP table for leveling from level 5 to level 6?", "expected_section_ids": [], "key_facts": [], "reviewed": false}
 {"id": "rules-040", "message": "How long does a short rest take in Dungeon World?", "expected_section_ids": [], "key_facts": [], "reviewed": false}

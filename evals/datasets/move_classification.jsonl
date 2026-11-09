@@ -39,7 +39,7 @@
 {"id": "move-039", "message": "I use the fact that I saved the duke's life to ask him for safe passage.", "expected_move_id": "parley", "acceptable_alternatives": [], "reviewed": false}
 {"id": "move-040", "message": "I rush to help Toren hold the line against the ogre.", "expected_move_id": "aid-or-interfere", "acceptable_alternatives": [], "reviewed": false}
 {"id": "move-041", "message": "I distract the guard so Mira can slip past him unseen.", "expected_move_id": "aid-or-interfere", "acceptable_alternatives": [], "reviewed": false}
-{"id": "move-042", "message": "I throw myself between my ally and the charging boar to protect her.", "expected_move_id": "aid-or-interfere", "acceptable_alternatives": [], "reviewed": false}
+{"id": "move-042", "message": "I throw myself between my ally and the charging boar to protect her.", "expected_move_id": "defend", "acceptable_alternatives": ["aid-or-interfere"], "reviewed": false}
 {"id": "move-043", "message": "I try to trip the fleeing cultist so my friend can catch him.", "expected_move_id": "aid-or-interfere", "acceptable_alternatives": [], "reviewed": false}
 {"id": "move-044", "message": "I lend my strength to help Dez force the stuck door open.", "expected_move_id": "aid-or-interfere", "acceptable_alternatives": [], "reviewed": false}
 {"id": "move-045", "message": "My HP just dropped to zero after the troll's blow.", "expected_move_id": "last-breath", "acceptable_alternatives": [], "reviewed": false}
