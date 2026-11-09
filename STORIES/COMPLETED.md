@@ -37,3 +37,6 @@
 - [009-evals-runner-and-first-reports-005-metrics-and-reports.md](COMPLETED/009-evals-runner-and-first-reports-005-metrics-and-reports.md)
 - [009-evals-runner-and-first-reports-006-eval-cli.md](COMPLETED/009-evals-runner-and-first-reports-006-eval-cli.md)
 - [009-evals-runner-and-first-reports-007-makefile-ci-workflow-and-docs.md](COMPLETED/009-evals-runner-and-first-reports-007-makefile-ci-workflow-and-docs.md)
+- [010-model-tuning-round-001-candidate-config-and-comparison-core.md](COMPLETED/010-model-tuning-round-001-candidate-config-and-comparison-core.md)
+- [010-model-tuning-round-002-comparison-rendering.md](COMPLETED/010-model-tuning-round-002-comparison-rendering.md)
+- [010-model-tuning-round-003-compare-cli-makefile-and-docs.md](COMPLETED/010-model-tuning-round-003-compare-cli-makefile-and-docs.md)

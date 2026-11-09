@@ -103,6 +103,9 @@ rule and the review procedure. No number from a run is meaningful before that re
 The manual "Evals" GitHub Actions workflow runs the same command, with repository secrets, on
 demand (`workflow_dispatch`).
 
+Compare two committed reports with `make compare REPORTS="<ref.json> <candidate.json>"`; the
+procedure is in [`evals/README.md`](evals/README.md).
+
 ## Attribution
 
 This project uses the text of **Dungeon World** by Sage LaTorra and Adam Koebel, from
