@@ -120,3 +120,69 @@ runtime-build or pricing error (see the message on stderr).
 The runner never commits a report. After a successful run, inspect
 `evals/reports/<date>-<config>.json` and `.md`, and commit the ones you want to keep as
 evidence — that is a deliberate owner act, not something the CLI or CI does for you.
+
+## Tuning round
+
+Spec 010 adds a second config (`classifier-mini`), the offline `evals/compare.py` CLI and a
+`make compare` target that read two to four committed report JSON files, check that they are
+comparable, and write one Markdown comparison. Those stories deliver tooling only, verified
+against fixture reports: they do not run a real comparison, choose a configuration, or write
+the ADR below. No eval number appears in this file, in `README.md` or in `docs/decisions.md`
+because of them. The comparison, the choice and the ADR are **owner-gate steps**, below,
+performed after the datasets are reviewed and both configs have been run for real.
+
+### Owner Procedure
+
+1. Make sure the datasets are reviewed (rule R-LABEL above) and committed, and the working
+   tree is clean.
+2. On one commit, on the same day: `make eval CONFIG=baseline` and
+   `make eval CONFIG=classifier-mini`. Both must exit `0`.
+3. `make compare REPORTS="evals/reports/<date>-baseline.json evals/reports/<date>-classifier-mini.json"`.
+4. Read *Changed cases*. Spot-check a few flipped cases in Langfuse (session id = the
+   report's `run_id`).
+5. Apply the decision guidance below and note the outcome, or your override and its reason.
+6. Commit both reports and the comparison file: `chore(evals): tuning round <date>`.
+7. Append the ADR from the template below to `docs/decisions.md`, pasting the block between
+   the comparison markers verbatim.
+8. Set the chosen `MODEL_*` values in your local `.env`, and use them for deployment.
+   `.env.example` stays empty.
+
+### Decision guidance (spec 010 D14)
+
+Keep the cheaper config unless the more expensive one meets all of these:
+
+- (a) the metric its change targets improves by more than 2 cases' worth (for
+  `classifier-mini`: move accuracy, more than 2 × (100/n) pp);
+- (b) on the dataset of that targeted metric (for `classifier-mini`: `move_classification`),
+  candidate-only flips exceed reference-only flips by at least 3;
+- (c) no other headline rate regresses by more than 2 cases' worth.
+
+These thresholds are final unless the owner changes them in writing here before running the
+tuning round. The owner may also override the outcome, and the ADR must then give the reason.
+
+### ADR template
+
+Verbatim except the angle-bracket placeholders, which the owner fills in from the real files
+(spec 001 D15 format):
+
+```markdown
+## ADR-<NNN>: Model configuration from the tuning round
+
+Date: <YYYY-MM-DD>
+Status: Accepted
+
+### Context
+Spec 007 shipped provisional model choices. The tuning round compared `<reference>` and `<candidate>` on the owner-reviewed eval datasets (<dataset>: sha256 <first 12 hex>, …) at commit <short sha>. Reports: `<json paths>`. Comparison: `<comparison path>`.
+
+### Decision
+Use `<chosen config>`: router `<id>`, classifier `<id>`, answer `<id>`, embeddings `<id>`; `GraphSettings` at defaults.
+
+<paste the comparison table block, markers included>
+
+Decision guidance (spec 010 D14): <met / not met, with the flip counts>. <Override reason, if any.>
+
+### Consequences
+- Replaces the provisional model values in ADR-<provider ADR number> ("Model provider: OpenRouter for chat and embeddings"); its provider decision stands.
+- `MODEL_*` for local runs and deployment use the values above; `.env.example` stays empty.
+- Re-run the round when a dataset changes, a model is delisted or repriced, or the graph changes.
+```

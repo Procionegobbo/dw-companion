@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import dataclasses
 from hashlib import sha256
 from pathlib import Path
 
@@ -140,6 +141,19 @@ def test_config_errors(tmp_path: Path, name: str, content: str | None) -> None:
 
     with pytest.raises(ConfigFileError):
         load_config(name, configs_dir)
+
+
+def test_classifier_mini_config_differs_from_baseline_only_in_classifier() -> None:
+    baseline = load_config("baseline", CONFIGS_DIR)
+    candidate = load_config("classifier-mini", CONFIGS_DIR)
+
+    assert candidate.models.classifier == "openai/gpt-4.1-mini"
+    assert (
+        dataclasses.replace(candidate.models, classifier=baseline.models.classifier)
+        == baseline.models
+    )
+    assert candidate.models.judge == baseline.models.judge
+    assert candidate.graph == baseline.graph
 
 
 def test_model_env_maps_four_vars() -> None:

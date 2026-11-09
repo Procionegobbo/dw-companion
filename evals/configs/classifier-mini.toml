@@ -1,0 +1,12 @@
+# Tuning-round candidate (spec 010): identical to baseline.toml except a larger classifier model.
+# The judge must stay identical to baseline so key-fact coverage is comparable.
+[models]
+router = "openai/gpt-4.1-nano"
+classifier = "openai/gpt-4.1-mini"
+answer = "openai/gpt-4.1-mini"
+embeddings = "openai/text-embedding-3-small"
+judge = "anthropic/claude-haiku-4.5"
+
+[graph]
+retrieval_k = 6
+clarify_threshold = 0.6
