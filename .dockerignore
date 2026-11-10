@@ -1,0 +1,13 @@
+*
+!pyproject.toml
+!uv.lock
+!.python-version
+!backend/
+backend/tests/
+!data/normalized/
+!data/index/
+!site/
+site/node_modules/
+site/dist/
+site/.astro/
+**/__pycache__/

@@ -8,3 +8,21 @@ eval:
 .PHONY: compare
 compare:
 	uv run python -m evals.compare $(REPORTS)
+
+.PHONY: image
+image:
+	docker build -t dw-companion:local .
+
+.PHONY: smoke
+smoke:
+	infra/smoke.sh "$(URL)"
+
+export GCP_PROJECT GCP_REGION MIN_INSTANCES
+
+.PHONY: gcp-setup
+gcp-setup:
+	infra/setup.sh
+
+.PHONY: deploy
+deploy:
+	infra/deploy.sh

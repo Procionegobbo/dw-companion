@@ -40,3 +40,6 @@
 - [010-model-tuning-round-001-candidate-config-and-comparison-core.md](COMPLETED/010-model-tuning-round-001-candidate-config-and-comparison-core.md)
 - [010-model-tuning-round-002-comparison-rendering.md](COMPLETED/010-model-tuning-round-002-comparison-rendering.md)
 - [010-model-tuning-round-003-compare-cli-makefile-and-docs.md](COMPLETED/010-model-tuning-round-003-compare-cli-makefile-and-docs.md)
+- [011-deploy-to-cloud-run-001-serve-static-site-from-api.md](COMPLETED/011-deploy-to-cloud-run-001-serve-static-site-from-api.md)
+- [011-deploy-to-cloud-run-002-container-image-and-ci-smoke.md](COMPLETED/011-deploy-to-cloud-run-002-container-image-and-ci-smoke.md)
+- [011-deploy-to-cloud-run-003-gcp-setup-deploy-scripts-and-runbook.md](COMPLETED/011-deploy-to-cloud-run-003-gcp-setup-deploy-scripts-and-runbook.md)

@@ -92,6 +92,26 @@ Health check:
 In `site/`, run `npm run dev` and open <http://localhost:4321/assistant/>. Requests to `/api`
 are proxied to port 8000 by the Astro dev server.
 
+### Running the container and deploying
+
+Build the image:
+
+    make image
+
+Run it locally:
+
+    docker run --env-file .env -e SITE_DIR=/app/site/dist -p 8080:8080 dw-companion:local
+
+then open <http://localhost:8080/>. The explicit `-e SITE_DIR=...` is needed because `.env`
+(copied from `.env.example`) has an empty `SITE_DIR=`, which would otherwise override the
+image's own default and serve only the API.
+
+To serve the site without Docker, run `npm run build` in `site/`, then start the API as in
+["Running the API and chat widget locally"](#running-the-api-and-chat-widget-locally) with
+`SITE_DIR=site/dist`.
+
+Deploying to Cloud Run is in [`docs/deploy.md`](docs/deploy.md).
+
 ### Running evals
 
 Dataset labels are owner-reviewed — see [`evals/README.md`](evals/README.md) for the labelling

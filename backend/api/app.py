@@ -23,6 +23,7 @@ from uuid import uuid4
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, Response, StreamingResponse
 from pydantic import ValidationError
+from starlette.staticfiles import StaticFiles
 
 from backend.api.limits import (
     ClientKeyer,
@@ -213,6 +214,11 @@ def create_app(
             gen(),
             media_type="text/event-stream",
             headers={"Cache-Control": "no-store", "X-Accel-Buffering": "no"},
+        )
+
+    if api_settings.site_dir is not None:
+        app.mount(
+            "/", StaticFiles(directory=api_settings.site_dir, html=True), name="site"
         )
 
     return app

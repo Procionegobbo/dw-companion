@@ -14,7 +14,7 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Final
 
-from backend.composition import ConfigError
+from backend.composition import ConfigError, Path
 
 MAX_MESSAGE_CHARS: Final = 500
 MAX_BODY_BYTES: Final = 16384
@@ -26,6 +26,7 @@ API_ENV_VARS: Final[tuple[str, ...]] = (
     "CHAT_RATE_PER_DAY",
     "CHAT_DAILY_BUDGET_USD",
     "CHAT_TRUSTED_PROXY_HOPS",
+    "SITE_DIR",
 )
 
 _DEFAULT_RATE_PER_MINUTE: Final = 5
@@ -42,6 +43,7 @@ class ApiSettings:
     rate_per_day: int = _DEFAULT_RATE_PER_DAY
     daily_budget_usd: float = _DEFAULT_DAILY_BUDGET_USD
     trusted_proxy_hops: int = _DEFAULT_TRUSTED_PROXY_HOPS
+    site_dir: Path | None = None
 
     @classmethod
     def from_env(cls, environ: Mapping[str, str]) -> ApiSettings:
@@ -97,6 +99,15 @@ class ApiSettings:
             else:
                 daily_budget_usd = parsed_budget
 
+        site_dir: Path | None = None
+        site_dir_text = raw("SITE_DIR")
+        if site_dir_text:
+            candidate = Path(site_dir_text).resolve()
+            if (candidate / "index.html").is_file():
+                site_dir = candidate
+            else:
+                problems.append("SITE_DIR must be a directory containing index.html")
+
         if problems:
             raise ConfigError("invalid configuration: " + "; ".join(problems))
 
@@ -105,4 +116,5 @@ class ApiSettings:
             rate_per_day=rate_per_day,
             daily_budget_usd=daily_budget_usd,
             trusted_proxy_hops=trusted_proxy_hops,
+            site_dir=site_dir,
         )
