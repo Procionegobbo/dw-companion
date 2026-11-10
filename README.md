@@ -8,13 +8,9 @@ Dungeon World is played fiction first: a player describes what their character d
 
 ## Live demo
 
-<!-- TODO-OWNER(demo-url): replace the token below with the "Live URL:" value from docs/deploy.md as an autolink of the form <https://dw-companion-SUFFIX.run.app/> with the real value, then delete this comment. -->
-**Live demo:** TODO-OWNER(demo-url). The rules are at `/`, the assistant at `/assistant/`.
+**Live demo:** <https://dw-companion.procionegobbo.it/>. The rules are at `/`, the assistant at `/assistant/`.
 
-<!-- TODO-OWNER(demo-gif): add docs/media/demo.gif (≤ 20 s, ≤ 5 MB, recorded on the live URL: one rules question with a citation click, one action with "Roll the dice for me"), replace the pending line below with
 ![A rules question answered with citation links, then an action description that shows a move card and a dice roll](docs/media/demo.gif)
-and delete this comment. -->
-_Demo GIF pending: TODO-OWNER(demo-gif)._
 
 Things to try on `/assistant/`: "How does Hack and Slash work?", "I hold the door shut while the ghouls pound on it", "I tell the innkeeper my name". Tick "Roll the dice for me" to have the assistant roll.
 
@@ -81,27 +77,44 @@ Three hand-labelled datasets live in [`evals/datasets/`](evals/datasets/): route
 
 ### Results
 
-<!-- TODO-OWNER(eval-results): from the committed comparison file (evals/reports/comparisons/), copy the chosen configuration's column and the Cases column for these rows. Replace the Configuration line with: Configuration `<name>`: router `<id>`, classifier `<id>`, answer `<id>`, embeddings `<id>` (from the report JSON "config.models"), report [`evals/reports/<file>.md`](evals/reports/<file>.md), run on <YYYY-MM-DD>. Then delete this comment. -->
-Configuration: TODO-OWNER(eval-results).
+Configuration `classifier-mini`: router `openai/gpt-4.1-nano`, classifier `openai/gpt-4.1-mini`, answer `openai/gpt-4.1-mini`, embeddings `openai/text-embedding-3-small`, report [`evals/reports/2026-11-10-classifier-mini.md`](evals/reports/2026-11-10-classifier-mini.md), run on 2026-11-10.
 
 | Metric | What it measures | Cases | Result |
 |---|---|---|---|
-| Router accuracy | Messages sent to the right branch: rules question, action or out of scope. | TODO-OWNER(eval-results) | TODO-OWNER(eval-results) |
-| Retrieval recall@6 | Share of the expected rulebook sections found among the 6 retrieved. | TODO-OWNER(eval-results) | TODO-OWNER(eval-results) |
-| Citation validity | Citations that point to a section actually retrieved. Invalid ones are stripped before the user sees them. | TODO-OWNER(eval-results) | TODO-OWNER(eval-results) |
-| Key-fact coverage | Required facts present in the answer, scored by an LLM judge with a written rubric. The judge model differs from the answer model. | TODO-OWNER(eval-results) | TODO-OWNER(eval-results) |
-| Correct refusals | Questions the rules do not answer where the assistant said so instead of inventing an answer. | TODO-OWNER(eval-results) | TODO-OWNER(eval-results) |
-| Move accuracy | Actions classified as the expected move, or as an accepted alternative for genuinely ambiguous cases. | TODO-OWNER(eval-results) | TODO-OWNER(eval-results) |
-| `no_move` precision | When the assistant says "no move", how often that is right. | TODO-OWNER(eval-results) | TODO-OWNER(eval-results) |
-| `no_move` recall | Of the actions that trigger no move, how many it recognised. | TODO-OWNER(eval-results) | TODO-OWNER(eval-results) |
-| Clarification rate | Actions where it asked a clarifying question instead of answering. | TODO-OWNER(eval-results) | TODO-OWNER(eval-results) |
+| Router accuracy | Messages sent to the right branch: rules question, action or out of scope. | 45 | 84.4% |
+| Retrieval recall@6 | Share of the expected rulebook sections found among the 6 retrieved. | 36 | 100.0% |
+| Citation validity | Citations that point to a section actually retrieved. Invalid ones are stripped before the user sees them. | 45 | 100.0% |
+| Key-fact coverage | Required facts present in the answer, scored by an LLM judge with a written rubric. The judge model differs from the answer model. | 36 | 94.2% |
+| Correct refusals | Questions the rules do not answer where the assistant said so instead of inventing an answer. | 9 | 11.1% |
+| Move accuracy | Actions classified as the expected move, or as an accepted alternative for genuinely ambiguous cases. | 86 | 87.2% |
+| `no_move` precision | When the assistant says "no move", how often that is right. | — | 100.0% |
+| `no_move` recall | Of the actions that trigger no move, how many it recognised. | 16 | 56.2% |
+| Clarification rate | Actions where it asked a clarifying question instead of answering. | 86 | 0.0% |
 
 ### Configuration comparison
 
 Measure before you trust: the tuning round runs configurations on the same reviewed datasets, with the same judge and on the same commit. It then decides with a rule written before seeing the numbers. The cheaper configuration is kept unless the more expensive one meets all three conditions. First, its targeted metric improves by more than two cases' worth. Second, on that metric's dataset, the cases it alone gets right outnumber the cases only the cheaper one gets right by at least 3. Third, no other headline rate regresses by more than two cases' worth. The owner may override the outcome only with a recorded reason. The full rule is in [`evals/README.md`](evals/README.md#tuning-round).
 
-<!-- TODO-OWNER(eval-comparison): paste the block between the comparison-table:start and comparison-table:end marker comments from the committed comparison file, both marker comments included. Below it write: "Chosen: `<config>`. <one sentence: the reason, including whether the decision rule was met>. Full comparison: [`evals/reports/comparisons/<file>.md`](evals/reports/comparisons/<file>.md); decision record: [ADR-<NNN>](docs/decisions.md)." Then delete this comment and the pending line. -->
-_Comparison pending: TODO-OWNER(eval-comparison). It will compare the baseline with a larger-classifier candidate, showing accuracy deltas next to cost and latency deltas._
+<!-- comparison-table:start -->
+| Metric | Cases | baseline | classifier-mini | Δ |
+| --- | --- | --- | --- | --- |
+| Router accuracy | 45 | 84.4% | 84.4% | +0.0 pp |
+| Retrieval recall@6 | 36 | 100.0% | 100.0% | +0.0 pp |
+| Citation validity | 45 | 100.0% | 100.0% | +0.0 pp |
+| Key-fact coverage | 36 | 93.3% | 94.2% | +0.9 pp |
+| Correct refusals | 9 | 22.2% | 11.1% | -11.1 pp |
+| Move accuracy | 86 | 60.5% | 87.2% | +26.7 pp |
+| no_move precision | — | 80.0% | 100.0% | +20.0 pp |
+| no_move recall | 16 | 25.0% | 56.2% | +31.2 pp |
+| Clarification rate | 86 | 2.3% | 0.0% | -2.3 pp |
+| Cost per query | 176 | $0.00048 | $0.00102 | +$0.00055 (+115%) |
+| Cost per rules question | 68 | $0.00084 | $0.00171 | +$0.00087 (+104%) |
+| Cost per action description | 87 | $0.00031 | $0.00070 | +$0.00039 (+129%) |
+| Latency p50 | 176 | 3409 ms | 3316 ms | -93 ms |
+| Latency p95 | 176 | 5142 ms | 5592 ms | +450 ms |
+<!-- comparison-table:end -->
+
+Chosen: `classifier-mini`. Move accuracy improved 26.7 pp on 86 cases with candidate-only flips far outnumbering reference-only flips, and no other headline rate regressed beyond one case's worth of noise, so the decision rule was met. Full comparison: [`evals/reports/comparisons/2026-11-10-baseline-vs-classifier-mini.md`](evals/reports/comparisons/2026-11-10-baseline-vs-classifier-mini.md); decision record: [ADR-018](docs/decisions.md).
 
 ### Reproduce
 
@@ -117,16 +130,15 @@ The runner estimates the cost from live prices before any paid call and aborts a
 
 ## Cost, latency and guardrails
 
-<!-- TODO-OWNER(cost-latency): from the same committed comparison file, copy the chosen configuration's values for these rows and replace the Source line with: Source: [`evals/reports/comparisons/<file>.md`](evals/reports/comparisons/<file>.md), configuration `<name>`. Then delete this comment. -->
-Source: TODO-OWNER(cost-latency).
+Source: [`evals/reports/comparisons/2026-11-10-baseline-vs-classifier-mini.md`](evals/reports/comparisons/2026-11-10-baseline-vs-classifier-mini.md), configuration `classifier-mini`.
 
 | Measure | Value |
 |---|---|
-| Cost per query | TODO-OWNER(cost-latency) |
-| Cost per rules question | TODO-OWNER(cost-latency) |
-| Cost per action description | TODO-OWNER(cost-latency) |
-| Latency p50 | TODO-OWNER(cost-latency) |
-| Latency p95 | TODO-OWNER(cost-latency) |
+| Cost per query | $0.00102 |
+| Cost per rules question | $0.00171 |
+| Cost per action description | $0.00070 |
+| Latency p50 | 3316 ms |
+| Latency p95 | 5592 ms |
 
 Costs are the ones the provider reports per call (OpenRouter `usage.cost`), summed per turn and averaged over all eval cases. The eval judge is excluded. An out-of-scope message costs one router call. Latencies are whole-turn wall-clock times from the eval runner, which runs cases one at a time. They are not production measurements.
 
