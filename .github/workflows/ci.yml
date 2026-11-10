@@ -81,3 +81,30 @@ jobs:
 
       - name: Check links
         run: npm run check-links
+
+  image:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Build image
+        run: docker build -t dw-companion:ci .
+
+      - name: Start container
+        run: |
+          docker run -d --name app -p 8080:8080 \
+            -e OPENROUTER_API_KEY=ci-placeholder-not-a-key \
+            -e MODEL_ROUTER=ci/placeholder \
+            -e MODEL_CLASSIFIER=ci/placeholder \
+            -e MODEL_ANSWER=ci/placeholder \
+            -e MODEL_EMBEDDINGS="$(jq -r .embedding_model data/index/manifest.json)" \
+            dw-companion:ci
+
+      - name: Smoke test
+        run: infra/smoke.sh http://127.0.0.1:8080
+
+      - name: Container logs
+        if: failure()
+        run: docker logs app

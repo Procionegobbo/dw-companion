@@ -1,0 +1,13 @@
+# Non-secret runtime configuration for the Cloud Run service (spec 011).
+# Applied with `gcloud run deploy --env-vars-file`, which replaces every plain env var on each deploy.
+# OPENROUTER_API_KEY, LANGFUSE_PUBLIC_KEY and LANGFUSE_SECRET_KEY come from Secret Manager, never from this file.
+# Model ids: provisional (spec 007) until the spec 010 tuning ADR. MODEL_EMBEDDINGS must equal data/index/manifest.json.
+MODEL_ROUTER: "openai/gpt-4.1-nano"
+MODEL_CLASSIFIER: "openai/gpt-4.1-nano"
+MODEL_ANSWER: "openai/gpt-4.1-mini"
+MODEL_EMBEDDINGS: "openai/text-embedding-3-small"
+LANGFUSE_BASE_URL: "https://cloud.langfuse.com"
+CHAT_RATE_PER_MINUTE: "5"
+CHAT_RATE_PER_DAY: "50"
+CHAT_DAILY_BUDGET_USD: "1.00"
+CHAT_TRUSTED_PROXY_HOPS: "1"

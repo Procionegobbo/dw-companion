@@ -910,3 +910,85 @@ the threshold and is noise per the comparison's own Notes section. No override.
   `openai/gpt-4.1-nano` even though it is no longer the model actually run.
 - Re-run the round when a dataset changes, a model is delisted or repriced, or the graph
   changes.
+
+## ADR-019: Deploy: one Cloud Run service with min and max instances 1
+
+Date: 2026-11-10
+Status: Accepted
+
+### Context
+
+Milestone 10 needs a public URL serving both the static rules site and the chat API, with
+spec 008's guardrails (daily spend cap, per-IP rate limit) actually effective in production,
+and with LLM/Langfuse keys kept out of the repo and the image. The project brief's deployment
+section defaults to `min-instances=0` for a "nearly free" idle demo and describes a build step
+that produces "ingestion output + index + static site" at deploy time. Neither default survives
+contact with how spec 008 and spec 002/007 were actually built, which this ADR records as two
+flagged discrepancies with the brief.
+
+### Decision
+
+**One Cloud Run service, `max-instances=1` and `min-instances=1` by default** (`MIN_INSTANCES=0`
+remains an explicit, documented deploy-time override). **Discrepancy 1**: this overrides the
+brief's `min-instances=0`. Spec 008 D9 keeps the rate limiter and spend ledger in process
+memory, so there must be exactly one ledger, not one per instance (`max=1`), and that ledger
+must not restart for free: with `min=0`, Cloud Run stops an idle instance after roughly 15
+minutes, and the next request starts a fresh ledger at $0 spent, so a patient abuser could spend
+`CHAT_DAILY_BUDGET_USD` once per cold start. The brief's "cheapest" default and the brief's own
+"a daily cap that holds" requirement cannot both hold under spec 008's in-memory design; the
+more specific, already-approved spec 008 constraint wins, because it bounds real money while
+`min=0` only saves idle cost. **Owner review item**: an idle `min-instances=1` instance (1 vCPU,
+512 MiB, request-based billing) is billed at Cloud Run's idle rate — an unverified estimate of a
+few USD per month at list price, to be confirmed with the Cloud Run pricing calculator before
+the first deploy and checked again on the first bill. This is flagged for the owner rather than
+decided silently, per the brief's own rule to stop and ask before recurring cost beyond free
+tiers. `MIN_INSTANCES=0` stays available for an owner who prefers to rely on the OpenRouter key
+credit limit (below) as the hard bound instead.
+
+**Discrepancy 2**: the image copies the already-committed `data/normalized/` and `data/index/`
+rather than re-running ingestion or the index build, diverging from the brief's "build ingestion
+output + index + static site" wording. Both are build outputs already guarded by tests (a
+byte-for-byte snapshot test on `data/normalized/`, an index-freshness test on `data/index/`).
+Rebuilding the index at image-build time would need `OPENROUTER_API_KEY` inside the build, which
+spec 007 explicitly rejected; rebuilding ingestion would need the `vendor/` submodule in the
+build context, which spec 001 keeps out of the image. Only the static site is actually built
+inside the image (`npm run build && npm run check-links`, reading the committed
+`data/normalized/`).
+
+**Build and deploy**: local `docker buildx build --platform linux/amd64 --push`, then
+`gcloud run deploy` — no Cloud Build, no deploy from GitHub Actions (one machine, one owner,
+manual milestone deploys; CI credentials and a separate build environment buy nothing for a
+demo). Idempotent bash scripts in `infra/` plus `Makefile` targets, no Terraform, matching the
+brief's "a short deploy script or Makefile target".
+
+**Names, region and least privilege**: Cloud Run service `dw-companion`, Artifact Registry
+repository `dw-companion` (image `app`, tag = `git rev-parse --short=12 HEAD`), runtime service
+account `dw-companion-run` with only `roles/secretmanager.secretAccessor` on the three secrets
+it reads — not the default compute service account's project `Editor`. Region `europe-west1`
+(a tier-1 price region close to the owner and to Langfuse cloud's default EU region).
+
+**Resources**: 1 vCPU, 512 MiB, concurrency 80, request timeout 120 s, port 8080,
+request-based billing (`--cpu-throttling`), `--allow-unauthenticated` (the service is public and
+anonymous by design). Non-secret runtime configuration (model ids, rate limits, the spend cap,
+`CHAT_TRUSTED_PROXY_HOPS`) is committed in `infra/runtime-env.yaml` and applied declaratively
+with `--env-vars-file` on every deploy, so the live configuration is reviewable and
+reproducible; the owner edits this file and redeploys to change it.
+
+**Account-level guards are owner actions, not automated by any script or CI job**: the GCP
+billing budget alert, the OpenRouter production key's credit limit (with auto top-up off), and
+the Langfuse cloud project and keys all live in third-party web consoles or billing-account
+permissions that no agent holds. `docs/deploy.md` documents these as manual, one-time steps
+before the first deploy; nothing in `infra/` or `.github/workflows/ci.yml` touches billing or a
+third-party account.
+
+### Consequences
+
+The always-on instance is the one recurring cost this project introduces outside free tiers, and
+it is called out to the owner rather than minimized by default. Three residual risks follow from
+keeping the rate limiter and spend ledger in-memory rather than adding a shared store: counters
+reset on every deploy or restart, `X-Forwarded-For` layout must be verified live once Cloud Run
+is in front of the app, and Langfuse's background exporter may delay flushing under CPU
+throttling. All three are documented in `docs/deploy.md` with their mitigations, and the
+OpenRouter key's credit limit is the hard backstop regardless. Persistent shared state
+(Firestore/Redis) so `min-instances=0` becomes safe, and deploying from CI via Workload Identity
+Federation, remain *Future Considerations*.

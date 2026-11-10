@@ -106,6 +106,7 @@ def test_env_example_declares_keys_without_values() -> None:
         "CHAT_RATE_PER_DAY",
         "CHAT_DAILY_BUDGET_USD",
         "CHAT_TRUSTED_PROXY_HOPS",
+        "SITE_DIR",
     ]
     assert keys == expected_keys
     assert len(keys) == len(set(keys))
