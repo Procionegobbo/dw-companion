@@ -46,3 +46,4 @@
 - [011-deploy-to-cloud-run-004-owner-gate-first-deploy.md](COMPLETED/011-deploy-to-cloud-run-004-owner-gate-first-deploy.md)
 - [012-readme-polish-and-launch-001-readme-rewrite-and-development-guide.md](COMPLETED/012-readme-polish-and-launch-001-readme-rewrite-and-development-guide.md)
 - [012-readme-polish-and-launch-002-readme-guard-tests.md](COMPLETED/012-readme-polish-and-launch-002-readme-guard-tests.md)
+- [012-readme-polish-and-launch-003-owner-gate-fill-slots-and-launch.md](COMPLETED/012-readme-polish-and-launch-003-owner-gate-fill-slots-and-launch.md)
