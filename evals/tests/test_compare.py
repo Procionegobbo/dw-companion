@@ -330,6 +330,30 @@ def test_load_report_errors(
     assert str(excinfo.value).startswith(f"{path}: {expected_prefix}")
 
 
+def test_load_report_accepts_null_intent_case(tmp_path: Path) -> None:
+    """`intent` is nullable (`TurnResult.intent` is `None` on an error-kind
+    turn, per `evals/report.py`); a case with `intent: None` must pass
+    structure validation like the already-nullable `cost_usd` field, not
+    raise `ComparisonError`."""
+    router_base = _default_cases("router")[0]
+    data = report(
+        datasets={
+            "router": {
+                "cases": [{**router_base, "intent": None, "kind": "error"}],
+            }
+        }
+    )
+    path = tmp_path / "report.json"
+    path.write_text(json.dumps(data), encoding="utf-8")
+
+    loaded = load_report(path)
+
+    datasets = cast("Mapping[str, object]", loaded["datasets"])
+    router = cast("Mapping[str, object]", datasets["router"])
+    cases = cast("list[dict[str, object]]", router["cases"])
+    assert cases[0]["intent"] is None
+
+
 def test_rejects_different_judge(tmp_path: Path) -> None:
     reference = report(config="a", judge="m-judge-a")
     candidate = report(config="b", judge="m-judge-b")

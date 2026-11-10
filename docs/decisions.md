@@ -854,3 +854,59 @@ and none of `claude-haiku-5.5`'s OpenRouter endpoints currently accept that comb
 the judge to `anthropic/claude-haiku-4.5`, confirmed by the same direct request to return `200`,
 before re-running. It keeps the "different vendor from the answer model" property this ADR's
 Decision section calls for.
+
+## ADR-018: Model configuration from the tuning round
+
+Date: 2026-11-10
+Status: Accepted
+
+### Context
+Spec 007 shipped provisional model choices. The tuning round compared `baseline` and
+`classifier-mini` on the owner-reviewed eval datasets (router: sha256 0773b7a98aae, rules_qa:
+sha256 4935ef76b113, move_classification: sha256 6235f338d746) at commits 8188831d1ce9
+(baseline) and ae64ee9bdae6 (classifier-mini — run after spec 010's own tooling landed; no
+dataset, judge, or graph change between the two runs). Reports:
+`evals/reports/2026-11-09-baseline.json`, `evals/reports/2026-11-10-classifier-mini.json`.
+Comparison: `evals/reports/comparisons/2026-11-10-baseline-vs-classifier-mini.md`.
+
+### Decision
+Use `classifier-mini`: router `openai/gpt-4.1-nano`, classifier `openai/gpt-4.1-mini`, answer
+`openai/gpt-4.1-mini`, embeddings `openai/text-embedding-3-small`; `GraphSettings` at defaults.
+
+<!-- comparison-table:start -->
+| Metric | Cases | baseline | classifier-mini | Δ |
+| --- | --- | --- | --- | --- |
+| Router accuracy | 45 | 84.4% | 84.4% | +0.0 pp |
+| Retrieval recall@6 | 36 | 100.0% | 100.0% | +0.0 pp |
+| Citation validity | 45 | 100.0% | 100.0% | +0.0 pp |
+| Key-fact coverage | 36 | 93.3% | 94.2% | +0.9 pp |
+| Correct refusals | 9 | 22.2% | 11.1% | -11.1 pp |
+| Move accuracy | 86 | 60.5% | 87.2% | +26.7 pp |
+| no_move precision | — | 80.0% | 100.0% | +20.0 pp |
+| no_move recall | 16 | 25.0% | 56.2% | +31.2 pp |
+| Clarification rate | 86 | 2.3% | 0.0% | -2.3 pp |
+| Cost per query | 176 | $0.00048 | $0.00102 | +$0.00055 (+115%) |
+| Cost per rules question | 68 | $0.00084 | $0.00171 | +$0.00087 (+104%) |
+| Cost per action description | 87 | $0.00031 | $0.00070 | +$0.00039 (+129%) |
+| Latency p50 | 176 | 3409 ms | 3316 ms | -93 ms |
+| Latency p95 | 176 | 5142 ms | 5592 ms | +450 ms |
+<!-- comparison-table:end -->
+
+Decision guidance (spec 010 D14): **met**. (a) Move accuracy improves by 26.7 pp, far past the
+2 × (100/86) ≈ 2.3 pp threshold. (b) On `move_classification`, candidate-only flips (23) exceed
+reference-only flips (0) by 23, past the required margin of 3. (c) No other headline rate
+regresses by more than 2 cases' worth: the one regression, correct refusals (-11.1 pp on 9
+cases), is a single case flip — 2 cases' worth there is 2 × (100/9) ≈ 22.2 pp, so it stays under
+the threshold and is noise per the comparison's own Notes section. No override.
+
+### Consequences
+- Replaces the provisional model values in ADR-013 ("Model provider: OpenRouter for chat and
+  embeddings"); its provider decision stands.
+- `MODEL_*` for local runs and deployment use the values above; `.env.example` stays empty.
+- `evals/configs/baseline.toml` is intentionally left unmodified (spec 010 D16): editing it
+  would change its SHA-256 and break the link to the already-committed baseline report. Its
+  existing comment ("spec 010 replaces them with measured ones") already covers this ADR being
+  where that replacement actually happens, so `classifier` in the committed file keeps reading
+  `openai/gpt-4.1-nano` even though it is no longer the model actually run.
+- Re-run the round when a dataset changes, a model is delisted or repriced, or the graph
+  changes.
