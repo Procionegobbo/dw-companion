@@ -44,3 +44,5 @@
 - [011-deploy-to-cloud-run-002-container-image-and-ci-smoke.md](COMPLETED/011-deploy-to-cloud-run-002-container-image-and-ci-smoke.md)
 - [011-deploy-to-cloud-run-003-gcp-setup-deploy-scripts-and-runbook.md](COMPLETED/011-deploy-to-cloud-run-003-gcp-setup-deploy-scripts-and-runbook.md)
 - [011-deploy-to-cloud-run-004-owner-gate-first-deploy.md](COMPLETED/011-deploy-to-cloud-run-004-owner-gate-first-deploy.md)
+- [012-readme-polish-and-launch-001-readme-rewrite-and-development-guide.md](COMPLETED/012-readme-polish-and-launch-001-readme-rewrite-and-development-guide.md)
+- [012-readme-polish-and-launch-002-readme-guard-tests.md](COMPLETED/012-readme-polish-and-launch-002-readme-guard-tests.md)
