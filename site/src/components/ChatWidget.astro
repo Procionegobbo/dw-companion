@@ -20,19 +20,25 @@ import { MAX_MESSAGE_CHARS } from "../lib/chat/client";
       aria-describedby="chat-count chat-message-error"></textarea>
     <p id="chat-count" class="chat-count">0/{MAX_MESSAGE_CHARS}</p>
     <p id="chat-message-error" class="chat-field-error" hidden></p>
-    <label><input type="checkbox" id="chat-roll" name="roll" /> Roll the dice for me</label>
-    <label for="chat-modifier">Modifier (optional)</label>
-    <input
-      type="number"
-      id="chat-modifier"
-      name="modifier"
-      min="-10"
-      max="10"
-      step="1"
-      inputmode="numeric"
-      disabled
-      aria-describedby="chat-modifier-error"
-    />
+    <div class="chat-options">
+      <label class="chat-roll-label"
+        ><input type="checkbox" id="chat-roll" name="roll" /> Roll the dice for me</label
+      >
+      <div class="chat-modifier">
+        <label for="chat-modifier">Modifier (optional)</label>
+        <input
+          type="number"
+          id="chat-modifier"
+          name="modifier"
+          min="-10"
+          max="10"
+          step="1"
+          inputmode="numeric"
+          disabled
+          aria-describedby="chat-modifier-error"
+        />
+      </div>
+    </div>
     <p id="chat-modifier-error" class="chat-field-error" hidden></p>
     <button type="submit" id="chat-submit">Ask</button>
   </form>

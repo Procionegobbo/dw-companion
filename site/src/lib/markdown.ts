@@ -1,4 +1,4 @@
-import { Marked } from "marked";
+import { Marked, Renderer } from "marked";
 
 function escapeHtml(text: string): string {
   return text
@@ -15,6 +15,11 @@ const marked = new Marked({
   renderer: {
     html(token) {
       return escapeHtml(token.raw);
+    },
+    // Wrap tables so a wide one can scroll on a phone without changing the table's own
+    // `display` (which would strip its table semantics in some browser/AT combinations).
+    table(token) {
+      return `<div class="table-scroll">${Renderer.prototype.table.call(this, token)}</div>\n`;
     },
   },
 });

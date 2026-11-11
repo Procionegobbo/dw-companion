@@ -25,6 +25,7 @@ describe("renderMarkdown", () => {
     expect(html).toContain("<table>");
     expect(html).toContain("<th>Score</th>");
     expect(html).toContain("<th>Modifier</th>");
+    expect(html).toContain('<div class="table-scroll"><table>');
   });
 
   it("renders blockquotes and h4 headings", () => {
