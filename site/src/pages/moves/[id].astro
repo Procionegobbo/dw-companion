@@ -28,7 +28,7 @@ const outcomes = move.outcomes;
 ---
 
 <BaseLayout title={move.name}>
-  <nav aria-label="Breadcrumb">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
     <ol>
       <li><a href={HOME_URL}>Contents</a></li>
       <li><a href={MOVES_INDEX_URL}>Moves</a></li>
@@ -37,7 +37,7 @@ const outcomes = move.outcomes;
   </nav>
   <article data-move-id={move.id}>
     <h1>{move.name}</h1>
-    <p>{categoryLabel(move.category)}</p>
+    <p class="move-category">{categoryLabel(move.category)}</p>
     <dl class="move-facts">
       <dt>Trigger</dt>
       <dd>{move.trigger}</dd>

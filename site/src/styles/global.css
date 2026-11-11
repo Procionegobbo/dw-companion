@@ -1,30 +1,313 @@
+/*
+ * Dungeon World Companion — site stylesheet.
+ *
+ * Direction: an old rulebook on a tavern table. Warm parchment page, iron-gall ink, oxblood
+ * accents and a dark leather header band; book serifs for reading, small caps for labels.
+ * System fonts only and no url() anywhere: the site loads nothing from outside its own origin
+ * (ADR-010, ADR-016).
+ */
+
+/* ---------------------------------------------------------------- Tokens */
+
 :root {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
-    sans-serif;
+  color-scheme: light dark;
+
+  /* Palette — light ("parchment by daylight") */
+  --paper: #f5eedf;
+  --paper-raised: #fbf7ee;
+  --paper-sunken: #ece2cc;
+  --ink: #2a2118;
+  --ink-muted: #65543f;
+  --rule: #d6c5a2;
+  --rule-strong: #b59f74;
+  --accent: #8b2a1e;
+  --accent-hover: #6a1d14;
+  --accent-tint: #f1dfd3;
+  --gold: #a7782b;
+  --leather: #2d1f16;
+  --leather-ink: #f3e8d2;
+  --leather-muted: #cbb58f;
+  --band-strong: #3c6a33;
+  --band-weak: #9a6514;
+  --band-miss: #9b2c22;
+  --band-strong-tint: #e3ebd5;
+  --band-weak-tint: #f4e6c8;
+  --band-miss-tint: #f3dcd5;
+  --shadow: 0 1px 2px rgb(60 40 20 / 0.08), 0 4px 12px rgb(60 40 20 / 0.06);
+
+  /* Type */
+  --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua",
+    "URW Palladio L", P052, Georgia, serif;
+  --font-body: Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, ui-serif, serif;
+  --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  --step--1: 0.875rem;
+  --step-0: 1.0625rem;
+  --step-1: 1.25rem;
+  --step-2: 1.5rem;
+  --step-3: clamp(1.6rem, 1.35rem + 1.2vw, 1.95rem);
+  --step-4: clamp(2rem, 1.5rem + 2.4vw, 2.75rem);
+
+  /* Space */
+  --space-3xs: 0.25rem;
+  --space-2xs: 0.5rem;
+  --space-xs: 0.75rem;
+  --space-s: 1rem;
+  --space-m: 1.5rem;
+  --space-l: 2rem;
+  --space-xl: 3rem;
+  --space-2xl: 4.5rem;
+
+  /* Layout */
+  --measure: 44rem;
+  --gutter: var(--space-s);
+  --radius: 0.375rem;
+  --edge-pad: max(var(--gutter), calc((100% - var(--measure)) / 2));
+}
+
+/* Palette — dark ("by candlelight"), when the OS asks for it. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #1b1612;
+    --paper-raised: #241d17;
+    --paper-sunken: #14100d;
+    --ink: #ece1cb;
+    --ink-muted: #b5a487;
+    --rule: #43372a;
+    --rule-strong: #65543f;
+    --accent: #e48a6d;
+    --accent-hover: #f2ab92;
+    --accent-tint: #3a231b;
+    --gold: #d2a557;
+    --leather: #120d0a;
+    --leather-ink: #ece1cb;
+    --leather-muted: #b5a487;
+    --band-strong: #93c27f;
+    --band-weak: #e0b25c;
+    --band-miss: #ec8572;
+    --band-strong-tint: #1f2a19;
+    --band-weak-tint: #2e2413;
+    --band-miss-tint: #331c17;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 12px rgb(0 0 0 / 0.25);
+  }
+}
+
+/* ---------------------------------------------------------------- Base */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
-  max-width: 42rem;
-  margin: 0 auto;
-  padding: 1rem;
-  line-height: 1.6;
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--paper);
+  background-image: radial-gradient(
+    ellipse at top,
+    var(--paper-raised) 0%,
+    var(--paper) 60%
+  );
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.65;
+  overflow-wrap: break-word;
+}
+
+main {
+  flex: 1 0 auto;
+  width: 100%;
+  max-width: calc(var(--measure) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding: var(--space-l) var(--gutter) var(--space-2xl);
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--paper-raised);
+}
+
+/* ---------------------------------------------------------------- Typography */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--ink);
+  text-wrap: balance;
+  margin: var(--space-l) 0 var(--space-xs);
+}
+
+h1 {
+  font-size: var(--step-4);
+  margin-top: 0;
+  padding-bottom: var(--space-xs);
+  border-bottom: 3px double var(--rule-strong);
+  letter-spacing: -0.01em;
+}
+
+h2 {
+  font-size: var(--step-3);
+  color: var(--accent);
+  font-variant: small-caps;
+  letter-spacing: 0.02em;
+}
+
+h3 {
+  font-size: var(--step-2);
+}
+
+h4 {
+  font-size: var(--step-1);
+  color: var(--accent);
+}
+
+h5,
+h6 {
+  font-size: var(--step-0);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+p,
+ul,
+ol,
+dl,
+blockquote,
+table {
+  margin: 0 0 var(--space-s);
+}
+
+ul,
+ol {
+  padding-left: var(--space-m);
+}
+
+li + li {
+  margin-top: var(--space-3xs);
+}
+
+li::marker {
+  color: var(--gold);
+}
+
+strong {
+  font-weight: 700;
+}
+
+.lead {
+  font-size: var(--step-1);
+  line-height: 1.55;
+  color: var(--ink-muted);
+  font-style: italic;
+}
+
+a {
+  color: var(--accent);
+  text-decoration-line: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+a:hover {
+  color: var(--accent-hover);
+  text-decoration-color: currentColor;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* Example-of-play passages in the rulebook are blockquotes: set them as marginalia. */
+blockquote {
+  margin-inline: 0;
+  padding: var(--space-xs) var(--space-s);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  background: var(--paper-sunken);
+  color: var(--ink-muted);
+  font-style: italic;
+}
+
+blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: var(--space-l) 0;
+}
+
+code {
+  font-size: 0.9em;
+  background: var(--paper-sunken);
+  padding: 0.1em 0.3em;
+  border-radius: 0.2em;
+}
+
+/* Tables (stat and roll tables). markdown.ts wraps each one in `.table-scroll`, so a wide
+ * table scrolls inside that box on a phone while the table keeps its default display. */
+.table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 0 0 var(--space-s);
+}
+
+.table-scroll > table {
+  margin-bottom: 0;
 }
 
 table {
   border-collapse: collapse;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-size: var(--step--1);
 }
 
 th,
 td {
-  border: 1px solid;
-  padding: 0.5rem;
+  border: 1px solid var(--rule);
+  padding: var(--space-2xs) var(--space-xs);
+  text-align: left;
 }
 
-a:focus,
-button:focus {
-  outline: 2px solid;
-  outline-offset: 2px;
+th {
+  background: var(--leather);
+  color: var(--leather-ink);
+  font-family: var(--font-display);
+  font-variant: small-caps;
+  letter-spacing: 0.04em;
+  border-color: var(--leather);
 }
+
+tbody tr:nth-child(even) {
+  background: var(--paper-sunken);
+}
+
+/* ---------------------------------------------------------------- Utilities */
 
 .skip-link {
   position: absolute;
@@ -33,6 +316,12 @@ button:focus {
 
 .skip-link:focus {
   position: static;
+  display: block;
+  padding: var(--space-2xs) var(--gutter);
+  background: var(--gold);
+  color: var(--leather);
+  font-family: var(--font-ui);
+  font-weight: 600;
 }
 
 .visually-hidden {
@@ -44,36 +333,596 @@ button:focus {
   white-space: nowrap;
 }
 
-.chat-log {
+/* ---------------------------------------------------------------- Header */
+
+.site-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2xs) var(--space-m);
+  padding: var(--space-s) var(--edge-pad);
+  background: var(--leather);
+  color: var(--leather-ink);
+  border-bottom: 3px solid var(--gold);
+}
+
+.site-title {
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--leather-ink);
+  text-decoration: none;
+}
+
+.site-title::before {
+  content: "◆";
+  content: "◆" / "";
+  margin-right: 0.45em;
+  color: var(--gold);
+  font-size: 0.75em;
+  vertical-align: 0.1em;
+}
+
+.site-title:hover {
+  color: var(--leather-ink);
+}
+
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3xs) var(--space-m);
+  font-family: var(--font-display);
+  font-variant: small-caps;
+  letter-spacing: 0.06em;
+  font-size: var(--step-1);
+}
+
+@media (max-width: 30rem) {
+  .site-nav {
+    font-size: var(--step-0);
+    gap: var(--space-3xs) var(--space-s);
+  }
+}
+
+.site-nav a {
+  color: var(--leather-muted);
+  text-decoration: none;
+  padding-block: var(--space-3xs);
+  border-bottom: 2px solid transparent;
+}
+
+.site-nav a:hover {
+  color: var(--leather-ink);
+}
+
+.site-nav a[aria-current="page"] {
+  color: var(--leather-ink);
+  border-bottom-color: var(--gold);
+}
+
+/* ---------------------------------------------------------------- Footer */
+
+.site-footer {
+  padding: var(--space-l) var(--edge-pad) var(--space-xl);
+  border-top: 1px solid var(--rule);
+  background: var(--paper-sunken);
+  color: var(--ink-muted);
+  font-size: var(--step--1);
+  line-height: 1.6;
+}
+
+.site-footer::before {
+  content: "❦";
+  content: "❦" / "";
+  display: block;
+  text-align: center;
+  color: var(--gold);
+  font-size: var(--step-2);
+  line-height: 1;
+  margin-bottom: var(--space-s);
+}
+
+.site-footer p {
+  max-width: var(--measure);
+}
+
+.site-footer a {
+  color: inherit;
+}
+
+.site-footer a:hover {
+  color: var(--accent);
+}
+
+/* ---------------------------------------------------------------- Navigation in pages */
+
+.breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3xs) 0;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--space-m);
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  color: var(--ink-muted);
+}
+
+.breadcrumb li + li {
+  margin-top: 0;
+}
+
+.breadcrumb li + li::before {
+  content: "›";
+  content: "›" / "";
+  margin-inline: var(--space-2xs);
+  color: var(--rule-strong);
+}
+
+.breadcrumb a {
+  color: var(--ink-muted);
+}
+
+.breadcrumb a:hover {
+  color: var(--accent);
+}
+
+.pager {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-xs);
+  margin-top: var(--space-xl);
+  padding-top: var(--space-m);
+  border-top: 3px double var(--rule-strong);
+}
+
+.pager a {
+  max-width: 100%;
+  padding: var(--space-2xs) var(--space-s);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper-raised);
+  font-family: var(--font-display);
+  text-decoration: none;
+  box-shadow: var(--shadow);
+}
+
+/* "Next" always sits on the right, even when there is no "previous". */
+.pager-next {
+  margin-left: auto;
+  text-align: right;
+}
+
+.pager a:hover {
+  border-color: var(--accent);
+}
+
+/* ---------------------------------------------------------------- Home: table of contents */
+
+.toc {
+  list-style: none;
+  counter-reset: chapter;
+  padding: 0;
+  columns: 2 17rem;
+  column-gap: var(--space-l);
+}
+
+.toc li {
+  counter-increment: chapter;
+  break-inside: avoid;
+  display: flex;
+  gap: var(--space-xs);
+  align-items: baseline;
+  padding: var(--space-2xs) 0;
+  border-bottom: 1px dotted var(--rule-strong);
+  margin: 0;
+}
+
+.toc li::before {
+  content: counter(chapter, upper-roman);
+  min-width: 2.5rem;
+  font-family: var(--font-display);
+  font-size: var(--step--1);
+  color: var(--gold);
+  letter-spacing: 0.05em;
+}
+
+.toc a {
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  text-decoration: none;
+}
+
+.toc a:hover {
+  text-decoration: underline;
+}
+
+/* ---------------------------------------------------------------- Rules: class stat block */
+
+.class-stats {
+  display: grid;
+  grid-template-rows: auto auto;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  max-width: 30rem;
+  border: 2px solid var(--leather);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--paper-raised);
+  text-align: center;
+  margin-bottom: var(--space-m);
+}
+
+.class-stats dt {
+  background: var(--leather);
+  color: var(--leather-ink);
+  font-family: var(--font-display);
+  font-variant: small-caps;
+  letter-spacing: 0.06em;
+  padding: var(--space-3xs) var(--space-2xs);
+}
+
+.class-stats dd {
+  margin: 0;
+  padding: var(--space-2xs);
+  font-family: var(--font-display);
+  font-weight: 700;
+  border-left: 1px solid var(--rule);
+}
+
+.class-stats dd:first-of-type {
+  border-left: 0;
+}
+
+/* ---------------------------------------------------------------- Moves */
+
+.move-list {
   list-style: none;
   padding: 0;
 }
 
+.move-list li {
+  padding: var(--space-2xs) 0;
+  border-bottom: 1px dotted var(--rule-strong);
+  margin: 0;
+}
+
+.move-list a {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--step-1);
+  text-decoration: none;
+}
+
+.move-list a:hover {
+  text-decoration: underline;
+}
+
+.move-list-trigger {
+  color: var(--ink-muted);
+  font-style: italic;
+}
+
+.move-category {
+  font-family: var(--font-display);
+  font-variant: small-caps;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+  font-size: var(--step-1);
+}
+
+/* Trigger / Roll / Dice — shared by the move page and the move card in chat. */
+.move-facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--space-2xs) var(--space-s);
+  padding: var(--space-s);
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--paper-raised);
+  box-shadow: var(--shadow);
+}
+
+.move-facts dt {
+  font-family: var(--font-display);
+  font-variant: small-caps;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+}
+
+.move-facts dd {
+  margin: 0;
+}
+
+/* Outcome bands, always rendered in order strong hit, weak hit, miss. */
+.outcomes {
+  display: grid;
+  gap: 0;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--paper-raised);
+}
+
+.outcomes dt {
+  --band: var(--band-strong);
+  padding: var(--space-2xs) var(--space-s) 0;
+  border-left: 4px solid var(--band);
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--band);
+  font-variant-numeric: lining-nums;
+}
+
+.outcomes dd {
+  --band: var(--band-strong);
+  margin: 0;
+  padding: var(--space-3xs) var(--space-s) var(--space-xs);
+  border-left: 4px solid var(--band);
+  border-bottom: 1px solid var(--rule);
+}
+
+.outcomes dd:last-of-type {
+  border-bottom: 0;
+}
+
+.outcomes dd > :last-child {
+  margin-bottom: 0;
+}
+
+.outcomes dt:nth-of-type(2),
+.outcomes dd:nth-of-type(2) {
+  --band: var(--band-weak);
+}
+
+.outcomes dt:nth-of-type(3),
+.outcomes dd:nth-of-type(3) {
+  --band: var(--band-miss);
+}
+
+.outcomes dt:nth-of-type(1).is-result,
+.outcomes dd:nth-of-type(1).is-result {
+  background: var(--band-strong-tint);
+}
+
+.outcomes dt:nth-of-type(2).is-result,
+.outcomes dd:nth-of-type(2).is-result {
+  background: var(--band-weak-tint);
+}
+
+.outcomes dt:nth-of-type(3).is-result,
+.outcomes dd:nth-of-type(3).is-result {
+  background: var(--band-miss-tint);
+}
+
+.outcomes .is-result {
+  font-weight: bold;
+  border-left-width: 8px;
+}
+
+/* ---------------------------------------------------------------- Assistant */
+
+.chat-log {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s);
+}
+
+.chat-log:empty {
+  margin: 0;
+}
+
+.chat-log > li {
+  margin: 0;
+}
+
 .chat-user {
-  text-align: right;
+  align-self: flex-end;
+  max-width: min(85%, 34rem);
+  padding: var(--space-2xs) var(--space-s);
+  border-radius: var(--radius) var(--radius) 0 var(--radius);
+  background: var(--leather);
+  color: var(--leather-ink);
+  text-align: left;
+  white-space: pre-line;
 }
 
 .chat-assistant {
+  align-self: stretch;
+  padding: var(--space-s);
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--gold);
+  border-radius: 0 var(--radius) var(--radius) var(--radius);
+  background: var(--paper-raised);
+  box-shadow: var(--shadow);
   text-align: left;
-  border: 1px solid;
-  padding: 0.5rem;
-  margin-block: 0.5rem;
+}
+
+.chat-assistant > :last-child {
+  margin-bottom: 0;
 }
 
 .chat-text p {
   white-space: pre-line;
 }
 
+/* Inline [n] citation links. */
+.chat-text a {
+  font-family: var(--font-ui);
+  font-size: 0.75em;
+  font-weight: 600;
+  vertical-align: 0.35em;
+  line-height: 1;
+  text-decoration: none;
+  padding: 0 0.15em;
+}
+
+.chat-text a:hover {
+  text-decoration: underline;
+}
+
 .chat-error {
-  border: 2px solid;
+  border: 2px solid var(--band-miss);
+  border-left-width: 4px;
+  background: var(--band-miss-tint);
+}
+
+.chat-sources-title {
+  margin: var(--space-s) 0 var(--space-3xs);
+  font-family: var(--font-display);
+  font-variant: small-caps;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+}
+
+.chat-sources {
+  font-size: var(--step--1);
+  padding-left: var(--space-m);
 }
 
 .move-card {
-  border: 1px solid;
-  padding: 0.5rem;
-  margin-block: 0.5rem;
+  margin-block: var(--space-s) 0;
+  padding: var(--space-s);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  background: var(--paper);
 }
 
-.move-card .is-result {
-  font-weight: bold;
+.move-card h3 {
+  margin: 0 0 var(--space-xs);
+  font-size: var(--step-1);
+}
+
+.move-card .move-facts {
+  box-shadow: none;
+  margin-bottom: var(--space-xs);
+}
+
+.move-card .outcomes {
+  margin-bottom: 0;
+}
+
+.chat-status {
+  min-height: 1.65em;
+  margin: var(--space-xs) 0;
+  font-style: italic;
+  color: var(--ink-muted);
+}
+
+#chat-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  padding: var(--space-s);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper-sunken);
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+}
+
+#chat-form p {
+  margin: 0;
+}
+
+#chat-form label {
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+
+textarea,
+input[type="number"] {
+  font: inherit;
+  font-size: 1rem; /* 16px+ avoids iOS zoom-on-focus */
+  color: var(--ink);
+  background: var(--paper-raised);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  padding: var(--space-2xs) var(--space-xs);
+}
+
+textarea {
+  width: 100%;
+  min-height: 5.5rem;
+  resize: vertical;
+  font-family: var(--font-body);
+  line-height: 1.5;
+}
+
+input[type="number"] {
+  width: 6rem;
+}
+
+input:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+input[type="checkbox"] {
+  accent-color: var(--accent);
+  width: 1.05rem;
+  height: 1.05rem;
+  margin: 0 var(--space-2xs) 0 0;
+  vertical-align: -0.15em;
+}
+
+.chat-count {
+  align-self: flex-end;
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.chat-field-error {
+  color: var(--band-miss);
+  font-weight: 600;
+}
+
+.chat-options {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xs) var(--space-l);
+  margin-top: var(--space-3xs);
+}
+
+#chat-form .chat-roll-label {
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.chat-modifier {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+}
+
+#chat-submit {
+  align-self: flex-end;
+  min-width: 7rem;
+  margin-top: var(--space-2xs);
+  padding: var(--space-2xs) var(--space-m);
+  border: 1px solid var(--accent-hover);
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--paper-raised);
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  font-variant: small-caps;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+
+#chat-submit:hover {
+  background: var(--accent-hover);
+}
+
+#chat-submit:disabled {
+  opacity: 0.6;
+  cursor: progress;
 }

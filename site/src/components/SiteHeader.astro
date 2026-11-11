@@ -7,9 +7,9 @@ const isMoves = pathname.startsWith(MOVES_INDEX_URL);
 const isAssistant = pathname.startsWith(ASSISTANT_URL);
 ---
 
-<header>
-  <a href={HOME_URL}>Dungeon World Companion</a>
-  <nav aria-label="Main">
+<header class="site-header">
+  <a class="site-title" href={HOME_URL}>Dungeon World Companion</a>
+  <nav class="site-nav" aria-label="Main">
     <a href={HOME_URL} aria-current={isHome ? "page" : undefined}>Contents</a>
     <a href={MOVES_INDEX_URL} aria-current={isMoves ? "page" : undefined}>Moves</a>
     <a href={ASSISTANT_URL} aria-current={isAssistant ? "page" : undefined}>Assistant</a>

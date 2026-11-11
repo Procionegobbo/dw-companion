@@ -28,7 +28,7 @@ const next = sectionIndex < rb.sections.length - 1 ? rb.sections[sectionIndex + 
 ---
 
 <BaseLayout title={section.title}>
-  <nav aria-label="Breadcrumb">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
     <ol>
       <li><a href={HOME_URL}>Contents</a></li>
       {ancestors.map((ancestor) => (
@@ -66,8 +66,8 @@ const next = sectionIndex < rb.sections.length - 1 ? rb.sections[sectionIndex + 
       </>
     )}
   </article>
-  <nav aria-label="Previous and next">
-    {previous && <a href={sectionUrl(previous.id)}>← {previous.title}</a>}
-    {next && <a href={sectionUrl(next.id)}>{next.title} →</a>}
+  <nav class="pager" aria-label="Previous and next">
+    {previous && <a class="pager-prev" href={sectionUrl(previous.id)}>← {previous.title}</a>}
+    {next && <a class="pager-next" href={sectionUrl(next.id)}>{next.title} →</a>}
   </nav>
 </BaseLayout>

@@ -23,10 +23,11 @@ const groups = CATEGORY_ORDER.map((category) => ({
     groups.map((group) => (
       <>
         <h2>{group.heading}</h2>
-        <ul>
+        <ul class="move-list">
           {group.moves.map((move) => (
             <li>
-              <a href={moveUrl(move.id)}>{move.name}</a> — {move.trigger}
+              <a href={moveUrl(move.id)}>{move.name}</a>{" "}
+              <span class="move-list-trigger">— {move.trigger}</span>
             </li>
           ))}
         </ul>
