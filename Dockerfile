@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 ARG PYTHON_IMAGE=python:3.12-slim
-ARG NODE_IMAGE=node:22-slim
-ARG UV_VERSION=0.13.5
+ARG NODE_IMAGE=node:24-slim
+ARG UV_VERSION=0.13.9
 
 FROM ghcr.io/astral-sh/uv:${UV_VERSION} AS uv
 
