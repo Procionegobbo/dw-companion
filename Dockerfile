@@ -24,7 +24,7 @@ COPY pyproject.toml uv.lock .python-version ./
 RUN uv sync --locked --no-dev --no-install-project
 
 FROM ${PYTHON_IMAGE} AS runtime
-RUN apt-get update && apt-get install -y --only-upgrade zlib1g && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --only-upgrade zlib1g libc6 libc-bin && rm -rf /var/lib/apt/lists/*
 RUN useradd --system --uid 10001 --user-group --no-create-home --shell /usr/sbin/nologin app
 WORKDIR /app
 COPY --from=deps /app/.venv /app/.venv
